@@ -25,7 +25,7 @@ export default function FinalCTA() {
         <div className="mt-9 flex flex-wrap items-start justify-center gap-6">
           <div className="flex flex-col items-center">
             <a
-              href="#"
+              href="/book-demo"
               className="flex items-center gap-2 rounded-full bg-white px-7 py-3.5 text-[15px] font-bold text-gray-900 shadow-lg transition-colors hover:bg-gray-50"
             >
               <Calendar className="h-4.5 w-4.5" />

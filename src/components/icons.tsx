@@ -25,6 +25,21 @@ export const ChevronDown = (p: IconProps) => (
   </Base>
 );
 
+export const Menu = (p: IconProps) => (
+  <Base {...p}>
+    <path d="M4 6h16" />
+    <path d="M4 12h16" />
+    <path d="M4 18h16" />
+  </Base>
+);
+
+export const X = (p: IconProps) => (
+  <Base {...p}>
+    <path d="M18 6 6 18" />
+    <path d="m6 6 12 12" />
+  </Base>
+);
+
 export const ArrowRight = (p: IconProps) => (
   <Base {...p}>
     <path d="M5 12h14" />
@@ -220,6 +235,23 @@ export const Server = (p: IconProps) => (
   </Base>
 );
 
+export const Code = (p: IconProps) => (
+  <Base {...p}>
+    <path d="m8 6-6 6 6 6" />
+    <path d="m16 6 6 6-6 6" />
+  </Base>
+);
+
+export const Scale = (p: IconProps) => (
+  <Base {...p}>
+    <path d="M12 3v18" />
+    <path d="M5 7h14" />
+    <path d="m5 7-3 7a3.5 3.5 0 0 0 6 0z" />
+    <path d="m19 7 3 7a3.5 3.5 0 0 1-6 0z" />
+    <path d="M8 21h8" />
+  </Base>
+);
+
 export const CheckSquare = (p: IconProps) => (
   <Base {...p}>
     <rect x="3" y="3" width="18" height="18" rx="3" />
@@ -288,6 +320,20 @@ export const Video = (p: IconProps) => (
   <Base {...p}>
     <path d="m22 8-6 4 6 4V8Z" />
     <rect x="2" y="6" width="14" height="12" rx="2" />
+  </Base>
+);
+
+export const Filter = (p: IconProps) => (
+  <Base {...p}>
+    <path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3Z" />
+  </Base>
+);
+
+export const ImageIcon = (p: IconProps) => (
+  <Base {...p}>
+    <rect x="3" y="3" width="18" height="18" rx="2" />
+    <circle cx="9" cy="9" r="2" />
+    <path d="m21 15-5-5L5 21" />
   </Base>
 );
 

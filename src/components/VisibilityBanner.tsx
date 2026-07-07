@@ -46,7 +46,7 @@ export default function VisibilityBanner() {
                 <ArrowRight className="h-4 w-4" />
               </a>
               <a
-                href="#"
+                href="/book-demo"
                 className="inline-flex items-center gap-2 rounded-full border border-white/40 px-6 py-3 text-[14.5px] font-semibold text-white transition-colors hover:bg-white/10"
               >
                 Book a Demo

@@ -64,7 +64,7 @@ export default function FeatureHero({
                 <ArrowRight className="h-4.5 w-4.5" />
               </a>
               <a
-                href="#"
+                href="/book-demo"
                 className="rounded-xl border border-gray-200 bg-white px-7 py-4 text-[16px] font-semibold text-gray-900 transition-colors hover:border-gray-300 hover:bg-gray-50"
               >
                 Book a Demo

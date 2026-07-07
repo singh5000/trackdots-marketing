@@ -9,6 +9,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://trackdots.net"),
   title: "TrackDots — All-in-One Employee Monitoring & Productivity Platform",
   description:
     "TrackDots helps modern teams boost productivity, improve accountability, and achieve more — all with complete transparency and trust.",

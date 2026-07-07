@@ -11,6 +11,7 @@ import FeatureStickyShowcase, { type StickyCard } from "@/components/features/Fe
 import FeatureStatsRow from "@/components/features/FeatureStatsRow";
 import FeatureComparison from "@/components/features/FeatureComparison";
 import FeatureFAQ from "@/components/features/FeatureFAQ";
+import { TEAM_MEETING_IMAGE } from "@/lib/media";
 import {
   Activity,
   ArrowLeft,
@@ -236,7 +237,7 @@ function DayJourneyMock() {
       <div className="overflow-hidden rounded-3xl shadow-2xl">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/images/team-meeting.jpg"
+          src={TEAM_MEETING_IMAGE}
           alt=""
           className="h-[420px] w-full object-cover sm:h-[460px]"
           loading="lazy"
@@ -362,7 +363,7 @@ function CrossPlatformMock() {
       <div className="overflow-hidden rounded-3xl shadow-2xl">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/images/team-meeting.jpg"
+          src={TEAM_MEETING_IMAGE}
           alt=""
           className="h-[380px] w-full object-cover"
           style={{ objectPosition: "70% 30%" }}
@@ -717,7 +718,7 @@ export default function TimeTrackingPage() {
             value: "0–100",
             label: "Confidence Score",
             desc: "Every activity block is scored from real input signals, not just elapsed time.",
-            photoSrc: "/images/team-meeting.jpg",
+            photoSrc: TEAM_MEETING_IMAGE,
             photoPosition: "20% 30%",
           },
           {
@@ -725,7 +726,7 @@ export default function TimeTrackingPage() {
             value: "5-Min",
             label: "Merge Window",
             desc: "Short gaps between active sessions are merged into one continuous work block.",
-            photoSrc: "/images/team-meeting.jpg",
+            photoSrc: TEAM_MEETING_IMAGE,
             photoPosition: "50% 25%",
           },
           {
@@ -733,7 +734,7 @@ export default function TimeTrackingPage() {
             value: "2",
             label: "Native Platforms",
             desc: "One lightweight agent, built natively for both macOS and Windows.",
-            photoSrc: "/images/team-meeting.jpg",
+            photoSrc: TEAM_MEETING_IMAGE,
             photoPosition: "85% 30%",
           },
         ]}
