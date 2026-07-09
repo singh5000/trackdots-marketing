@@ -1,4 +1,5 @@
 import { ArrowRight, Monitor, TrendUp } from "./icons";
+import { pick, type HomepageACF } from "@/lib/homepage";
 
 const APPS = [
   { name: "Chrome", time: "03:00:26", pct: 85, color: "bg-green-500" },
@@ -7,7 +8,16 @@ const APPS = [
   { name: "Slack", time: "00:12:40", pct: 15, color: "bg-gray-300" },
 ];
 
-export default function VisibilityBanner() {
+export default function VisibilityBanner({ content }: { content?: HomepageACF["visibility_banner"] }) {
+  const quote = pick(
+    content?.vb_quote,
+    "Most teams don't have an effort problem — they have a visibility problem. No clear view of how work actually happens across people, projects, and time."
+  );
+  const primaryLabel = pick(content?.vb_primary_label, "Find Your Visibility Gaps");
+  const primaryUrl = pick(content?.vb_primary_url, "/features/app-usage");
+  const secondaryLabel = pick(content?.vb_secondary_label, "Book a Demo");
+  const secondaryUrl = pick(content?.vb_secondary_url, "/book-demo");
+
   return (
     <section className="w-full px-5 py-20 md:px-8 lg:px-[80px]">
       <div className="relative mx-auto max-w-[1280px] overflow-hidden rounded-[28px] bg-gradient-to-br from-brand-600 to-violet-600 px-6 py-14 sm:px-10 lg:px-16">
@@ -30,26 +40,21 @@ export default function VisibilityBanner() {
             >
               &ldquo;
             </span>
-            <p className="relative text-2xl font-bold leading-snug text-white sm:text-3xl">
-              Most teams don&apos;t have an effort problem — they have a{" "}
-              <span className="text-white">visibility</span> problem. No clear
-              view of how work actually happens across people, projects, and
-              time.
-            </p>
+            <p className="relative text-2xl font-bold leading-snug text-white sm:text-3xl">{quote}</p>
 
             <div className="mt-8 flex flex-wrap items-center gap-3.5">
               <a
-                href="/features/app-usage"
+                href={primaryUrl}
                 className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-[14.5px] font-semibold text-gray-900 shadow-lg transition-colors hover:bg-gray-50"
               >
-                Find Your Visibility Gaps
+                {primaryLabel}
                 <ArrowRight className="h-4 w-4" />
               </a>
               <a
-                href="/book-demo"
+                href={secondaryUrl}
                 className="inline-flex items-center gap-2 rounded-full border border-white/40 px-6 py-3 text-[14.5px] font-semibold text-white transition-colors hover:bg-white/10"
               >
-                Book a Demo
+                {secondaryLabel}
               </a>
             </div>
           </div>

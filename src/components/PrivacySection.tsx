@@ -1,43 +1,26 @@
 import {
   CheckSquare,
-  Clock,
   Cloud,
-  Eye,
-  KeyboardOff,
   Lock,
   Server,
   ShieldCheck,
   Users,
 } from "./icons";
+import { pick, type HomepageACF } from "@/lib/homepage";
+import { resolveIcon } from "./pagebuilder/iconMap";
 
-const FEATURES = [
-  {
-    icon: Eye,
-    title: "Self-Viewable Monitoring",
-    desc: "Employees can view their own dashboard and work diary — nothing is hidden from them.",
-  },
-  {
-    icon: KeyboardOff,
-    title: "No Keystroke Content Logging",
-    desc: "We count keystroke activity for scoring — we never log or store what you actually type.",
-  },
-  {
-    icon: Users,
-    title: "Human-Reviewed Oversight",
-    desc: "Staff can manually review and override any flagged activity block — not fully automated.",
-  },
-  {
-    icon: Clock,
-    title: "Configurable Data Retention",
-    desc: "Retention period is set by your plan — data is never held longer than it needs to be.",
-  },
+const FALLBACK_FEATURES = [
+  { icon: "Eye", title: "Self-Viewable Monitoring", desc: "Employees can view their own dashboard and work diary — nothing is hidden from them." },
+  { icon: "KeyboardOff", title: "No Keystroke Content Logging", desc: "We count keystroke activity for scoring — we never log or store what you actually type." },
+  { icon: "Users", title: "Human-Reviewed Oversight", desc: "Staff can manually review and override any flagged activity block — not fully automated." },
+  { icon: "Clock", title: "Configurable Data Retention", desc: "Retention period is set by your plan — data is never held longer than it needs to be." },
 ];
 
-const TRUST_BADGES = [
-  { icon: ShieldCheck, label: "GDPR-Minded", sub: "Data Controls" },
-  { icon: Lock, label: "TLS Encrypted", sub: "In Transit" },
-  { icon: Users, label: "Role-Based", sub: "Access Control" },
-  { icon: CheckSquare, label: "Full Audit", sub: "Trail" },
+const FALLBACK_TRUST = [
+  { icon: "ShieldCheck", label: "GDPR-Minded", sub: "Data Controls" },
+  { icon: "Lock", label: "TLS Encrypted", sub: "In Transit" },
+  { icon: "Users", label: "Role-Based", sub: "Access Control" },
+  { icon: "CheckSquare", label: "Full Audit", sub: "Trail" },
 ];
 
 function ShieldGraphic() {
@@ -65,7 +48,33 @@ function ShieldGraphic() {
   );
 }
 
-export default function PrivacySection() {
+export default function PrivacySection({ content }: { content?: HomepageACF["privacy"] }) {
+  const badge = pick(content?.priv_badge, "PRIVACY & TRUST FIRST");
+  const heading = pick(content?.priv_heading, "Built With Privacy and Security at Heart");
+  const paragraph = pick(
+    content?.priv_paragraph,
+    "We believe monitoring should build trust, not break it. TrackDots is designed to be transparent, secure, and privacy-focused by default."
+  );
+  const bottomText = pick(content?.priv_bottom_text, "Your data is handled with care at TrackDots");
+
+  const features = FALLBACK_FEATURES.map((fb, i) => {
+    const n = i + 1;
+    return {
+      icon: pick(content?.[`priv_feature_${n}_icon`], fb.icon),
+      title: pick(content?.[`priv_feature_${n}_title`], fb.title),
+      desc: pick(content?.[`priv_feature_${n}_desc`], fb.desc),
+    };
+  });
+
+  const trustBadges = FALLBACK_TRUST.map((fb, i) => {
+    const n = i + 1;
+    return {
+      icon: pick(content?.[`priv_trust_${n}_icon`], fb.icon),
+      label: pick(content?.[`priv_trust_${n}_label`], fb.label),
+      sub: pick(content?.[`priv_trust_${n}_sub`], fb.sub),
+    };
+  });
+
   return (
     <section className="w-full px-5 py-20 md:px-8 lg:px-[80px]">
       <div className="relative mx-auto max-w-[1280px] overflow-hidden rounded-[32px] bg-gradient-to-br from-brand-700 via-brand-600 to-violet-500 px-6 py-12 sm:px-10 lg:px-14 lg:py-16">
@@ -84,31 +93,30 @@ export default function PrivacySection() {
           <div>
             <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-2 text-[13px] font-semibold text-white ring-1 ring-white/20">
               <Lock className="h-3.5 w-3.5" />
-              PRIVACY &amp; TRUST FIRST
+              {badge}
             </span>
 
             <h2 className="mt-6 text-4xl font-extrabold leading-[1.1] tracking-tight text-white sm:text-5xl">
-              Built With Privacy and Security at Heart
+              {heading}
             </h2>
 
-            <p className="mt-5 max-w-lg text-[16px] leading-relaxed text-white/75">
-              We believe monitoring should build trust, not break it. TrackDots
-              is designed to be transparent, secure, and privacy-focused by
-              default.
-            </p>
+            <p className="mt-5 max-w-lg text-[16px] leading-relaxed text-white/75">{paragraph}</p>
 
             <div className="mt-9 grid gap-x-8 gap-y-7 sm:grid-cols-2">
-              {FEATURES.map((f) => (
-                <div key={f.title} className="flex items-start gap-3.5">
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/15 text-white ring-1 ring-white/10">
-                    <f.icon className="h-5 w-5" strokeWidth={1.8} />
-                  </span>
-                  <div>
-                    <div className="text-[15px] font-bold text-white">{f.title}</div>
-                    <p className="mt-1 text-[13.5px] leading-snug text-white/65">{f.desc}</p>
+              {features.map((f) => {
+                const Icon = resolveIcon(f.icon);
+                return (
+                  <div key={f.title} className="flex items-start gap-3.5">
+                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/15 text-white ring-1 ring-white/10">
+                      <Icon className="h-5 w-5" strokeWidth={1.8} />
+                    </span>
+                    <div>
+                      <div className="text-[15px] font-bold text-white">{f.title}</div>
+                      <p className="mt-1 text-[13.5px] leading-snug text-white/65">{f.desc}</p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 
@@ -119,29 +127,30 @@ export default function PrivacySection() {
               <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-green-100 text-green-600">
                 ✓
               </span>
-              <span className="text-[14px] font-bold text-gray-900">
-                Your data is handled with care at TrackDots
-              </span>
+              <span className="text-[14px] font-bold text-gray-900">{bottomText}</span>
             </div>
           </div>
         </div>
 
         {/* ── Bottom: trust badges, clearly separated ── */}
         <div className="relative mt-12 grid grid-cols-2 gap-4 sm:grid-cols-4">
-          {TRUST_BADGES.map((b) => (
-            <div
-              key={b.label}
-              className="flex items-center gap-3 rounded-2xl bg-white/95 px-4 py-4 shadow-lg backdrop-blur"
-            >
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-600 ring-1 ring-brand-100">
-                <b.icon className="h-4.5 w-4.5" strokeWidth={1.8} />
-              </span>
-              <div className="min-w-0">
-                <div className="truncate text-[13px] font-bold text-gray-900">{b.label}</div>
-                <div className="truncate text-[10.5px] font-medium text-gray-500">{b.sub}</div>
+          {trustBadges.map((b) => {
+            const Icon = resolveIcon(b.icon);
+            return (
+              <div
+                key={b.label}
+                className="flex items-center gap-3 rounded-2xl bg-white/95 px-4 py-4 shadow-lg backdrop-blur"
+              >
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-600 ring-1 ring-brand-100">
+                  <Icon className="h-4.5 w-4.5" strokeWidth={1.8} />
+                </span>
+                <div className="min-w-0">
+                  <div className="truncate text-[13px] font-bold text-gray-900">{b.label}</div>
+                  <div className="truncate text-[10.5px] font-medium text-gray-500">{b.sub}</div>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

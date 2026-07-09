@@ -2,6 +2,7 @@
 
 import { useState, type ReactNode } from "react";
 import { ArrowRight } from "./icons";
+import { pick, type HomepageACF } from "@/lib/homepage";
 
 type Tab = "All" | "Executives" | "Managers" | "Project Managers" | "HR & Finance" | "Employees";
 
@@ -759,28 +760,44 @@ const TAB_CARDS: Record<Tab, CardData[]> = {
   ],
 };
 
-export default function PersonaSection() {
+export default function PersonaSection({ content }: { content?: HomepageACF["persona"] }) {
   const [active, setActive] = useState<Tab>("All");
-  const cards = TAB_CARDS[active];
+
+  const badge = pick(content?.persona_badge, "FIND YOUR FIT");
+  const heading = pick(content?.persona_heading, "Built for every role on your team.");
+  const paragraph = pick(
+    content?.persona_paragraph,
+    "One platform, purpose-built dashboards — whoever you are, TrackDots has the tools you came here for."
+  );
+
+  const tabLabels = TABS.map((t, i) => pick(content?.[`persona_tab_${i + 1}_label`], t));
+
+  const activeIndex = TABS.indexOf(active);
+  const cards = TAB_CARDS[active].map((card, ci) => {
+    const p = `persona_tab_${activeIndex + 1}_card_${ci + 1}`;
+    return {
+      ...card,
+      tag: pick(content?.[p]?.[`${p}_tag`], card.tag),
+      title: pick(content?.[p]?.[`${p}_title`], card.title),
+      bullets: [1, 2, 3].map((b) => pick(content?.[p]?.[`${p}_bullet_${b}`], card.bullets[b - 1] ?? "")),
+    };
+  });
 
   return (
     <section className="relative w-full px-5 py-20 md:px-8 lg:px-[80px]">
       <div className="mx-auto max-w-2xl text-center">
         <span className="inline-block rounded-full bg-brand-100/80 px-4 py-2 text-[13px] font-semibold tracking-wide text-brand-600 ring-1 ring-brand-200/60">
-          FIND YOUR FIT
+          {badge}
         </span>
         <h2 className="mt-5 text-4xl font-extrabold tracking-tight text-gray-900 sm:text-[44px]">
-          Built for every role on your team.
+          {heading}
         </h2>
-        <p className="mt-4 text-lg text-gray-600">
-          One platform, purpose-built dashboards — whoever you are, TrackDots
-          has the tools you came here for.
-        </p>
+        <p className="mt-4 text-lg text-gray-600">{paragraph}</p>
       </div>
 
       {/* Tabs */}
       <div className="mt-10 flex flex-wrap items-center justify-center gap-1.5 rounded-2xl bg-gray-100/70 p-1.5 sm:mx-auto sm:w-fit sm:rounded-full">
-        {TABS.map((t) => (
+        {TABS.map((t, i) => (
           <button
             key={t}
             onClick={() => setActive(t)}
@@ -790,16 +807,16 @@ export default function PersonaSection() {
                 : "text-gray-600 hover:text-gray-900"
             }`}
           >
-            {t}
+            {tabLabels[i]}
           </button>
         ))}
       </div>
 
       {/* Cards */}
       <div className="mx-auto mt-12 grid max-w-[1280px] gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {cards.map((card) => (
+        {cards.map((card, ci) => (
           <div
-            key={card.title}
+            key={ci}
             className="flex flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-brand-600/10"
           >
             <div className="flex min-h-[128px] w-full items-center border-b border-gray-100 bg-[#f9fafc] px-5 py-4">
@@ -816,8 +833,8 @@ export default function PersonaSection() {
               </h3>
 
               <ul className="mt-4 space-y-2.5">
-                {card.bullets.map((b) => (
-                  <li key={b} className="flex items-start gap-2.5 text-[14px] text-gray-600">
+                {card.bullets.map((b, bi) => (
+                  <li key={bi} className="flex items-start gap-2.5 text-[14px] text-gray-600">
                     <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-500" />
                     {b}
                   </li>

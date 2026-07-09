@@ -1,11 +1,13 @@
 import { ArrowRight, Bell, Clock, TrendUp } from "./icons";
+import { pick, type HomepageACF } from "@/lib/homepage";
+import { resolveIcon } from "./pagebuilder/iconMap";
 
 const PHOTO = (id: number) => `https://picsum.photos/id/${id}/500/380`;
 
 const STAT_CARDS = [
   {
     photo: PHOTO(20),
-    icon: Bell,
+    icon: "Bell",
     stat: "7",
     label: "ANOMALY SIGNALS, DETECTED AUTOMATICALLY",
     desc: "From sudden hour drops to input flatlines, TrackDots flags unusual patterns before they become problems.",
@@ -14,7 +16,7 @@ const STAT_CARDS = [
   },
   {
     photo: PHOTO(26),
-    icon: Clock,
+    icon: "Clock",
     stat: "14-Day",
     label: "ROLLING BURNOUT RISK WINDOW",
     desc: "Six weighted signals — long hours, no breaks, late nights and more — surface burnout risk early.",
@@ -23,28 +25,42 @@ const STAT_CARDS = [
   },
 ];
 
-export default function ImpactSection() {
+export default function ImpactSection({ content }: { content?: HomepageACF["impact"] }) {
+  const badge = pick(content?.imp_badge, "BUILT TO MOVE THE METRICS THAT MATTER");
+  const heading = pick(content?.imp_heading, "Real Capability, Not Just Dashboards");
+  const paragraph = pick(content?.imp_paragraph, "Every number below is a real, built-in feature of TrackDots — ready the day you sign up.");
+  const introHeading = pick(content?.imp_intro_heading, "Achieve More: Time Tracking & Workforce Coordination");
+  const introImage = pick(content?.imp_intro_image, PHOTO(22));
+  const introLinkLabel = pick(content?.imp_intro_link_label, "Explore All Features");
+  const introLinkUrl = pick(content?.imp_intro_link_url, "/platform-overview");
+
+  const statCards = STAT_CARDS.map((fb, i) => {
+    const n = i + 1;
+    return {
+      photo: pick(content?.[`imp_stat_${n}_image`], fb.photo),
+      icon: pick(content?.[`imp_stat_${n}_icon`], fb.icon),
+      stat: pick(content?.[`imp_stat_${n}_stat`], fb.stat),
+      label: pick(content?.[`imp_stat_${n}_label`], fb.label),
+      desc: pick(content?.[`imp_stat_${n}_desc`], fb.desc),
+      link: pick(content?.[`imp_stat_${n}_link_label`], fb.link),
+      href: pick(content?.[`imp_stat_${n}_link_url`], fb.href),
+    };
+  });
+
   return (
     <section className="w-full px-5 py-20 md:px-8 lg:px-[80px]">
       <div className="mx-auto max-w-2xl text-center">
         <span className="inline-block rounded-full bg-brand-100/80 px-4 py-2 text-[13px] font-semibold tracking-wide text-brand-600 ring-1 ring-brand-200/60">
-          BUILT TO MOVE THE METRICS THAT MATTER
+          {badge}
         </span>
-        <h2 className="mt-5 text-4xl font-extrabold tracking-tight text-gray-900 sm:text-[44px]">
-          Real Capability, Not Just Dashboards
-        </h2>
-        <p className="mt-4 text-lg text-gray-500">
-          Every number below is a real, built-in feature of TrackDots — ready
-          the day you sign up.
-        </p>
+        <h2 className="mt-5 text-4xl font-extrabold tracking-tight text-gray-900 sm:text-[44px]">{heading}</h2>
+        <p className="mt-4 text-lg text-gray-500">{paragraph}</p>
       </div>
 
       <div className="mx-auto mt-14 grid max-w-[1180px] gap-6 lg:grid-cols-3">
         {/* ── Intro card ── */}
         <div className="flex flex-col rounded-2xl border border-gray-200 bg-gray-50/60 p-8">
-          <h3 className="text-[22px] font-bold leading-snug text-gray-900">
-            Achieve More: Time Tracking &amp; Workforce Coordination
-          </h3>
+          <h3 className="text-[22px] font-bold leading-snug text-gray-900">{introHeading}</h3>
 
           <div className="relative mt-8 flex flex-1 items-center justify-center">
             <TrendUp
@@ -54,7 +70,7 @@ export default function ImpactSection() {
             <div className="relative h-[150px] w-[150px]">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={PHOTO(22)}
+                src={introImage}
                 alt=""
                 className="h-full w-full rounded-2xl object-cover"
                 loading="lazy"
@@ -78,48 +94,51 @@ export default function ImpactSection() {
           </div>
 
           <a
-            href="/platform-overview"
+            href={introLinkUrl}
             className="mt-8 flex w-fit items-center gap-1.5 text-[14px] font-semibold text-brand-600 transition-all hover:gap-2.5"
           >
-            Explore All Features
+            {introLinkLabel}
             <ArrowRight className="h-3.5 w-3.5" />
           </a>
         </div>
 
         {/* ── Stat cards ── */}
-        {STAT_CARDS.map((card) => (
-          <div
-            key={card.stat + card.label}
-            className="flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-gray-50/60"
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={card.photo}
-              alt=""
-              className="h-44 w-full object-cover"
-              loading="lazy"
-              width={500}
-              height={380}
-            />
-            <div className="flex flex-1 flex-col p-8">
-              <div className="flex items-center gap-2 text-brand-600">
-                <card.icon className="h-4 w-4" strokeWidth={2} />
-                <span className="text-4xl font-extrabold tracking-tight text-gray-900">{card.stat}</span>
+        {statCards.map((card, i) => {
+          const Icon = resolveIcon(card.icon);
+          return (
+            <div
+              key={i}
+              className="flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-gray-50/60"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={card.photo}
+                alt=""
+                className="h-44 w-full object-cover"
+                loading="lazy"
+                width={500}
+                height={380}
+              />
+              <div className="flex flex-1 flex-col p-8">
+                <div className="flex items-center gap-2 text-brand-600">
+                  <Icon className="h-4 w-4" strokeWidth={2} />
+                  <span className="text-4xl font-extrabold tracking-tight text-gray-900">{card.stat}</span>
+                </div>
+                <div className="mt-2 text-[12px] font-bold uppercase tracking-wide text-gray-500">
+                  {card.label}
+                </div>
+                <p className="mt-3 flex-1 text-[14px] leading-relaxed text-gray-600">{card.desc}</p>
+                <a
+                  href={card.href}
+                  className="mt-5 flex w-fit items-center gap-1.5 text-[14px] font-semibold text-brand-600 transition-all hover:gap-2.5"
+                >
+                  {card.link}
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </a>
               </div>
-              <div className="mt-2 text-[12px] font-bold uppercase tracking-wide text-gray-500">
-                {card.label}
-              </div>
-              <p className="mt-3 flex-1 text-[14px] leading-relaxed text-gray-600">{card.desc}</p>
-              <a
-                href={card.href}
-                className="mt-5 flex w-fit items-center gap-1.5 text-[14px] font-semibold text-brand-600 transition-all hover:gap-2.5"
-              >
-                {card.link}
-                <ArrowRight className="h-3.5 w-3.5" />
-              </a>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </section>
   );

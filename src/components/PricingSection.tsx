@@ -2,14 +2,15 @@
 
 import { useState } from "react";
 import { ArrowRight, CheckCircle, Sparkles, XCircle } from "./icons";
+import { pick, type HomepageACF } from "@/lib/homepage";
 
 type Feature = { label: string; included: boolean };
 
 type Plan = {
   name: string;
   tagline: string;
-  monthly: number;
-  annual: number;
+  monthly: string;
+  annual: string;
   seats: string;
   retention: string;
   cta: string;
@@ -19,12 +20,12 @@ type Plan = {
   highlight?: boolean;
 };
 
-const PLANS: Plan[] = [
+const FALLBACK_PLANS: Plan[] = [
   {
     name: "Free",
     tagline: "Forever free · no credit card",
-    monthly: 0,
-    annual: 0,
+    monthly: "0",
+    annual: "0",
     seats: "Up to 3 members",
     retention: "7-day retention",
     cta: "Get started free",
@@ -43,8 +44,8 @@ const PLANS: Plan[] = [
   {
     name: "Pro",
     tagline: "For growing teams",
-    monthly: 8,
-    annual: 6,
+    monthly: "8",
+    annual: "6",
     seats: "Up to 25 members",
     retention: "1-month retention",
     cta: "Start 14-day free trial",
@@ -69,8 +70,8 @@ const PLANS: Plan[] = [
   {
     name: "Business",
     tagline: "For scaling organizations",
-    monthly: 15,
-    annual: 12,
+    monthly: "15",
+    annual: "12",
     seats: "Unlimited members",
     retention: "3-month retention",
     cta: "Start 14-day free trial",
@@ -90,22 +91,58 @@ const PLANS: Plan[] = [
   },
 ];
 
-export default function PricingSection() {
+const MAX_FEATURES = 12;
+
+export default function PricingSection({ content }: { content?: HomepageACF["pricing"] }) {
   const [annual, setAnnual] = useState(true);
+
+  const badge = pick(content?.pr_badge, "PRICING");
+  const heading = pick(content?.pr_heading, "Simple, transparent pricing");
+  const paragraph = pick(content?.pr_paragraph, "Track your team, understand productivity, and grow — without paying until you need to.");
+
+  const plans: Plan[] = FALLBACK_PLANS.map((fb, i) => {
+    const p = i + 1;
+    const features = fb.features.map((ffb, fi) => {
+      const n = fi + 1;
+      return {
+        label: pick(content?.[`pr_plan_${p}_feature_${n}_label`], ffb.label),
+        included:
+          typeof content?.[`pr_plan_${p}_feature_${n}_included`] === "boolean"
+            ? content[`pr_plan_${p}_feature_${n}_included`]
+            : ffb.included,
+      };
+    });
+    // Any additional WP-only features beyond the fallback count (up to MAX_FEATURES)
+    for (let n = fb.features.length + 1; n <= MAX_FEATURES; n++) {
+      const label = content?.[`pr_plan_${p}_feature_${n}_label`];
+      if (typeof label === "string" && label.trim() !== "") {
+        features.push({ label, included: Boolean(content?.[`pr_plan_${p}_feature_${n}_included`]) });
+      }
+    }
+
+    return {
+      name: pick(content?.[`pr_plan_${p}_name`], fb.name),
+      tagline: pick(content?.[`pr_plan_${p}_tagline`], fb.tagline),
+      monthly: pick(content?.[`pr_plan_${p}_monthly`], fb.monthly),
+      annual: pick(content?.[`pr_plan_${p}_annual`], fb.annual),
+      seats: pick(content?.[`pr_plan_${p}_seats`], fb.seats),
+      retention: pick(content?.[`pr_plan_${p}_retention`], fb.retention),
+      cta: pick(content?.[`pr_plan_${p}_cta`], fb.cta),
+      trialNote: pick(content?.[`pr_plan_${p}_trial_note`], fb.trialNote),
+      includedHeader: pick(content?.[`pr_plan_${p}_included_header`], fb.includedHeader),
+      highlight: typeof content?.[`pr_plan_${p}_highlight`] === "boolean" ? content[`pr_plan_${p}_highlight`] : fb.highlight,
+      features,
+    };
+  });
 
   return (
     <section className="w-full px-5 py-20 md:px-8 lg:px-[80px]">
       <div className="mx-auto max-w-2xl text-center">
         <span className="inline-block rounded-full bg-brand-100/80 px-4 py-2 text-[13px] font-semibold tracking-wide text-brand-600 ring-1 ring-brand-200/60">
-          PRICING
+          {badge}
         </span>
-        <h2 className="mt-5 text-4xl font-extrabold tracking-tight text-gray-900 sm:text-[44px]">
-          Simple, transparent pricing
-        </h2>
-        <p className="mt-4 text-lg text-gray-500">
-          Track your team, understand productivity, and grow — without paying
-          until you need to.
-        </p>
+        <h2 className="mt-5 text-4xl font-extrabold tracking-tight text-gray-900 sm:text-[44px]">{heading}</h2>
+        <p className="mt-4 text-lg text-gray-500">{paragraph}</p>
       </div>
 
       {/* Billing toggle */}
@@ -135,7 +172,7 @@ export default function PricingSection() {
 
       {/* Cards */}
       <div className="mx-auto mt-12 grid max-w-[1180px] gap-6 lg:grid-cols-3 lg:items-start">
-        {PLANS.map((plan) => {
+        {plans.map((plan) => {
           const price = annual ? plan.annual : plan.monthly;
           const altPrice = annual ? plan.monthly : plan.annual;
 
@@ -193,9 +230,9 @@ export default function PricingSection() {
                   {plan.includedHeader}
                 </div>
                 <ul className="mt-4 space-y-3.5">
-                  {plan.features.map((f) => (
+                  {plan.features.map((f, fi) => (
                     <li
-                      key={f.label}
+                      key={fi}
                       className={`flex items-start gap-2.5 text-[15px] ${
                         f.included ? "text-gray-700" : "text-gray-400"
                       }`}

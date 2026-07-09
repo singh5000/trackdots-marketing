@@ -1,4 +1,7 @@
-import { Activity, ArrowRight, Download, PieChart, TrendUp } from "./icons";
+import { ArrowRight, Download } from "./icons";
+import HeadingText from "./homepage/HeadingText";
+import { pick, type HomepageACF } from "@/lib/homepage";
+import { resolveIcon } from "./pagebuilder/iconMap";
 
 /* ── Card-bottom mini widgets — grounded in the real product (Electron
    agent, live activity tracking, productivity donut, trend reports). ── */
@@ -118,79 +121,90 @@ function TeamProductivityMock() {
 const STEPS = [
   {
     n: "01",
-    icon: Download,
+    icon: "Download",
     title: "Install Agent",
     desc: "Download the lightweight TrackDots agent and install it on your team's devices in just a few clicks.",
     visual: <AgentStatusMock />,
   },
   {
     n: "02",
-    icon: Activity,
+    icon: "Activity",
     title: "Auto-Track Activity",
     desc: "TrackDots runs quietly in the background, automatically tracking apps, websites and activity in real time.",
     visual: <LiveActivityMock />,
   },
   {
     n: "03",
-    icon: PieChart,
+    icon: "PieChart",
     title: "Get Real-Time Insights",
     desc: "View live dashboards and reports that give you instant visibility into productivity and performance.",
     visual: <ProductivityDonutMock />,
   },
   {
     n: "04",
-    icon: TrendUp,
+    icon: "TrendUp",
     title: "Improve Productivity",
     desc: "Use burnout, anomaly and trend reports to optimize workflows and help your team do their best work.",
     visual: <TeamProductivityMock />,
   },
 ];
 
-export default function HowItWorks() {
+export default function HowItWorks({ content }: { content?: HomepageACF["how_it_works"] }) {
+  const badge = pick(content?.hiw_badge, "SIMPLE. FAST. POWERFUL.");
+  const heading = pick(content?.hiw_heading, "How {{TrackDots}} Works");
+  const paragraph = pick(content?.hiw_paragraph, "Get started in minutes and let TrackDots handle the rest.");
+
+  const steps = STEPS.map((fb, i) => {
+    const n = i + 1;
+    return {
+      ...fb,
+      icon: pick(content?.[`hiw_step_${n}_icon`], fb.icon),
+      title: pick(content?.[`hiw_step_${n}_title`], fb.title),
+      desc: pick(content?.[`hiw_step_${n}_desc`], fb.desc),
+    };
+  });
+
   return (
     <section className="relative w-full px-5 py-20 md:px-8 lg:px-[80px]">
       <div className="mx-auto max-w-2xl text-center">
         <span className="inline-block rounded-full bg-brand-100/80 px-4 py-2 text-[13px] font-semibold tracking-wide text-brand-600 ring-1 ring-brand-200/60">
-          SIMPLE. FAST. POWERFUL.
+          {badge}
         </span>
         <h2 className="mt-5 text-4xl font-extrabold tracking-tight text-gray-900 sm:text-[44px]">
-          How{" "}
-          <span className="bg-gradient-to-r from-brand-600 to-violet-500 bg-clip-text text-transparent">
-            TrackDots
-          </span>{" "}
-          Works
+          <HeadingText text={heading} />
         </h2>
-        <p className="mt-4 text-lg text-gray-500">
-          Get started in minutes and let TrackDots handle the rest.
-        </p>
+        <p className="mt-4 text-lg text-gray-500">{paragraph}</p>
       </div>
 
       <div className="mx-auto mt-14 flex max-w-[1280px] flex-col gap-8 lg:flex-row lg:items-start lg:gap-0">
-        {STEPS.map((step, i) => (
-          <div key={step.n} className="relative flex-1 lg:px-3">
-            <div className="relative flex h-full flex-col rounded-2xl border border-gray-100 bg-white p-6 pt-8 shadow-sm">
-              <span className="absolute -top-3 left-6 flex h-7 w-7 items-center justify-center rounded-full bg-brand-600 text-[11px] font-bold text-white shadow-md shadow-brand-600/30">
-                {step.n}
-              </span>
+        {steps.map((step, i) => {
+          const Icon = resolveIcon(step.icon);
+          return (
+            <div key={step.n} className="relative flex-1 lg:px-3">
+              <div className="relative flex h-full flex-col rounded-2xl border border-gray-100 bg-white p-6 pt-8 shadow-sm">
+                <span className="absolute -top-3 left-6 flex h-7 w-7 items-center justify-center rounded-full bg-brand-600 text-[11px] font-bold text-white shadow-md shadow-brand-600/30">
+                  {step.n}
+                </span>
 
-              <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-brand-50 text-brand-600 ring-1 ring-brand-100">
-                <step.icon className="h-6 w-6" strokeWidth={1.8} />
-              </span>
+                <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-brand-50 text-brand-600 ring-1 ring-brand-100">
+                  <Icon className="h-6 w-6" strokeWidth={1.8} />
+                </span>
 
-              <h3 className="mt-4 text-center text-[16px] font-bold text-gray-900">{step.title}</h3>
-              <p className="mt-2 text-center text-[13px] leading-relaxed text-gray-500">{step.desc}</p>
+                <h3 className="mt-4 text-center text-[16px] font-bold text-gray-900">{step.title}</h3>
+                <p className="mt-2 text-center text-[13px] leading-relaxed text-gray-500">{step.desc}</p>
 
-              <div className="mt-5">{step.visual}</div>
-            </div>
-
-            {i < STEPS.length - 1 && (
-              <div className="absolute -right-4 top-[76px] z-10 hidden items-center lg:flex">
-                <span className="h-px w-4 border-t-2 border-dashed border-brand-200" />
-                <ArrowRight className="h-3.5 w-3.5 text-brand-300" />
+                <div className="mt-5">{step.visual}</div>
               </div>
-            )}
-          </div>
-        ))}
+
+              {i < steps.length - 1 && (
+                <div className="absolute -right-4 top-[76px] z-10 hidden items-center lg:flex">
+                  <span className="h-px w-4 border-t-2 border-dashed border-brand-200" />
+                  <ArrowRight className="h-3.5 w-3.5 text-brand-300" />
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
     </section>
   );

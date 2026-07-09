@@ -1,15 +1,6 @@
-import {
-  Activity,
-  ArrowRight,
-  Bell,
-  CheckCircle,
-  CreditCard,
-  Folder,
-  Monitor,
-  ShieldCheck,
-} from "./icons";
-
-const FILTERS = ["Time", "Activity", "Projects", "Attendance", "Payroll"];
+import { ArrowRight, CheckCircle } from "./icons";
+import { pick, type HomepageACF } from "@/lib/homepage";
+import { resolveIcon } from "./pagebuilder/iconMap";
 
 /* Real, freely-licensed photos (Lorem Picsum → Unsplash, no attribution required). */
 const PHOTO = (id: number) => `https://picsum.photos/id/${id}/640/480`;
@@ -125,64 +116,49 @@ function AttendanceWidget() {
   );
 }
 
-const CARDS = [
-  {
-    tone: "purple" as const,
-    photo: PHOTO(0),
-    icon: Folder,
-    title: "Protect Delivery & Project Deadlines",
-    desc: "Without clear task visibility, small delays snowball into missed deadlines.",
-    checks: ["On-time project delivery", "Fewer missed deadlines", "Clear task ownership"],
-    widget: <StatRingWidget value="94%" label="On-time delivery" />,
-  },
-  {
-    tone: "dark" as const,
-    photo: PHOTO(1),
-    icon: Activity,
-    title: "Spot Burnout Before It Costs You",
-    desc: "A 14-day rolling risk score flags overwork before it turns into attrition.",
-    checks: ["Early risk scoring", "Proactive manager alerts", "Healthier, consistent teams"],
-    widget: <SignalWidget />,
-  },
-  {
-    tone: "purple" as const,
-    photo: PHOTO(3),
-    icon: Bell,
-    title: "Catch What Manual Reviews Miss",
-    desc: "7 anomaly detectors flag erratic schedules and activity gaming automatically.",
-    checks: ["Erratic-schedule flags", "Activity-gaming detection", "Early productivity-dip alerts"],
-    widget: <AnomalyWidget />,
-  },
-  {
-    tone: "dark" as const,
-    photo: PHOTO(4),
-    icon: Monitor,
-    title: "Full Visibility Into Where Time Goes",
-    desc: "See exactly which apps and sites make up every employee's working day.",
-    checks: ["App & website breakdown", "Active vs. idle time", "Per-employee daily timeline"],
-    widget: <AppUsageWidget />,
-  },
-  {
-    tone: "purple" as const,
-    photo: PHOTO(6),
-    icon: CreditCard,
-    title: "Payroll That Runs Itself",
-    desc: "Attendance flows straight into salary calculations — no spreadsheets required.",
-    checks: ["Attendance-based salary calc", "One-click payslip generation", "Auto-generated bank letters"],
-    widget: <PayslipWidget />,
-  },
-  {
-    tone: "dark" as const,
-    photo: PHOTO(9),
-    icon: ShieldCheck,
-    title: "Fair, Transparent Accountability",
-    desc: "Meeting time is excluded automatically, and staff can review any edge case.",
-    checks: ["Meeting-aware idle exclusion", "Manual staff overrides", "Employee-visible dashboards"],
-    widget: <AttendanceWidget />,
-  },
+const WIDGETS = [
+  <StatRingWidget key="1" value="94%" label="On-time delivery" />,
+  <SignalWidget key="2" />,
+  <AnomalyWidget key="3" />,
+  <AppUsageWidget key="4" />,
+  <PayslipWidget key="5" />,
+  <AttendanceWidget key="6" />,
 ];
 
-export default function WorkVisibilitySection() {
+const CARDS = [
+  { tone: "purple" as const, photo: PHOTO(0), icon: "Folder", title: "Protect Delivery & Project Deadlines", desc: "Without clear task visibility, small delays snowball into missed deadlines.", checks: ["On-time project delivery", "Fewer missed deadlines", "Clear task ownership"] },
+  { tone: "dark" as const, photo: PHOTO(1), icon: "Activity", title: "Spot Burnout Before It Costs You", desc: "A 14-day rolling risk score flags overwork before it turns into attrition.", checks: ["Early risk scoring", "Proactive manager alerts", "Healthier, consistent teams"] },
+  { tone: "purple" as const, photo: PHOTO(3), icon: "Bell", title: "Catch What Manual Reviews Miss", desc: "7 anomaly detectors flag erratic schedules and activity gaming automatically.", checks: ["Erratic-schedule flags", "Activity-gaming detection", "Early productivity-dip alerts"] },
+  { tone: "dark" as const, photo: PHOTO(4), icon: "Monitor", title: "Full Visibility Into Where Time Goes", desc: "See exactly which apps and sites make up every employee's working day.", checks: ["App & website breakdown", "Active vs. idle time", "Per-employee daily timeline"] },
+  { tone: "purple" as const, photo: PHOTO(6), icon: "CreditCard", title: "Payroll That Runs Itself", desc: "Attendance flows straight into salary calculations — no spreadsheets required.", checks: ["Attendance-based salary calc", "One-click payslip generation", "Auto-generated bank letters"] },
+  { tone: "dark" as const, photo: PHOTO(9), icon: "ShieldCheck", title: "Fair, Transparent Accountability", desc: "Meeting time is excluded automatically, and staff can review any edge case.", checks: ["Meeting-aware idle exclusion", "Manual staff overrides", "Employee-visible dashboards"] },
+];
+
+export default function WorkVisibilitySection({ content }: { content?: HomepageACF["work_visibility"] }) {
+  const badge = pick(content?.wv_badge, "COMPLETE VISIBILITY");
+  const heading = pick(content?.wv_heading, "See How Work Happens Across Your Team");
+  const paragraph = pick(
+    content?.wv_paragraph,
+    "TrackDots brings monitoring, projects, attendance, and payroll into one place — so nothing about your team's work stays hidden. Every card on the right maps to a real feature you can turn on today."
+  );
+  const linkText = pick(content?.wv_link_text, "Explore All Features");
+  const filters = ["Time", "Activity", "Projects", "Attendance", "Payroll"].map((fb, i) =>
+    pick(content?.[`wv_filter_${i + 1}`], fb)
+  );
+
+  const cards = CARDS.map((fb, i) => {
+    const n = i + 1;
+    return {
+      tone: (pick(content?.[`wv_card_${n}_tone`], fb.tone) as "purple" | "dark") || fb.tone,
+      photo: pick(content?.[`wv_card_${n}_photo`], fb.photo),
+      icon: pick(content?.[`wv_card_${n}_icon`], fb.icon),
+      title: pick(content?.[`wv_card_${n}_title`], fb.title),
+      desc: pick(content?.[`wv_card_${n}_desc`], fb.desc),
+      checks: fb.checks.map((c, ci) => pick(content?.[`wv_card_${n}_check_${ci + 1}`], c)),
+      widget: WIDGETS[i],
+    };
+  });
+
   return (
     <section className="w-full px-5 py-20 md:px-8 lg:px-[80px]">
       <div className="mx-auto max-w-[1280px] grid gap-12 lg:grid-cols-[0.85fr_1.15fr]">
@@ -190,20 +166,15 @@ export default function WorkVisibilitySection() {
         <div className="lg:sticky lg:top-0 lg:flex lg:h-screen lg:items-center">
           <div>
             <span className="inline-block rounded-full bg-brand-100/80 px-4 py-2 text-[13px] font-semibold tracking-wide text-brand-600 ring-1 ring-brand-200/60">
-              COMPLETE VISIBILITY
+              {badge}
             </span>
             <h2 className="mt-7 text-4xl font-extrabold leading-[1.12] tracking-tight text-gray-900 sm:text-5xl lg:text-[48px]">
-              See How Work Happens Across Your Team
+              {heading}
             </h2>
-            <p className="mt-6 max-w-lg text-[17px] leading-relaxed text-gray-600">
-              TrackDots brings monitoring, projects, attendance, and payroll
-              into one place — so nothing about your team&apos;s work stays
-              hidden. Every card on the right maps to a real feature you can
-              turn on today.
-            </p>
+            <p className="mt-6 max-w-lg text-[17px] leading-relaxed text-gray-600">{paragraph}</p>
 
             <div className="mt-9 flex flex-wrap gap-3">
-              {FILTERS.map((f) => (
+              {filters.map((f) => (
                 <span
                   key={f}
                   className="rounded-full bg-gray-100 px-5 py-2.5 text-[14px] font-semibold text-gray-700"
@@ -217,7 +188,7 @@ export default function WorkVisibilitySection() {
               href="#"
               className="mt-10 flex w-fit items-center gap-2 text-[15px] font-semibold text-brand-600 transition-all hover:gap-3"
             >
-              Explore All Features
+              {linkText}
               <ArrowRight className="h-4 w-4" />
             </a>
           </div>
@@ -225,9 +196,9 @@ export default function WorkVisibilitySection() {
 
         {/* ── Right: stacked outcome cards ── */}
         <div className="space-y-10">
-          {CARDS.map((card) => (
+          {cards.map((card, i) => (
             <div
-              key={card.title}
+              key={i}
               className={`overflow-hidden rounded-3xl ${
                 card.tone === "purple"
                   ? "bg-gradient-to-br from-brand-600 to-violet-700"
@@ -257,13 +228,16 @@ export default function WorkVisibilitySection() {
 
               <div className="p-7 pt-10">
                 <div className="flex items-center gap-2.5 text-white">
-                  <card.icon className="h-5 w-5" strokeWidth={1.8} />
+                  {(() => {
+                    const Icon = resolveIcon(card.icon);
+                    return <Icon className="h-5 w-5" strokeWidth={1.8} />;
+                  })()}
                   <h3 className="text-[19px] font-bold">{card.title}</h3>
                 </div>
                 <p className="mt-3 text-[14px] leading-relaxed text-white/70">{card.desc}</p>
                 <ul className="mt-4 space-y-2">
-                  {card.checks.map((c) => (
-                    <li key={c} className="flex items-center gap-2.5 text-[13.5px] text-white/85">
+                  {card.checks.map((c, ci) => (
+                    <li key={ci} className="flex items-center gap-2.5 text-[13.5px] text-white/85">
                       <CheckCircle className="h-4 w-4 shrink-0 text-green-400" strokeWidth={1.8} />
                       {c}
                     </li>
