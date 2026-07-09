@@ -1,15 +1,6 @@
 import type { Metadata } from "next";
-import Navbar from "@/components/Navbar";
-import FinalCTA from "@/components/FinalCTA";
-import FeatureHero from "@/components/features/FeatureHero";
-import FeatureGrid from "@/components/features/FeatureGrid";
-import FeatureHighlightPanel from "@/components/features/FeatureHighlightPanel";
-import FeatureDarkHighlight from "@/components/features/FeatureDarkHighlight";
-import FeatureProblemSolution from "@/components/features/FeatureProblemSolution";
-import FeatureStickyShowcase, { type StickyCard } from "@/components/features/FeatureStickyShowcase";
-import FeatureStatsRow from "@/components/features/FeatureStatsRow";
-import FeatureComparison from "@/components/features/FeatureComparison";
-import FeatureFAQ from "@/components/features/FeatureFAQ";
+import FeaturePageSections, { type FeaturePageVisuals } from "@/components/features/FeaturePageSections";
+import { getFeaturePageContent } from "@/lib/featurepage";
 import { BarRows, StatGrid } from "@/components/features/widgets";
 import { TEAM_MEETING_IMAGE } from "@/lib/media";
 import {
@@ -25,55 +16,15 @@ import {
   Monitor,
   Search,
   Settings,
-  ShieldCheck,
-  TrendUp,
   Users,
 } from "@/components/icons";
+import { FALLBACK, SLUG } from "./content";
 
 export const metadata: Metadata = {
   title: "Productivity Intelligence — TrackDots",
   description:
     "Daily 0–100 productivity scores, trend direction, team averages, and side-by-side employee comparison — all built on one shared scoring engine.",
 };
-
-const CAPABILITIES = [
-  { icon: BarChart, title: "Daily Productivity Scoring", desc: "Every employee gets a 0–100 productivity score each day, built from real activity, not guesswork." },
-  { icon: ShieldCheck, title: "Four Clear Rating Bands", desc: "Excellent, Good, Fair, or Low — every score rolls up into a rating anyone can understand at a glance." },
-  { icon: TrendUp, title: "Trend Direction, Not Just a Number", desc: "See whether an employee's productivity is rising, steady, or declining over the period." },
-  { icon: Users, title: "Team Averages & Top Performer", desc: "Team-wide average score and the current top performer, surfaced automatically." },
-  { icon: Bell, title: "Needs-Attention Callouts", desc: "Employees whose scores warrant a closer look are called out automatically." },
-  { icon: Eye, title: "Side-by-Side Compare", desc: "Compare any two employees head-to-head across active time, focus sessions, and top apps." },
-];
-
-const PROBLEMS = [
-  "Productivity buried in scattered reports across separate pages",
-  "No simple way to compare two employees fairly",
-  "\"Who's doing well?\" answered by gut feeling, not data",
-];
-const BENEFITS = [
-  "One daily score per employee, rated Excellent to Low",
-  "Any two employees compared side-by-side in seconds",
-  "Team averages and top performers surfaced automatically",
-];
-
-const COMPARISON_COLUMNS = ["TrackDots", "Basic Time Trackers", "Spreadsheets & Manual Logs"];
-const COMPARISON_ROWS: { capability: string; statuses: ("yes" | "partial" | "no")[] }[] = [
-  { capability: "Daily 0–100 productivity scoring", statuses: ["yes", "no", "no"] },
-  { capability: "Four-tier rating bands", statuses: ["yes", "no", "no"] },
-  { capability: "Trend direction (rising/steady/declining)", statuses: ["yes", "no", "no"] },
-  { capability: "Automatic needs-attention callouts", statuses: ["yes", "no", "no"] },
-  { capability: "Side-by-side employee comparison", statuses: ["yes", "no", "no"] },
-  { capability: "Configurable time windows (14/30/60 days)", statuses: ["yes", "partial", "no"] },
-];
-
-const FAQS = [
-  { q: "How is the productivity score calculated?", a: "Each activity block is scored from 0–100 based on real input signals, then rolled up into a daily productivity score per employee." },
-  { q: "What do the rating bands mean?", a: "Excellent (80+), Good (65+), Fair (45+), or Low (below 45) — giving every score an at-a-glance meaning." },
-  { q: "What does the trend arrow show?", a: "Whether an employee's score is rising, holding steady, or declining, comparing the two halves of the selected period." },
-  { q: "How does Compare work?", a: "Pick any two employees and a time period to see their active time, productivity score, focus sessions, and top app side-by-side." },
-  { q: "What triggers a \"needs attention\" callout?", a: "Employees whose average score falls into the Fair or Low band for the selected period are surfaced for a closer look." },
-  { q: "Can employees see their own productivity trend?", a: "Yes, on plans with the employee self-view portal enabled." },
-];
 
 /** Same 820×540 sidebar+topbar "dashboard chrome" shell used across every
  * feature hero — content area swapped for the real Productivity Trends
@@ -315,228 +266,104 @@ const CompareWidget = () => (
   </div>
 );
 
-const STICKY_CARDS: StickyCard[] = [
-  {
-    tone: "purple",
-    icon: BarChart,
-    title: "One Score, Four Bands",
-    desc: "Every activity block rolls up into a 0–100 daily score, rated Excellent, Good, Fair, or Low.",
-    checks: ["0–100 score per employee, per day", "Four clear rating bands", "Same engine across the whole platform"],
-    widget: <ScoreEngineWidget />,
-  },
-  {
-    tone: "dark",
-    icon: TrendUp,
-    title: "Direction, Not Just a Snapshot",
-    desc: "Every employee's trend arrow compares the two halves of the period — rising, steady, or declining.",
-    checks: ["Rising / steady / declining", "14, 30, or 60-day windows", "Per-employee daily chart"],
-    widget: <TrendWidget />,
-  },
-  {
-    tone: "purple",
-    icon: Users,
-    title: "The Team, Summarized",
-    desc: "Team average score and active-employee count are calculated automatically for any period.",
-    checks: ["Team-wide average score", "Active vs. total employee count", "Top performer surfaced automatically"],
-    widget: <TeamSummaryWidget />,
-  },
-  {
-    tone: "dark",
-    icon: Bell,
-    title: "Nothing Falls Through the Cracks",
-    desc: "Employees whose scores drop into Fair or Low are called out — without anyone having to go looking.",
-    checks: ["Automatic needs-attention callout", "Based on the selected period", "Zero manual review required"],
-    widget: <AttentionWidget />,
-  },
-  {
-    tone: "purple",
-    icon: Eye,
-    title: "Any Two Employees, Side by Side",
-    desc: "Pick any two employees and a time window to compare active time, score, and focus sessions directly.",
-    checks: ["Side-by-side comparison", "Active time, score, and focus sessions", "Any time window"],
-    widget: <CompareWidget />,
-  },
-];
-
-export default function ProductivityIntelligencePage() {
-  return (
-    <main className="flex-1 bg-white">
-      <Navbar />
-
-      <FeatureHero
-        eyebrow="FEATURE — PRODUCTIVITY INTELLIGENCE"
-        heading="One Score. One Team."
-        highlight="Complete Clarity."
-        description="Daily 0–100 productivity scores, trend direction, team averages, and side-by-side employee comparison — all built on one shared scoring engine."
-        visual={<ProductivityHeroCard />}
-      />
-
-      <FeatureProblemSolution
-        eyebrow="THE CLARITY GAP"
-        heading="Stop Piecing Together the Picture"
-        subheading="Productivity data scattered across five different reports never adds up to a clear answer. Productivity Intelligence does."
-        problems={PROBLEMS}
-        benefits={BENEFITS}
-      />
-
-      <FeatureGrid
-        eyebrow="HOW IT WORKS"
-        heading="One Engine, Every Answer"
-        subheading="Daily scores, team trends, and head-to-head comparison, all from the same real activity data."
-        items={CAPABILITIES}
-      />
-
-      <FeatureDarkHighlight
-        eyebrow="PRODUCTIVITY TRENDS"
-        blocks={[
-          {
-            highlighted: true,
-            heading: "Every Employee, Scored Daily",
-            desc: "A 0–100 score rolls up into Excellent, Good, Fair, or Low — with average, best, and trend direction shown per employee.",
-            checklist: ["Daily 0–100 productivity score", "Four-tier rating band"],
-          },
-          {
-            heading: "The Team, at a Glance",
-            desc: "Team average score, top performer, and active-employee count are surfaced automatically for any period.",
-            checklist: ["Team average & top performer", "14 / 30 / 60-day windows"],
-          },
-        ]}
-        linkLabel="Explore Productivity Trends"
-        visual={
-          <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
-            <div className="overflow-hidden rounded-3xl shadow-2xl">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={TEAM_MEETING_IMAGE} alt="" className="h-[420px] w-full object-cover" style={{ objectPosition: "45% 30%" }} loading="lazy" />
-            </div>
-            <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
-              <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Piyush Rajput</div>
-              <div className="mt-2 flex gap-4">
-                <div>
-                  <div className="text-[16px] font-bold text-gray-900">98%</div>
-                  <div className="text-[8px] text-gray-400">avg</div>
-                </div>
-                <div>
-                  <div className="text-[16px] font-bold text-gray-900">100%</div>
-                  <div className="text-[8px] text-gray-400">best</div>
-                </div>
-              </div>
-              <span className="mt-2 inline-block rounded-full bg-green-50 px-2 py-0.5 text-[9px] font-bold text-green-600">Excellent · → steady</span>
-            </div>
-            <div className="absolute -bottom-2 -right-4 w-[210px] rounded-xl bg-white p-4 shadow-2xl">
-              <div className="text-[9px] font-bold uppercase tracking-wide text-gray-400">Team Avg — 30 Days</div>
-              <div className="mt-1 text-[20px] font-bold text-green-600">95%</div>
-              <div className="mt-1.5 text-[9.5px] text-gray-400">13 of 19 employees active</div>
-            </div>
+const VISUALS: FeaturePageVisuals = {
+  hero: <ProductivityHeroCard />,
+  dark1: (
+    <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
+      <div className="overflow-hidden rounded-3xl shadow-2xl">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={TEAM_MEETING_IMAGE} alt="" className="h-[420px] w-full object-cover" style={{ objectPosition: "45% 30%" }} loading="lazy" />
+      </div>
+      <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
+        <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Piyush Rajput</div>
+        <div className="mt-2 flex gap-4">
+          <div>
+            <div className="text-[16px] font-bold text-gray-900">98%</div>
+            <div className="text-[8px] text-gray-400">avg</div>
           </div>
-        }
-      />
-
-      <FeatureStickyShowcase
-        eyebrow="GO DEEPER"
-        heading="Every Angle of Productivity Intelligence"
-        desc="From daily scores to head-to-head comparisons — TrackDots turns raw activity into a complete, honest read on performance."
-        cards={STICKY_CARDS}
-      />
-
-      <FeatureHighlightPanel
-        reverse
-        heading="One Scoring Engine, Everywhere"
-        desc="The same confidence-scored activity blocks that power Time Tracking also drive Productivity Trends and Compare — one honest signal, reused everywhere."
-        checklist={["Same engine as confidence-scored blocks", "Consistent across every report", "No separate configuration needed"]}
-        linkLabel="See How Scoring Works"
-        visual={
-          <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
-            <div className="overflow-hidden rounded-3xl shadow-2xl">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={TEAM_MEETING_IMAGE} alt="" className="h-[380px] w-full object-cover" style={{ objectPosition: "60% 40%" }} loading="lazy" />
-            </div>
-            <div className="absolute -left-2 top-0 w-[240px] rounded-2xl bg-white p-4 shadow-2xl">
-              <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Powers</div>
-              <div className="mt-3 space-y-2">
-                {["Time Tracking confidence scores", "Productivity Trends", "Compare Employees"].map((f) => (
-                  <div key={f} className="rounded-lg bg-gray-50 px-2.5 py-2 text-[10px] font-medium text-gray-700">
-                    {f}
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="absolute -bottom-2 -right-4 w-[210px] rounded-xl bg-white p-4 shadow-2xl">
-              <div className="text-[9px] font-bold uppercase tracking-wide text-gray-400">Engines</div>
-              <div className="mt-1 text-[20px] font-bold text-gray-900">1</div>
-              <div className="mt-1.5 text-[9.5px] text-gray-400">Powering every productivity view</div>
-            </div>
+          <div>
+            <div className="text-[16px] font-bold text-gray-900">100%</div>
+            <div className="text-[8px] text-gray-400">best</div>
           </div>
-        }
-      />
-
-      <FeatureStatsRow
-        stats={[
-          { icon: BarChart, value: "0–100", label: "Daily Score", desc: "Every employee gets a daily productivity score built from real activity.", photoSrc: TEAM_MEETING_IMAGE, photoPosition: "20% 30%" },
-          { icon: ShieldCheck, value: "4", label: "Rating Bands", desc: "Excellent, Good, Fair, or Low — a clear read on every score.", photoSrc: TEAM_MEETING_IMAGE, photoPosition: "50% 25%" },
-          { icon: Eye, value: "2-Way", label: "Employee Compare", desc: "Any two employees, compared side-by-side across any time window.", photoSrc: TEAM_MEETING_IMAGE, photoPosition: "85% 30%" },
-        ]}
-      />
-
-      <FeatureDarkHighlight
-        reverse
-        eyebrow="COMPARE EMPLOYEES"
-        blocks={[
-          {
-            highlighted: true,
-            heading: "Pick Two, See Everything",
-            desc: "Select any two employees and a time window to compare active time, score, and focus sessions side-by-side.",
-            checklist: ["Side-by-side active time & score", "Focus sessions & top app compared"],
-          },
-          {
-            heading: "Fair Comparisons, Same Standard",
-            desc: "Both employees are measured against the exact same scoring engine and thresholds — no double standard.",
-            checklist: ["Same scoring engine for both", "This week / 7-day / 30-day windows"],
-          },
-        ]}
-        linkLabel="Try Compare Employees"
-        visual={
-          <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
-            <div className="overflow-hidden rounded-3xl shadow-2xl">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={TEAM_MEETING_IMAGE} alt="" className="h-[420px] w-full object-cover sm:h-[460px]" style={{ objectPosition: "50% 50%" }} loading="lazy" />
+        </div>
+        <span className="mt-2 inline-block rounded-full bg-green-50 px-2 py-0.5 text-[9px] font-bold text-green-600">Excellent · → steady</span>
+      </div>
+      <div className="absolute -bottom-2 -right-4 w-[210px] rounded-xl bg-white p-4 shadow-2xl">
+        <div className="text-[9px] font-bold uppercase tracking-wide text-gray-400">Team Avg — 30 Days</div>
+        <div className="mt-1 text-[20px] font-bold text-green-600">95%</div>
+        <div className="mt-1.5 text-[9.5px] text-gray-400">13 of 19 employees active</div>
+      </div>
+    </div>
+  ),
+  stickyWidgets: [
+    <ScoreEngineWidget key="score-engine" />,
+    <TrendWidget key="trend" />,
+    <TeamSummaryWidget key="team-summary" />,
+    <AttentionWidget key="attention" />,
+    <CompareWidget key="compare" />,
+  ],
+  panel: (
+    <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
+      <div className="overflow-hidden rounded-3xl shadow-2xl">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={TEAM_MEETING_IMAGE} alt="" className="h-[380px] w-full object-cover" style={{ objectPosition: "60% 40%" }} loading="lazy" />
+      </div>
+      <div className="absolute -left-2 top-0 w-[240px] rounded-2xl bg-white p-4 shadow-2xl">
+        <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Powers</div>
+        <div className="mt-3 space-y-2">
+          {["Time Tracking confidence scores", "Productivity Trends", "Compare Employees"].map((f) => (
+            <div key={f} className="rounded-lg bg-gray-50 px-2.5 py-2 text-[10px] font-medium text-gray-700">
+              {f}
             </div>
-            <div className="absolute -left-2 top-0 w-[240px] rounded-2xl bg-white p-4 shadow-2xl">
-              <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Compare — Last 7 Days</div>
-              <div className="mt-3 grid grid-cols-2 gap-2">
-                <div className="rounded-lg bg-gray-50 px-2.5 py-2 text-center ring-1 ring-gray-100">
-                  <div className="truncate text-[9.5px] font-semibold text-gray-900">Piyush Rajput</div>
-                  <div className="text-[13px] font-bold text-green-600">98%</div>
-                  <div className="text-[8px] text-gray-400">8h 06m focus</div>
-                </div>
-                <div className="rounded-lg bg-gray-50 px-2.5 py-2 text-center ring-1 ring-gray-100">
-                  <div className="truncate text-[9.5px] font-semibold text-gray-900">Vivek Bharti</div>
-                  <div className="text-[13px] font-bold text-green-600">98%</div>
-                  <div className="text-[8px] text-gray-400">8h 32m focus</div>
-                </div>
-              </div>
-            </div>
-            <div className="absolute -bottom-2 -right-4 flex items-center gap-2.5 rounded-2xl bg-brand-600 px-4 py-3 text-white shadow-2xl shadow-brand-600/40">
-              <Eye className="h-6 w-6" strokeWidth={1.8} />
-              <span className="text-[10px] font-semibold leading-tight">
-                Side by Side,
-                <br />
-                Instantly
-              </span>
-            </div>
+          ))}
+        </div>
+      </div>
+      <div className="absolute -bottom-2 -right-4 w-[210px] rounded-xl bg-white p-4 shadow-2xl">
+        <div className="text-[9px] font-bold uppercase tracking-wide text-gray-400">Engines</div>
+        <div className="mt-1 text-[20px] font-bold text-gray-900">1</div>
+        <div className="mt-1.5 text-[9.5px] text-gray-400">Powering every productivity view</div>
+      </div>
+    </div>
+  ),
+  dark2: (
+    <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
+      <div className="overflow-hidden rounded-3xl shadow-2xl">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={TEAM_MEETING_IMAGE} alt="" className="h-[420px] w-full object-cover sm:h-[460px]" style={{ objectPosition: "50% 50%" }} loading="lazy" />
+      </div>
+      <div className="absolute -left-2 top-0 w-[240px] rounded-2xl bg-white p-4 shadow-2xl">
+        <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Compare — Last 7 Days</div>
+        <div className="mt-3 grid grid-cols-2 gap-2">
+          <div className="rounded-lg bg-gray-50 px-2.5 py-2 text-center ring-1 ring-gray-100">
+            <div className="truncate text-[9.5px] font-semibold text-gray-900">Piyush Rajput</div>
+            <div className="text-[13px] font-bold text-green-600">98%</div>
+            <div className="text-[8px] text-gray-400">8h 06m focus</div>
           </div>
-        }
-      />
+          <div className="rounded-lg bg-gray-50 px-2.5 py-2 text-center ring-1 ring-gray-100">
+            <div className="truncate text-[9.5px] font-semibold text-gray-900">Vivek Bharti</div>
+            <div className="text-[13px] font-bold text-green-600">98%</div>
+            <div className="text-[8px] text-gray-400">8h 32m focus</div>
+          </div>
+        </div>
+      </div>
+      <div className="absolute -bottom-2 -right-4 flex items-center gap-2.5 rounded-2xl bg-brand-600 px-4 py-3 text-white shadow-2xl shadow-brand-600/40">
+        <Eye className="h-6 w-6" strokeWidth={1.8} />
+        <span className="text-[10px] font-semibold leading-tight">
+          Side by Side,
+          <br />
+          Instantly
+        </span>
+      </div>
+    </div>
+  ),
+  statsPhotos: [
+    { photoSrc: TEAM_MEETING_IMAGE, photoPosition: "20% 30%" },
+    { photoSrc: TEAM_MEETING_IMAGE, photoPosition: "50% 25%" },
+    { photoSrc: TEAM_MEETING_IMAGE, photoPosition: "85% 30%" },
+  ],
+};
 
-      <FeatureComparison
-        heading="Get The Right Tool"
-        subheading="See how TrackDots' productivity intelligence compares to the old way."
-        columns={COMPARISON_COLUMNS}
-        rows={COMPARISON_ROWS}
-      />
-
-      <FeatureFAQ heading="Productivity Intelligence, Answered" items={FAQS} />
-
-      <FinalCTA />
-    </main>
-  );
+export default async function ProductivityIntelligencePage() {
+  const content = await getFeaturePageContent(SLUG, FALLBACK);
+  return <FeaturePageSections content={content} visuals={VISUALS} />;
 }

@@ -1,81 +1,30 @@
 import type { Metadata } from "next";
-import Navbar from "@/components/Navbar";
-import FinalCTA from "@/components/FinalCTA";
-import FeatureHero from "@/components/features/FeatureHero";
-import FeatureGrid from "@/components/features/FeatureGrid";
-import FeatureHighlightPanel from "@/components/features/FeatureHighlightPanel";
-import FeatureDarkHighlight from "@/components/features/FeatureDarkHighlight";
-import FeatureProblemSolution from "@/components/features/FeatureProblemSolution";
-import FeatureStickyShowcase, { type StickyCard } from "@/components/features/FeatureStickyShowcase";
-import FeatureStatsRow from "@/components/features/FeatureStatsRow";
-import FeatureComparison from "@/components/features/FeatureComparison";
-import FeatureFAQ from "@/components/features/FeatureFAQ";
+import FeaturePageSections, { type FeaturePageVisuals } from "@/components/features/FeaturePageSections";
+import { getFeaturePageContent } from "@/lib/featurepage";
 import { BarRows, StatGrid, ChecklistRows } from "@/components/features/widgets";
 import { TEAM_MEETING_IMAGE } from "@/lib/media";
 import {
-  Activity,
   BarChart,
   Bell,
   ChevronDown,
-  Clock,
   DotsLogo,
   FileText,
   Folder,
   Inbox,
   LayoutGrid,
   Monitor,
-  PieChart,
   Search,
   Settings,
   ShieldCheck,
-  TrendUp,
   Users,
 } from "@/components/icons";
+import { FALLBACK, SLUG } from "./content";
 
 export const metadata: Metadata = {
   title: "Idle Time Tracking — TrackDots",
   description:
     "Automatic idle-time detection with configurable thresholds that never apply retroactively — so tracked hours always reflect real work.",
 };
-
-const CAPABILITIES = [
-  { icon: PieChart, title: "Active vs. Idle Split", desc: "Every employee's tracked time is split cleanly into active and idle, updated live." },
-  { icon: Settings, title: "Configurable Thresholds", desc: "Set your own idle score and confidence thresholds — either can be disabled entirely." },
-  { icon: Clock, title: "Forward-Only Changes", desc: "Threshold changes only apply going forward — old data keeps the rules it was scored under." },
-  { icon: ShieldCheck, title: "Meeting-Aware Exemption", desc: "Idle time inside an approved meeting session is never counted against the employee." },
-  { icon: Activity, title: "Anti-Gaming Signals", desc: "Burst-then-idle patterns and long idle gaps inside blocks are flagged automatically." },
-  { icon: TrendUp, title: "Team Efficiency Score", desc: "See the whole team's active-vs-idle efficiency at a glance, updated in real time." },
-];
-
-const PROBLEMS = [
-  "Idle time silently counted as productive hours",
-  "No visibility into who's actually active right now",
-  "Threshold changes that retroactively rewrite history",
-];
-const BENEFITS = [
-  "Active vs. idle split calculated automatically",
-  "Real-time visibility into who's active right now",
-  "Threshold changes only ever apply going forward",
-];
-
-const COMPARISON_COLUMNS = ["TrackDots", "Basic Time Trackers", "Spreadsheets & Manual Logs"];
-const COMPARISON_ROWS: { capability: string; statuses: ("yes" | "partial" | "no")[] }[] = [
-  { capability: "Automatic idle detection", statuses: ["yes", "yes", "no"] },
-  { capability: "Configurable idle thresholds", statuses: ["yes", "no", "no"] },
-  { capability: "Forward-only threshold changes", statuses: ["yes", "no", "no"] },
-  { capability: "Meeting-aware idle exemption", statuses: ["yes", "no", "no"] },
-  { capability: "Anti-gaming burst detection", statuses: ["yes", "no", "no"] },
-  { capability: "Team-wide efficiency score", statuses: ["yes", "partial", "no"] },
-];
-
-const FAQS = [
-  { q: "How does TrackDots detect idle time?", a: "Idle time is detected from real keystroke, mouse, and click signals against your organization's configured idle and confidence thresholds." },
-  { q: "Can I change the idle threshold?", a: "Yes. Both the idle score threshold and confidence threshold are configurable, and either can be disabled entirely." },
-  { q: "Does changing the threshold rewrite past data?", a: "No. Threshold changes only apply going forward — historical data keeps the rules it was originally scored under." },
-  { q: "What happens to idle time during a meeting?", a: "Idle time inside an approved Meeting Mode session is automatically exempted and never counted against the employee." },
-  { q: "Can employees game the idle detection?", a: "TrackDots flags burst-then-idle patterns and unusually long idle gaps inside otherwise-active blocks to catch gaming attempts." },
-  { q: "Can I see team-wide idle efficiency?", a: "Yes. A team efficiency score shows active-vs-idle time across the whole organization in real time." },
-];
 
 /** Same 820×540 sidebar+topbar "dashboard chrome" shell used across every
  * feature hero — content area swapped for the real Idle Breakdown layout
@@ -231,49 +180,6 @@ function IdleHeroCard() {
   );
 }
 
-const STICKY_CARDS: StickyCard[] = [
-  {
-    tone: "purple",
-    icon: PieChart,
-    title: "Active vs. Idle, Split Cleanly",
-    desc: "Every tracked hour is classified as active or idle, updated as it happens.",
-    checks: ["Live active/idle split", "Per-employee and team-wide", "No manual classification needed"],
-    widget: <StatGrid dark cols={4} kicker="Today's Split" stats={[{ label: "Tracked", value: "101h 33m" }, { label: "Active", value: "100h 49m" }, { label: "Idle", value: "44m" }, { label: "Efficiency", value: "99%" }]} />,
-  },
-  {
-    tone: "dark",
-    icon: Settings,
-    title: "Thresholds, Your Way",
-    desc: "Idle score and confidence thresholds are fully configurable — or can be turned off.",
-    checks: ["Configurable idle score threshold", "Configurable confidence threshold", "Either can be disabled"],
-    widget: <BarRows dark kicker="Configured Thresholds" rows={[{ label: "Idle Score", pct: 15, value: "15", color: "brand" }, { label: "Confidence", pct: 20, value: "20", color: "blue" }]} />,
-  },
-  {
-    tone: "purple",
-    icon: Clock,
-    title: "History Never Rewritten",
-    desc: "Threshold changes apply from the date they're made — never retroactively.",
-    checks: ["Forward-only application", "Old data keeps old rules", "Fully auditable"],
-    widget: <ChecklistRows dark items={[{ label: "Jun 1 – Jun 30: old threshold", done: true }, { label: "Jul 1 onward: new threshold", done: true }, { label: "History rewritten", done: false }]} />,
-  },
-  {
-    tone: "dark",
-    icon: ShieldCheck,
-    title: "Meetings Never Penalized",
-    desc: "Idle time during an approved meeting session is automatically exempted.",
-    checks: ["Meeting Mode exemption", "No unfair idle penalties", "Approved by a manager first"],
-    widget: <BarRows dark kicker="Today's Meetings" rows={[{ label: "Standup", pct: 100, value: "Exempt", color: "green" }, { label: "Client Call", pct: 100, value: "Exempt", color: "green" }]} />,
-  },
-  {
-    tone: "purple",
-    icon: Activity,
-    title: "Built to Catch Gaming",
-    desc: "Burst-then-idle patterns and long idle gaps inside blocks are flagged automatically.",
-    checks: ["Sub-window burst detection", "Long idle-gap flagging", "Staff can review any flagged block"],
-    widget: <StatGrid dark cols={3} kicker="Integrity Signals" stats={[{ label: "Flagged", value: "0" }, { label: "Reviewed", value: "0" }, { label: "Confirmed", value: "0" }]} />,
-  },
-];
-
 /** Photo + floating cards — same pattern as Time Tracking's CrossPlatformMock,
  * used for the Highlight Panel visual slot. */
 function IdleThresholdsMock() {
@@ -363,129 +269,48 @@ function IntegrityMock() {
   );
 }
 
-export default function IdleTimePage() {
-  return (
-    <main className="flex-1 bg-white">
-      <Navbar />
+const VISUALS: FeaturePageVisuals = {
+  hero: <IdleHeroCard />,
+  dark1: (
+    <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
+      <div className="overflow-hidden rounded-3xl shadow-2xl">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={TEAM_MEETING_IMAGE} alt="" className="h-[420px] w-full object-cover" style={{ objectPosition: "70% 30%" }} loading="lazy" />
+      </div>
+      <div className="absolute -left-2 top-0 w-[220px] rounded-2xl bg-white p-4 shadow-2xl">
+        <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Team Efficiency</div>
+        <div className="mt-2 flex h-[10px] w-full overflow-hidden rounded-full bg-gray-100">
+          <div className="h-full w-[99%] bg-green-500" />
+        </div>
+        <div className="mt-1.5 flex justify-between text-[9px] font-medium text-gray-400">
+          <span>Active 100h 49m</span>
+          <span>Idle 44m</span>
+        </div>
+      </div>
+      <div className="absolute -bottom-2 -right-4 w-[210px] rounded-xl bg-white p-4 shadow-2xl">
+        <div className="text-[9px] font-bold uppercase tracking-wide text-gray-400">Team Efficiency</div>
+        <div className="mt-1 text-[20px] font-bold text-green-600">99%</div>
+        <div className="mt-1.5 text-[9.5px] text-gray-400">Across 13 tracked employees</div>
+      </div>
+    </div>
+  ),
+  stickyWidgets: [
+    <StatGrid key="todays-split" dark cols={4} kicker="Today's Split" stats={[{ label: "Tracked", value: "101h 33m" }, { label: "Active", value: "100h 49m" }, { label: "Idle", value: "44m" }, { label: "Efficiency", value: "99%" }]} />,
+    <BarRows key="thresholds" dark kicker="Configured Thresholds" rows={[{ label: "Idle Score", pct: 15, value: "15", color: "brand" }, { label: "Confidence", pct: 20, value: "20", color: "blue" }]} />,
+    <ChecklistRows key="history" dark items={[{ label: "Jun 1 – Jun 30: old threshold", done: true }, { label: "Jul 1 onward: new threshold", done: true }, { label: "History rewritten", done: false }]} />,
+    <BarRows key="meetings" dark kicker="Today's Meetings" rows={[{ label: "Standup", pct: 100, value: "Exempt", color: "green" }, { label: "Client Call", pct: 100, value: "Exempt", color: "green" }]} />,
+    <StatGrid key="integrity" dark cols={3} kicker="Integrity Signals" stats={[{ label: "Flagged", value: "0" }, { label: "Reviewed", value: "0" }, { label: "Confirmed", value: "0" }]} />,
+  ],
+  panel: <IdleThresholdsMock />,
+  dark2: <IntegrityMock />,
+  statsPhotos: [
+    { photoSrc: TEAM_MEETING_IMAGE, photoPosition: "20% 30%" },
+    { photoSrc: TEAM_MEETING_IMAGE, photoPosition: "50% 25%" },
+    { photoSrc: TEAM_MEETING_IMAGE, photoPosition: "85% 30%" },
+  ],
+};
 
-      <FeatureHero
-        eyebrow="FEATURE — IDLE TIME TRACKING"
-        heading="Idle Time, Detected"
-        highlight="Fairly and Accurately."
-        description="Automatic idle-time detection with configurable thresholds that never apply retroactively — so tracked hours always reflect real work."
-        visual={<IdleHeroCard />}
-      />
-
-      <FeatureProblemSolution
-        eyebrow="THE ACCURACY GAP"
-        heading="Idle Time Shouldn't Be a Guess"
-        subheading="Idle time silently baked into 'active hours' skews every report downstream."
-        problems={PROBLEMS}
-        benefits={BENEFITS}
-      />
-
-      <FeatureGrid
-        eyebrow="HOW IT WORKS"
-        heading="An Honest Read on Active Time"
-        subheading="Configurable, fair, and never applied retroactively."
-        items={CAPABILITIES}
-      />
-
-      <FeatureDarkHighlight
-        eyebrow="LIVE BREAKDOWN"
-        blocks={[
-          {
-            highlighted: true,
-            heading: "Every Employee, Split Live",
-            desc: "Active vs. idle time updates in real time as the day happens, not after the fact.",
-            checklist: ["Live active/idle percentage", "Per-employee efficiency score"],
-          },
-          {
-            heading: "Filterable by Period",
-            desc: "View today, this week, last 7 days, or last 30 days with a single click.",
-            checklist: ["Today / week / 7-day / 30-day views", "Team and individual views"],
-          },
-        ]}
-        linkLabel="Explore Idle Time Breakdown"
-        visual={
-          <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
-            <div className="overflow-hidden rounded-3xl shadow-2xl">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={TEAM_MEETING_IMAGE} alt="" className="h-[420px] w-full object-cover" style={{ objectPosition: "70% 30%" }} loading="lazy" />
-            </div>
-            <div className="absolute -left-2 top-0 w-[220px] rounded-2xl bg-white p-4 shadow-2xl">
-              <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Team Efficiency</div>
-              <div className="mt-2 flex h-[10px] w-full overflow-hidden rounded-full bg-gray-100">
-                <div className="h-full w-[99%] bg-green-500" />
-              </div>
-              <div className="mt-1.5 flex justify-between text-[9px] font-medium text-gray-400">
-                <span>Active 100h 49m</span>
-                <span>Idle 44m</span>
-              </div>
-            </div>
-            <div className="absolute -bottom-2 -right-4 w-[210px] rounded-xl bg-white p-4 shadow-2xl">
-              <div className="text-[9px] font-bold uppercase tracking-wide text-gray-400">Team Efficiency</div>
-              <div className="mt-1 text-[20px] font-bold text-green-600">99%</div>
-              <div className="mt-1.5 text-[9.5px] text-gray-400">Across 13 tracked employees</div>
-            </div>
-          </div>
-        }
-      />
-
-      <FeatureStickyShowcase
-        eyebrow="GO DEEPER"
-        heading="Every Angle of Idle Time"
-        desc="From live detection to anti-gaming signals — TrackDots keeps idle tracking fair and accurate."
-        cards={STICKY_CARDS}
-      />
-
-      <FeatureHighlightPanel
-        reverse
-        heading="Fair by Default, Configurable by Design"
-        desc="No org is scored on someone else's assumptions — thresholds are yours to set, and history is never rewritten."
-        checklist={["Idle & confidence thresholds configurable", "Either threshold can be disabled", "Changes apply forward only"]}
-        linkLabel="See Threshold Configuration"
-        visual={<IdleThresholdsMock />}
-      />
-
-      <FeatureStatsRow
-        stats={[
-          { icon: PieChart, value: "99%", label: "Team Efficiency", desc: "Today's active-vs-idle efficiency across the whole organization.", photoSrc: TEAM_MEETING_IMAGE, photoPosition: "20% 30%" },
-          { icon: Clock, value: "Forward-Only", label: "Threshold Changes", desc: "New idle rules never rewrite how past activity was already scored.", photoSrc: TEAM_MEETING_IMAGE, photoPosition: "50% 25%" },
-          { icon: ShieldCheck, value: "Auto-Exempt", label: "Meeting Idle Time", desc: "Idle time inside an approved meeting is never counted against anyone.", photoSrc: TEAM_MEETING_IMAGE, photoPosition: "85% 30%" },
-        ]}
-      />
-
-      <FeatureDarkHighlight
-        reverse
-        eyebrow="INTEGRITY BUILT IN"
-        blocks={[
-          {
-            highlighted: true,
-            heading: "Designed Against Gaming",
-            desc: "Burst-then-idle patterns and long idle gaps inside otherwise-active blocks are flagged for review.",
-            checklist: ["Sub-window burst detection", "Long idle-gap flagging"],
-          },
-          {
-            heading: "Staff Always Have the Final Say",
-            desc: "Any flagged block can be manually reviewed and approved or revoked by staff.",
-            checklist: ["Manual review & override", "Full audit trail on every change"],
-          },
-        ]}
-        linkLabel="See Integrity Controls"
-        visual={<IntegrityMock />}
-      />
-
-      <FeatureComparison
-        heading="Get The Right Tool"
-        subheading="See how TrackDots' idle detection compares to the old way."
-        columns={COMPARISON_COLUMNS}
-        rows={COMPARISON_ROWS}
-      />
-
-      <FeatureFAQ heading="Idle Time Tracking, Answered" items={FAQS} />
-
-      <FinalCTA />
-    </main>
-  );
+export default async function IdleTimePage() {
+  const content = await getFeaturePageContent(SLUG, FALLBACK);
+  return <FeaturePageSections content={content} visuals={VISUALS} />;
 }

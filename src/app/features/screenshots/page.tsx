@@ -1,31 +1,17 @@
 import type { Metadata } from "next";
-import Navbar from "@/components/Navbar";
-import FinalCTA from "@/components/FinalCTA";
-import FeatureHero from "@/components/features/FeatureHero";
-import FeatureGrid from "@/components/features/FeatureGrid";
-import FeatureHighlightPanel from "@/components/features/FeatureHighlightPanel";
-import FeatureDarkHighlight from "@/components/features/FeatureDarkHighlight";
-import FeatureProblemSolution from "@/components/features/FeatureProblemSolution";
-import FeatureStickyShowcase, { type StickyCard } from "@/components/features/FeatureStickyShowcase";
-import FeatureStatsRow from "@/components/features/FeatureStatsRow";
-import FeatureComparison from "@/components/features/FeatureComparison";
-import FeatureFAQ from "@/components/features/FeatureFAQ";
+import FeaturePageSections, { type FeaturePageVisuals } from "@/components/features/FeaturePageSections";
+import { getFeaturePageContent } from "@/lib/featurepage";
 import { BarRows, StatGrid, ChecklistRows, Kicker } from "@/components/features/widgets";
 import { TEAM_MEETING_IMAGE } from "@/lib/media";
 import {
-  Activity,
   BarChart,
   Bell,
   Calendar,
   CheckCircle,
   ChevronDown,
-  Clock,
   DotsLogo,
-  Eye,
   FileText,
-  Filter,
   Folder,
-  ImageIcon,
   Inbox,
   LayoutGrid,
   Lock,
@@ -33,54 +19,15 @@ import {
   Search,
   Settings,
   ShieldCheck,
-  Sparkles,
   Users,
 } from "@/components/icons";
+import { FALLBACK, SLUG } from "./content";
 
 export const metadata: Metadata = {
   title: "Screenshot Monitoring — TrackDots",
   description:
     "Optional, privacy-conscious screenshot capture that gives managers visual context without turning monitoring into surveillance.",
 };
-
-const CAPABILITIES = [
-  { icon: ImageIcon, title: "Configurable Capture", desc: "Set capture frequency per organization — as frequent or as light-touch as your team needs." },
-  { icon: Filter, title: "Low-Quality Filter", desc: "Instantly filter the grid to only the screenshots tied to low-confidence or idle activity blocks." },
-  { icon: Activity, title: "Linked to Activity Blocks", desc: "Every screenshot is tied directly to the activity block that captured it — full context, not a random image." },
-  { icon: BarChart, title: "Employee & Date Grid", desc: "Browse by employee and date with a single bulk-loaded grid — no per-image loading delay." },
-  { icon: Lock, title: "Access-Controlled Storage", desc: "Screenshots are stored securely and only accessible to authorized managers and HR staff." },
-  { icon: Eye, title: "Transparent by Default", desc: "Employees know screenshots are part of their plan — nothing is captured secretly." },
-];
-
-const PROBLEMS = [
-  "No visual context for what \"active\" actually looked like",
-  "Managers left guessing during disputed time entries",
-  "Screenshot tools that feel like covert surveillance",
-];
-const BENEFITS = [
-  "Screenshots tied directly to real activity blocks",
-  "Clear evidence when time entries are questioned",
-  "Configurable, transparent, and never secretive",
-];
-
-const COMPARISON_COLUMNS = ["TrackDots", "Basic Time Trackers", "Spreadsheets & Manual Logs"];
-const COMPARISON_ROWS: { capability: string; statuses: ("yes" | "partial" | "no")[] }[] = [
-  { capability: "Screenshots linked to activity blocks", statuses: ["yes", "no", "no"] },
-  { capability: "Configurable capture frequency", statuses: ["yes", "partial", "no"] },
-  { capability: "Low-quality-only filtering", statuses: ["yes", "no", "no"] },
-  { capability: "Bulk employee + date grid view", statuses: ["yes", "partial", "no"] },
-  { capability: "Access-controlled storage", statuses: ["yes", "yes", "no"] },
-  { capability: "Employee self-view of captures", statuses: ["yes", "no", "no"] },
-];
-
-const FAQS = [
-  { q: "Are screenshots mandatory to use TrackDots?", a: "No. Screenshot capture is a configurable feature — organizations can enable, disable, or tune the frequency to match their comfort level." },
-  { q: "Who can view captured screenshots?", a: "Only authorized managers and HR staff on plans with screenshot access. Access is controlled at the organization and role level." },
-  { q: "Can employees see their own screenshots?", a: "Yes, on plans with the employee self-view portal enabled, employees can see the same captures managers do." },
-  { q: "How are screenshots connected to productivity scoring?", a: "Each screenshot is linked to the activity block that triggered it, so you always see the context behind a productivity score." },
-  { q: "Can I filter to just the screenshots that matter?", a: "Yes. The viewer supports a \"Low Quality only\" filter to jump straight to blocks worth reviewing." },
-  { q: "Is screenshot storage secure?", a: "Yes, files are stored with restricted access and are never exposed publicly." },
-];
 
 /* ── Hero visual: a real "dashboard chrome" list, not placeholder tiles ── */
 /** Abstract stand-in for a captured screenshot — never a real employee's
@@ -400,180 +347,56 @@ function TransparencyMock() {
   );
 }
 
-const STICKY_CARDS: StickyCard[] = [
-  {
-    tone: "purple",
-    icon: ImageIcon,
-    title: "Captured at the Right Moments",
-    desc: "Screenshots trigger alongside real activity blocks, not on a blind arbitrary timer.",
-    checks: ["Tied to real activity blocks", "No blind, fixed-interval spam", "Org-level frequency control"],
-    widget: <ActivityWidget />,
-  },
-  {
-    tone: "dark",
-    icon: Filter,
-    title: "Find What Matters, Fast",
-    desc: "Filter straight to the low-confidence captures worth a manager's attention.",
-    checks: ["Low-Quality-only filter", "Employee + date grid", "Single bulk-loaded view"],
-    widget: <StatGrid dark cols={4} kicker="Today's Capture Summary" stats={[{ label: "Captured", value: "25" }, { label: "Flagged", value: "3", accent: true }, { label: "Employees", value: "1" }, { label: "Reviewed", value: "22" }]} />,
-  },
-  {
-    tone: "purple",
-    icon: Lock,
-    title: "Access, Strictly Controlled",
-    desc: "Only the roles you authorize can ever open the screenshot viewer.",
-    checks: ["Role-based access", "Org-scoped storage", "No public exposure, ever"],
-    widget: <AccessWidget />,
-  },
-  {
-    tone: "dark",
-    icon: Eye,
-    title: "Transparent, Not Secret",
-    desc: "Employees on self-view plans see exactly what their manager sees.",
-    checks: ["Self-view portal support", "No hidden captures", "Builds trust, not suspicion"],
-    widget: <SelfViewWidget />,
-  },
-  {
-    tone: "purple",
-    icon: Sparkles,
-    title: "Context, Not Just an Image",
-    desc: "Every capture shows the window title and app alongside the timestamp.",
-    checks: ["Window title captured", "App name tagged", "Duration shown per capture"],
-    widget: <StatGrid dark cols={4} kicker="Capture Detail — 10:23 AM" stats={[{ label: "App", value: "Chrome" }, { label: "Duration", value: "10m" }, { label: "Confidence", value: "94" }, { label: "Blocks", value: "3" }]} />,
-  },
-];
+const VISUALS: FeaturePageVisuals = {
+  hero: <ScreenshotsHeroCard />,
+  dark1: (
+    <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
+      <div className="overflow-hidden rounded-3xl shadow-2xl">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={TEAM_MEETING_IMAGE} alt="" className="h-[420px] w-full object-cover" style={{ objectPosition: "30% 30%" }} loading="lazy" />
+      </div>
+      <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
+        <div className="flex items-center justify-between">
+          <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Akansha Dogra</div>
+          <span className="rounded-full bg-green-50 px-1.5 py-0.5 text-[8px] font-bold text-green-600">49 shots</span>
+        </div>
+        <div className="mt-3 grid grid-cols-3 gap-1.5">
+          {["bg-blue-400", "bg-violet-400", "bg-green-400", "bg-amber-400", "bg-blue-400", "bg-violet-400"].map((t, i) => (
+            <MockShot key={i} tint={t} />
+          ))}
+        </div>
+        <div className="mt-2.5 flex justify-between text-[8.5px] font-medium text-gray-400">
+          <span>09:12</span>
+          <span>11:43</span>
+        </div>
+      </div>
+      <div className="absolute -bottom-2 -right-4 w-[220px] rounded-xl bg-white p-4 shadow-2xl">
+        <div className="text-[9px] font-bold uppercase tracking-wide text-gray-400">Low Quality Only</div>
+        <div className="mt-1 text-[15px] font-bold text-gray-900">3 of 25 flagged</div>
+        <div className="mt-2 h-[6px] w-full overflow-hidden rounded-full bg-gray-100">
+          <div className="h-full w-[12%] rounded-full bg-amber-400" />
+        </div>
+        <div className="mt-1.5 text-[9px] text-gray-400">Filtered view, updated live</div>
+      </div>
+    </div>
+  ),
+  stickyWidgets: [
+    <ActivityWidget key="activity" />,
+    <StatGrid key="capture-summary" dark cols={4} kicker="Today's Capture Summary" stats={[{ label: "Captured", value: "25" }, { label: "Flagged", value: "3", accent: true }, { label: "Employees", value: "1" }, { label: "Reviewed", value: "22" }]} />,
+    <AccessWidget key="access" />,
+    <SelfViewWidget key="self-view" />,
+    <StatGrid key="capture-detail" dark cols={4} kicker="Capture Detail — 10:23 AM" stats={[{ label: "App", value: "Chrome" }, { label: "Duration", value: "10m" }, { label: "Confidence", value: "94" }, { label: "Blocks", value: "3" }]} />,
+  ],
+  panel: <AccessControlMock />,
+  dark2: <TransparencyMock />,
+  statsPhotos: [
+    { photoSrc: TEAM_MEETING_IMAGE, photoPosition: "20% 30%" },
+    { photoSrc: TEAM_MEETING_IMAGE, photoPosition: "50% 25%" },
+    { photoSrc: TEAM_MEETING_IMAGE, photoPosition: "85% 30%" },
+  ],
+};
 
-export default function ScreenshotsPage() {
-  return (
-    <main className="flex-1 bg-white">
-      <Navbar />
-
-      <FeatureHero
-        eyebrow="FEATURE — SCREENSHOT MONITORING"
-        heading="See the Context Behind"
-        highlight="Every Activity Block."
-        description="Optional, configurable screenshot capture gives managers visual context — without turning monitoring into surveillance."
-        visual={<ScreenshotsHeroCard />}
-      />
-
-      <FeatureProblemSolution
-        eyebrow="THE CONTEXT GAP"
-        heading="Stop Guessing What 'Active' Meant"
-        subheading="A score without context is just a number. Screenshots close that gap."
-        problems={PROBLEMS}
-        benefits={BENEFITS}
-      />
-
-      <FeatureGrid
-        eyebrow="HOW IT WORKS"
-        heading="Visual Context, On Your Terms"
-        subheading="Configurable, linked to real activity, and never a black box."
-        items={CAPABILITIES}
-      />
-
-      <FeatureDarkHighlight
-        eyebrow="CAPTURE VIEWER"
-        blocks={[
-          {
-            highlighted: true,
-            heading: "Every Capture, Organized by Employee",
-            desc: "Browse the full grid by employee and date, loaded in a single request — no waiting per image.",
-            checklist: ["Employee + date grid view", "Single bulk-loaded query"],
-          },
-          {
-            heading: "Jump Straight to What Matters",
-            desc: "The Low-Quality filter surfaces only the captures tied to flagged or idle activity.",
-            checklist: ["Low-Quality-only filter", "Window title & app shown per capture"],
-          },
-        ]}
-        linkLabel="Explore the Screenshot Viewer"
-        visual={
-          <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
-            <div className="overflow-hidden rounded-3xl shadow-2xl">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={TEAM_MEETING_IMAGE} alt="" className="h-[420px] w-full object-cover" style={{ objectPosition: "30% 30%" }} loading="lazy" />
-            </div>
-            <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
-              <div className="flex items-center justify-between">
-                <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Akansha Dogra</div>
-                <span className="rounded-full bg-green-50 px-1.5 py-0.5 text-[8px] font-bold text-green-600">49 shots</span>
-              </div>
-              <div className="mt-3 grid grid-cols-3 gap-1.5">
-                {["bg-blue-400", "bg-violet-400", "bg-green-400", "bg-amber-400", "bg-blue-400", "bg-violet-400"].map((t, i) => (
-                  <MockShot key={i} tint={t} />
-                ))}
-              </div>
-              <div className="mt-2.5 flex justify-between text-[8.5px] font-medium text-gray-400">
-                <span>09:12</span>
-                <span>11:43</span>
-              </div>
-            </div>
-            <div className="absolute -bottom-2 -right-4 w-[220px] rounded-xl bg-white p-4 shadow-2xl">
-              <div className="text-[9px] font-bold uppercase tracking-wide text-gray-400">Low Quality Only</div>
-              <div className="mt-1 text-[15px] font-bold text-gray-900">3 of 25 flagged</div>
-              <div className="mt-2 h-[6px] w-full overflow-hidden rounded-full bg-gray-100">
-                <div className="h-full w-[12%] rounded-full bg-amber-400" />
-              </div>
-              <div className="mt-1.5 text-[9px] text-gray-400">Filtered view, updated live</div>
-            </div>
-          </div>
-        }
-      />
-
-      <FeatureStickyShowcase
-        eyebrow="GO DEEPER"
-        heading="Every Angle of Screenshot Capture"
-        desc="From capture triggers to access control — TrackDots keeps screenshots useful and never intrusive."
-        cards={STICKY_CARDS}
-      />
-
-      <FeatureHighlightPanel
-        reverse
-        heading="Built With Privacy at the Core"
-        desc="Screenshot access is role-gated and configurable — your organization decides how visual monitoring works."
-        checklist={["Role-based access control", "Configurable capture frequency", "Never captured or shown secretly"]}
-        linkLabel="See Our Privacy Principles"
-        visual={<AccessControlMock />}
-      />
-
-      <FeatureStatsRow
-        stats={[
-          { icon: ImageIcon, value: "1-Click", label: "Filter to Flagged", desc: "Jump straight to low-quality captures worth reviewing.", photoSrc: TEAM_MEETING_IMAGE, photoPosition: "20% 30%" },
-          { icon: Clock, value: "Per-Block", label: "Capture Linking", desc: "Every screenshot ties to the exact activity block that triggered it.", photoSrc: TEAM_MEETING_IMAGE, photoPosition: "50% 25%" },
-          { icon: Lock, value: "Role-Gated", label: "Access Control", desc: "Only authorized managers and HR staff can ever open the viewer.", photoSrc: TEAM_MEETING_IMAGE, photoPosition: "85% 30%" },
-        ]}
-      />
-
-      <FeatureDarkHighlight
-        reverse
-        eyebrow="TRANSPARENCY"
-        blocks={[
-          {
-            highlighted: true,
-            heading: "Nothing Captured in Secret",
-            desc: "Employees on self-view plans see the exact same captures their manager does.",
-            checklist: ["Self-view portal support", "No hidden captures, ever"],
-          },
-          {
-            heading: "Configurable to Your Culture",
-            desc: "Turn capture frequency up for high-security roles, or down for a lighter touch elsewhere.",
-            checklist: ["Per-organization configuration", "Works alongside all other features"],
-          },
-        ]}
-        linkLabel="See Configuration Options"
-        visual={<TransparencyMock />}
-      />
-
-      <FeatureComparison
-        heading="Get The Right Tool"
-        subheading="See how TrackDots' screenshot capture compares to the old way."
-        columns={COMPARISON_COLUMNS}
-        rows={COMPARISON_ROWS}
-      />
-
-      <FeatureFAQ heading="Screenshot Monitoring, Answered" items={FAQS} />
-
-      <FinalCTA />
-    </main>
-  );
+export default async function ScreenshotsPage() {
+  const content = await getFeaturePageContent(SLUG, FALLBACK);
+  return <FeaturePageSections content={content} visuals={VISUALS} />;
 }

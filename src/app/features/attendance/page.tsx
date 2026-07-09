@@ -1,25 +1,14 @@
 import type { Metadata } from "next";
-import Navbar from "@/components/Navbar";
-import FinalCTA from "@/components/FinalCTA";
-import FeatureHero from "@/components/features/FeatureHero";
-import FeatureGrid from "@/components/features/FeatureGrid";
-import FeatureHighlightPanel from "@/components/features/FeatureHighlightPanel";
-import FeatureDarkHighlight from "@/components/features/FeatureDarkHighlight";
-import FeatureProblemSolution from "@/components/features/FeatureProblemSolution";
-import FeatureStickyShowcase, { type StickyCard } from "@/components/features/FeatureStickyShowcase";
-import FeatureStatsRow from "@/components/features/FeatureStatsRow";
-import FeatureComparison from "@/components/features/FeatureComparison";
-import FeatureFAQ from "@/components/features/FeatureFAQ";
+import FeaturePageSections, { type FeaturePageVisuals } from "@/components/features/FeaturePageSections";
+import { getFeaturePageContent } from "@/lib/featurepage";
 import { BarRows, StatGrid, ChecklistRows } from "@/components/features/widgets";
 import { TEAM_MEETING_IMAGE } from "@/lib/media";
 import {
   BarChart,
   Bell,
   Calendar,
-  CalendarCheck,
   CheckCircle,
   ChevronDown,
-  Clock,
   DotsLogo,
   FileText,
   Folder,
@@ -28,55 +17,15 @@ import {
   Monitor,
   Search,
   Settings,
-  ShieldCheck,
-  TrendUp,
   Users,
 } from "@/components/icons";
+import { FALLBACK, SLUG } from "./content";
 
 export const metadata: Metadata = {
   title: "Attendance Tracking — TrackDots",
   description:
     "Automatic daily attendance built from real activity data — with manual overrides, sandwich-day handling, and configurable cutoffs.",
 };
-
-const CAPABILITIES = [
-  { icon: CalendarCheck, title: "Automatic Daily Grid", desc: "Attendance is derived from real tracked activity — full day, partial, low, or absent, calculated automatically." },
-  { icon: Clock, title: "Configurable Cutoffs", desc: "Set your own attendance window, half-day cutoff, and absent cutoff times per organization." },
-  { icon: Settings, title: "Manual Overrides", desc: "Managers can manually mark attendance for exceptions, with a full audit trail." },
-  { icon: FileText, title: "Sandwich-Day Detection", desc: "Weekends and holidays between leave days are flagged for an explicit include or exclude decision." },
-  { icon: TrendUp, title: "P / A / SL / HD / L / LWP Summary", desc: "Every employee row rolls up to present, absent, short-leave, half-day, leave, and LWP totals." },
-  { icon: Users, title: "Team-Wide Overview", desc: "See the whole organization's attendance for the month in one scrollable grid." },
-];
-
-const PROBLEMS = [
-  "Attendance registers that don't match actual work hours",
-  "Manual sign-in sheets nobody can audit",
-  "No clear rule for half-days, sandwich days, or LWP",
-];
-const BENEFITS = [
-  "Attendance calculated from real tracked activity",
-  "Every override logged with who and when",
-  "Clear, configurable rules for every edge case",
-];
-
-const COMPARISON_COLUMNS = ["TrackDots", "Basic Time Trackers", "Manual Registers"];
-const COMPARISON_ROWS: { capability: string; statuses: ("yes" | "partial" | "no")[] }[] = [
-  { capability: "Activity-based attendance calculation", statuses: ["yes", "no", "no"] },
-  { capability: "Configurable half-day / absent cutoffs", statuses: ["yes", "partial", "no"] },
-  { capability: "Sandwich-day detection", statuses: ["yes", "no", "no"] },
-  { capability: "Manual override with audit trail", statuses: ["yes", "partial", "no"] },
-  { capability: "P/A/SL/HD/L/LWP roll-up per employee", statuses: ["yes", "no", "no"] },
-  { capability: "Direct payroll integration", statuses: ["yes", "no", "no"] },
-];
-
-const FAQS = [
-  { q: "How is daily attendance calculated?", a: "TrackDots derives attendance from real tracked activity against your configured attendance window, half-day cutoff, and absent cutoff times." },
-  { q: "Can managers override attendance manually?", a: "Yes. Manual attendance entries are supported for exceptions, and every override is logged for auditing." },
-  { q: "What is a \"sandwich day\"?", a: "When a weekend or holiday falls between two leave days, TrackDots flags it as a sandwich day so HR can explicitly decide whether to include or exclude it." },
-  { q: "Can I customize the attendance cutoff times?", a: "Yes. Attendance window start, half-day cutoff, and absent cutoff are all configurable per organization." },
-  { q: "Does attendance feed into payroll automatically?", a: "Yes. Present, absent, short-leave, half-day, leave, and LWP totals flow directly into the payroll engine." },
-  { q: "Can employees see their own attendance record?", a: "Yes, on plans with the employee self-view portal enabled." },
-];
 
 /** Same 820×540 sidebar+topbar "dashboard chrome" shell used across every
  * feature hero — content area swapped for the real Attendance grid layout
@@ -258,49 +207,6 @@ function AttendanceHeroCard() {
   );
 }
 
-const STICKY_CARDS: StickyCard[] = [
-  {
-    tone: "purple",
-    icon: CalendarCheck,
-    title: "Attendance, Calculated Automatically",
-    desc: "No sign-in sheets — attendance is derived directly from tracked activity every day.",
-    checks: ["Full day / half day / low / absent", "Calculated from real activity", "Updated live through the day"],
-    widget: <StatGrid dark cols={4} kicker="Today's Attendance" stats={[{ label: "Full Day", value: "14" }, { label: "Half Day", value: "2" }, { label: "Absent", value: "1", accent: false }, { label: "Leave", value: "2" }]} />,
-  },
-  {
-    tone: "dark",
-    icon: Clock,
-    title: "Cutoffs You Control",
-    desc: "Attendance window, half-day cutoff, and absent cutoff are all configurable per organization.",
-    checks: ["Custom attendance window", "Configurable half-day cutoff", "Configurable absent cutoff"],
-    widget: <StatGrid dark cols={3} kicker="Configured Cutoffs" stats={[{ label: "Window Starts", value: "7:30A" }, { label: "Half-Day", value: "11:00A" }, { label: "Absent", value: "2:30P" }]} />,
-  },
-  {
-    tone: "purple",
-    icon: Settings,
-    title: "Manual Overrides, Fully Logged",
-    desc: "Mark attendance manually for exceptions — every change is tied to who made it and when.",
-    checks: ["Manager-initiated overrides", "Full audit trail", "Never silently changes history"],
-    widget: <ChecklistRows dark items={[{ label: "Manual entry logged", done: true }, { label: "Approver recorded", done: true }, { label: "Timestamp recorded", done: true }]} />,
-  },
-  {
-    tone: "dark",
-    icon: FileText,
-    title: "Sandwich Days, Handled Fairly",
-    desc: "Weekends between two leave days are flagged, not silently included or excluded.",
-    checks: ["Auto-flagged for review", "Explicit include/exclude decision", "Never assumed either way"],
-    widget: <BarRows dark kicker="Leave Range — Jul 10-14" rows={[{ label: "Fri 10", pct: 100, value: "Leave", color: "brand" }, { label: "Sat-Sun", pct: 50, value: "Sandwich", color: "amber" }, { label: "Mon 13", pct: 100, value: "Leave", color: "brand" }]} />,
-  },
-  {
-    tone: "purple",
-    icon: TrendUp,
-    title: "One Roll-Up, Every Month",
-    desc: "P/A/SL/HD/L/LWP totals per employee, ready for payroll without a spreadsheet.",
-    checks: ["Six-way monthly roll-up", "Feeds payroll directly", "Exportable to Excel"],
-    widget: <StatGrid dark cols={4} kicker="Monthly Roll-Up" stats={[{ label: "Present", value: "22" }, { label: "Absent", value: "0" }, { label: "Leave", value: "4" }, { label: "LWP", value: "0" }]} />,
-  },
-];
-
 /** Photo + floating cards — same pattern as Time Tracking's CrossPlatformMock,
  * used for the Highlight Panel visual slot. */
 function AttendancePolicyMock() {
@@ -403,129 +309,48 @@ function PayrollReadyMock() {
   );
 }
 
-export default function AttendancePage() {
-  return (
-    <main className="flex-1 bg-white">
-      <Navbar />
-
-      <FeatureHero
-        eyebrow="FEATURE — ATTENDANCE TRACKING"
-        heading="Attendance That Calculates"
-        highlight="Itself, Every Day."
-        description="Daily attendance built from real tracked activity — with manual overrides, sandwich-day handling, and cutoffs you control."
-        visual={<AttendanceHeroCard />}
-      />
-
-      <FeatureProblemSolution
-        eyebrow="THE ACCURACY GAP"
-        heading="Stop Reconciling Sign-In Sheets"
-        subheading="Manual attendance registers never match reality. TrackDots removes the gap."
-        problems={PROBLEMS}
-        benefits={BENEFITS}
-      />
-
-      <FeatureGrid
-        eyebrow="HOW IT WORKS"
-        heading="A Grid That Builds Itself"
-        subheading="Automatic, auditable, and fully configurable to your organization's rules."
-        items={CAPABILITIES}
-      />
-
-      <FeatureDarkHighlight
-        eyebrow="MONTHLY GRID"
-        blocks={[
-          {
-            highlighted: true,
-            heading: "The Whole Team, One Screen",
-            desc: "See every employee's daily status across the month in a single scrollable grid.",
-            checklist: ["Full day / half day / low / absent", "Color-coded for a fast scan"],
-          },
-          {
-            heading: "Rolled Up for Payroll",
-            desc: "Present, absent, leave, and LWP totals are calculated automatically per employee.",
-            checklist: ["P/A/SL/HD/L/LWP columns", "Feeds directly into payroll"],
-          },
-        ]}
-        linkLabel="Explore the Attendance Grid"
-        visual={
-          <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
-            <div className="overflow-hidden rounded-3xl shadow-2xl">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={TEAM_MEETING_IMAGE} alt="" className="h-[420px] w-full object-cover" style={{ objectPosition: "60% 30%" }} loading="lazy" />
+const VISUALS: FeaturePageVisuals = {
+  hero: <AttendanceHeroCard />,
+  dark1: (
+    <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
+      <div className="overflow-hidden rounded-3xl shadow-2xl">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={TEAM_MEETING_IMAGE} alt="" className="h-[420px] w-full object-cover" style={{ objectPosition: "60% 30%" }} loading="lazy" />
+      </div>
+      <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
+        <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">July 2026 — Week 2</div>
+        <div className="mt-3 grid grid-cols-5 gap-1">
+          {["8h", "8h", "4h", "0h", "8h"].map((v, i) => (
+            <div key={i} className={`rounded-md py-2 text-center text-[9px] font-bold ${v === "0h" ? "bg-red-50 text-red-500" : v === "4h" ? "bg-amber-50 text-amber-600" : "bg-green-50 text-green-600"}`}>
+              {v}
             </div>
-            <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
-              <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">July 2026 — Week 2</div>
-              <div className="mt-3 grid grid-cols-5 gap-1">
-                {["8h", "8h", "4h", "0h", "8h"].map((v, i) => (
-                  <div key={i} className={`rounded-md py-2 text-center text-[9px] font-bold ${v === "0h" ? "bg-red-50 text-red-500" : v === "4h" ? "bg-amber-50 text-amber-600" : "bg-green-50 text-green-600"}`}>
-                    {v}
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="absolute -bottom-2 -right-4 w-[220px] rounded-xl bg-white p-4 shadow-2xl">
-              <div className="text-[9px] font-bold uppercase tracking-wide text-gray-400">Overall Rate</div>
-              <div className="mt-1 text-[20px] font-bold text-green-600">96%</div>
-              <div className="mt-1.5 text-[9.5px] text-gray-400">19 of 20 tracked present today</div>
-            </div>
-          </div>
-        }
-      />
+          ))}
+        </div>
+      </div>
+      <div className="absolute -bottom-2 -right-4 w-[220px] rounded-xl bg-white p-4 shadow-2xl">
+        <div className="text-[9px] font-bold uppercase tracking-wide text-gray-400">Overall Rate</div>
+        <div className="mt-1 text-[20px] font-bold text-green-600">96%</div>
+        <div className="mt-1.5 text-[9.5px] text-gray-400">19 of 20 tracked present today</div>
+      </div>
+    </div>
+  ),
+  stickyWidgets: [
+    <StatGrid key="today-attendance" dark cols={4} kicker="Today's Attendance" stats={[{ label: "Full Day", value: "14" }, { label: "Half Day", value: "2" }, { label: "Absent", value: "1", accent: false }, { label: "Leave", value: "2" }]} />,
+    <StatGrid key="configured-cutoffs" dark cols={3} kicker="Configured Cutoffs" stats={[{ label: "Window Starts", value: "7:30A" }, { label: "Half-Day", value: "11:00A" }, { label: "Absent", value: "2:30P" }]} />,
+    <ChecklistRows key="override-log" dark items={[{ label: "Manual entry logged", done: true }, { label: "Approver recorded", done: true }, { label: "Timestamp recorded", done: true }]} />,
+    <BarRows key="sandwich-range" dark kicker="Leave Range — Jul 10-14" rows={[{ label: "Fri 10", pct: 100, value: "Leave", color: "brand" }, { label: "Sat-Sun", pct: 50, value: "Sandwich", color: "amber" }, { label: "Mon 13", pct: 100, value: "Leave", color: "brand" }]} />,
+    <StatGrid key="monthly-rollup" dark cols={4} kicker="Monthly Roll-Up" stats={[{ label: "Present", value: "22" }, { label: "Absent", value: "0" }, { label: "Leave", value: "4" }, { label: "LWP", value: "0" }]} />,
+  ],
+  panel: <AttendancePolicyMock />,
+  dark2: <PayrollReadyMock />,
+  statsPhotos: [
+    { photoSrc: TEAM_MEETING_IMAGE, photoPosition: "20% 30%" },
+    { photoSrc: TEAM_MEETING_IMAGE, photoPosition: "50% 25%" },
+    { photoSrc: TEAM_MEETING_IMAGE, photoPosition: "85% 30%" },
+  ],
+};
 
-      <FeatureStickyShowcase
-        eyebrow="GO DEEPER"
-        heading="Every Angle of Attendance"
-        desc="From daily calculation to monthly roll-ups — TrackDots keeps attendance accurate and auditable."
-        cards={STICKY_CARDS}
-      />
-
-      <FeatureHighlightPanel
-        reverse
-        heading="Rules That Match Your Policy"
-        desc="Short leave, half day, full day — every leave type maps directly into how attendance is calculated."
-        checklist={["2 short leaves per month, configurable", "1 full-day leave per month, configurable", "Paid vs. LWP category tracked separately"]}
-        linkLabel="See Leave & Attendance Rules"
-        visual={<AttendancePolicyMock />}
-      />
-
-      <FeatureStatsRow
-        stats={[
-          { icon: CalendarCheck, value: "Auto", label: "Daily Calculation", desc: "Attendance status is derived from tracked activity, every single day.", photoSrc: TEAM_MEETING_IMAGE, photoPosition: "20% 30%" },
-          { icon: Settings, value: "3", label: "Configurable Cutoffs", desc: "Attendance window, half-day, and absent cutoffs — all yours to set.", photoSrc: TEAM_MEETING_IMAGE, photoPosition: "50% 25%" },
-          { icon: ShieldCheck, value: "100%", label: "Audited Overrides", desc: "Every manual attendance change is logged with who and when.", photoSrc: TEAM_MEETING_IMAGE, photoPosition: "85% 30%" },
-        ]}
-      />
-
-      <FeatureDarkHighlight
-        reverse
-        eyebrow="PAYROLL-READY"
-        blocks={[
-          {
-            highlighted: true,
-            heading: "From Attendance to Payslip",
-            desc: "Attendance totals flow directly into the payroll engine — no manual re-entry, ever.",
-            checklist: ["Six-way monthly roll-up", "Feeds payroll automatically"],
-          },
-          {
-            heading: "Exportable, Anytime",
-            desc: "Download the full attendance grid to Excel for audits, board reports, or compliance.",
-            checklist: ["One-click Excel export", "Filter by department or date range"],
-          },
-        ]}
-        linkLabel="See Payroll Integration"
-        visual={<PayrollReadyMock />}
-      />
-
-      <FeatureComparison
-        heading="Get The Right Tool"
-        subheading="See how TrackDots' attendance compares to the old way."
-        columns={COMPARISON_COLUMNS}
-        rows={COMPARISON_ROWS}
-      />
-
-      <FeatureFAQ heading="Attendance Tracking, Answered" items={FAQS} />
-
-      <FinalCTA />
-    </main>
-  );
+export default async function AttendancePage() {
+  const content = await getFeaturePageContent(SLUG, FALLBACK);
+  return <FeaturePageSections content={content} visuals={VISUALS} />;
 }

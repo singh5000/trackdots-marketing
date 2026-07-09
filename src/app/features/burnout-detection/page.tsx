@@ -1,23 +1,12 @@
 import type { Metadata } from "next";
-import Navbar from "@/components/Navbar";
-import FinalCTA from "@/components/FinalCTA";
-import FeatureHero from "@/components/features/FeatureHero";
-import FeatureGrid from "@/components/features/FeatureGrid";
-import FeatureHighlightPanel from "@/components/features/FeatureHighlightPanel";
-import FeatureDarkHighlight from "@/components/features/FeatureDarkHighlight";
-import FeatureProblemSolution from "@/components/features/FeatureProblemSolution";
-import FeatureStickyShowcase, { type StickyCard } from "@/components/features/FeatureStickyShowcase";
-import FeatureStatsRow from "@/components/features/FeatureStatsRow";
-import FeatureComparison from "@/components/features/FeatureComparison";
-import FeatureFAQ from "@/components/features/FeatureFAQ";
+import FeaturePageSections, { type FeaturePageVisuals } from "@/components/features/FeaturePageSections";
+import { getFeaturePageContent } from "@/lib/featurepage";
 import { BarRows, ChecklistRows, StatGrid } from "@/components/features/widgets";
 import { TEAM_MEETING_IMAGE } from "@/lib/media";
 import {
-  Activity,
   BarChart,
   Bell,
   ChevronDown,
-  Clock,
   DotsLogo,
   FileText,
   Folder,
@@ -27,55 +16,15 @@ import {
   Search,
   Settings,
   ShieldCheck,
-  Sparkles,
-  TrendUp,
   Users,
 } from "@/components/icons";
+import { FALLBACK, SLUG } from "./content";
 
 export const metadata: Metadata = {
   title: "Burnout Detection — TrackDots",
   description:
     "A 14-day rolling burnout risk score built from real activity — long hours, no breaks, weekend work, late nights, and more — with plain-language recommendations.",
 };
-
-const CAPABILITIES = [
-  { icon: TrendUp, title: "14-Day Rolling Risk Score", desc: "Every employee's burnout risk is calculated from the last 14 days of real activity, not a one-off survey." },
-  { icon: Activity, title: "Six Real Warning Signals", desc: "Long hours, no breaks, weekend work, late nights, declining productivity, and weekly overload — each tracked individually." },
-  { icon: Settings, title: "Configurable Thresholds", desc: "Adjust what counts as \"long hours\" or \"overwork\" to match your organization's culture." },
-  { icon: ShieldCheck, title: "Four-Tier Risk Levels", desc: "Every employee lands in High, Medium, Watch, or All Clear, so managers know exactly who needs a check-in." },
-  { icon: Sparkles, title: "Actionable Recommendations", desc: "Each at-risk employee gets a plain-language suggestion, not just a score." },
-  { icon: Users, title: "One-Click Profile Access", desc: "Jump straight from any flagged employee to their full activity profile." },
-];
-
-const PROBLEMS = [
-  "Burnout building silently until someone quits or breaks down",
-  "No consistent way to spot overwork across a distributed team",
-  "Well-being conversations that come too late to matter",
-];
-const BENEFITS = [
-  "Risk calculated automatically from 14 days of real activity",
-  "Six distinct overwork signals tracked per employee",
-  "A plain-language nudge to check in, before it's a crisis",
-];
-
-const COMPARISON_COLUMNS = ["TrackDots", "Basic Time Trackers", "Spreadsheets & Manual Logs"];
-const COMPARISON_ROWS: { capability: string; statuses: ("yes" | "partial" | "no")[] }[] = [
-  { capability: "14-day rolling burnout risk score", statuses: ["yes", "no", "no"] },
-  { capability: "Six tracked overwork signals", statuses: ["yes", "no", "no"] },
-  { capability: "Configurable risk thresholds", statuses: ["yes", "no", "no"] },
-  { capability: "Four-tier risk classification", statuses: ["yes", "no", "no"] },
-  { capability: "Plain-language recommendations", statuses: ["yes", "no", "no"] },
-  { capability: "One-click link to employee profile", statuses: ["yes", "partial", "no"] },
-];
-
-const FAQS = [
-  { q: "How is burnout risk calculated?", a: "TrackDots looks at the last 14 days of real tracked activity — hours worked, breaks taken, weekend and late-night work, and productivity trend — against your configured thresholds." },
-  { q: "What are the risk levels?", a: "Every employee lands in one of four levels — High, Medium, Watch, or All Clear — based on how many overwork signals are triggered." },
-  { q: "Can I adjust what counts as overwork?", a: "Yes. Thresholds for long hours, late nights, and weekly limits are all configurable per organization." },
-  { q: "What signals does TrackDots track?", a: "Long hours, no breaks, weekend work, late nights, declining productivity, and weekly hours over limit — each shown individually per employee." },
-  { q: "Does a High risk flag mean something is definitely wrong?", a: "No. It means the employee's recent pattern matches signals worth a manager check-in — TrackDots gives a plain-language recommendation, not a verdict." },
-  { q: "Can employees see their own burnout risk?", a: "Yes, on plans with the employee self-view portal enabled." },
-];
 
 /** Same 820×540 sidebar+topbar "dashboard chrome" shell used across every
  * feature hero — content area swapped for the real Burnout Detection layout
@@ -332,229 +281,105 @@ const ProfileLinkWidget = () => (
   </div>
 );
 
-const STICKY_CARDS: StickyCard[] = [
-  {
-    tone: "purple",
-    icon: TrendUp,
-    title: "A Score, Not a Guess",
-    desc: "Every employee is placed into a risk tier calculated from 14 real days of activity.",
-    checks: ["14-day rolling window", "Four risk tiers", "Recalculated automatically, daily"],
-    widget: <RiskTiersWidget />,
-  },
-  {
-    tone: "dark",
-    icon: Activity,
-    title: "Six Signals, Tracked Individually",
-    desc: "Long hours, no breaks, weekend work, late nights, declining productivity, and weekly overload — each shown on its own.",
-    checks: ["Long hours & late nights", "Weekend work & missed breaks", "Declining productivity trend"],
-    widget: <SignalsWidget />,
-  },
-  {
-    tone: "purple",
-    icon: Settings,
-    title: "Thresholds You Control",
-    desc: "What counts as a \"long day\" or \"late night\" is fully configurable per organization.",
-    checks: ["Configurable long-day threshold", "Configurable late-night window", "Configurable weekly cap"],
-    widget: <ThresholdsWidget />,
-  },
-  {
-    tone: "dark",
-    icon: Sparkles,
-    title: "A Recommendation, Not Just a Number",
-    desc: "Every at-risk employee comes with a plain-language suggestion for what to do next.",
-    checks: ["Plain-language recommendations", "Tuned to the specific signals found", "Written for managers, not analysts"],
-    widget: <RecommendationWidget />,
-  },
-  {
-    tone: "purple",
-    icon: Users,
-    title: "One Click to the Full Picture",
-    desc: "Jump straight from any flagged employee to their complete activity profile.",
-    checks: ["One-click profile access", "Full 14-day activity history", "Same view for every risk tier"],
-    widget: <ProfileLinkWidget />,
-  },
-];
-
-export default function BurnoutDetectionPage() {
-  return (
-    <main className="flex-1 bg-white">
-      <Navbar />
-
-      <FeatureHero
-        eyebrow="FEATURE — BURNOUT DETECTION"
-        heading="Spot Overwork Before"
-        highlight="It Costs You Someone."
-        description="A 14-day rolling burnout risk score built from real activity — long hours, no breaks, weekend work, late nights, and more — with plain-language recommendations."
-        visual={<BurnoutHeroCard />}
-      />
-
-      <FeatureProblemSolution
-        eyebrow="THE WELL-BEING GAP"
-        heading="Don't Wait for Someone to Burn Out"
-        subheading="By the time overwork is obvious, it's already taken a toll. Burnout Detection catches it 14 days at a time."
-        problems={PROBLEMS}
-        benefits={BENEFITS}
-      />
-
-      <FeatureGrid
-        eyebrow="HOW IT WORKS"
-        heading="A Risk Score That Builds Itself"
-        subheading="Six real signals, four risk tiers, and a plain-language nudge for every manager."
-        items={CAPABILITIES}
-      />
-
-      <FeatureDarkHighlight
-        eyebrow="RISK SIGNALS"
-        blocks={[
-          {
-            highlighted: true,
-            heading: "Every Signal, Shown Individually",
-            desc: "Long hours, late nights, weekend work, missed breaks, and more — never just one blended score.",
-            checklist: ["Six distinct overwork signals", "Shown per employee, per signal"],
-          },
-          {
-            heading: "A Recommendation, Every Time",
-            desc: "Each at-risk employee comes with a plain-language suggestion for what a manager should do next.",
-            checklist: ["Plain-language recommendations", "Tuned to the exact signals found"],
-          },
-        ]}
-        linkLabel="Explore Burnout Detection"
-        visual={
-          <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
-            <div className="overflow-hidden rounded-3xl shadow-2xl">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={TEAM_MEETING_IMAGE} alt="" className="h-[420px] w-full object-cover" style={{ objectPosition: "35% 25%" }} loading="lazy" />
-            </div>
-            <div className="absolute -left-2 top-0 w-[240px] rounded-2xl bg-white p-4 shadow-2xl">
-              <div className="flex items-center justify-between">
-                <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Mohsin Khan</div>
-                <span className="rounded-full bg-red-50 px-1.5 py-0.5 text-[8px] font-bold text-red-600">High Risk</span>
-              </div>
-              <div className="mt-2 flex gap-4">
-                <div>
-                  <div className="text-[15px] font-bold text-gray-900">9.1h</div>
-                  <div className="text-[8px] text-gray-400">avg/day</div>
-                </div>
-                <div>
-                  <div className="text-[15px] font-bold text-gray-900">10.4h</div>
-                  <div className="text-[8px] text-gray-400">peak</div>
-                </div>
-              </div>
-              <div className="mt-2.5 text-[9.5px] italic text-gray-500">&ldquo;Consider checking in.&rdquo;</div>
-            </div>
-            <div className="absolute -bottom-2 -right-4 w-[210px] rounded-xl bg-white p-4 shadow-2xl">
-              <div className="text-[9px] font-bold uppercase tracking-wide text-gray-400">Team Snapshot</div>
-              <div className="mt-1 text-[20px] font-bold text-gray-900">17 of 19</div>
-              <div className="mt-1.5 text-[9.5px] text-gray-400">Employees all clear this week</div>
-            </div>
+const VISUALS: FeaturePageVisuals = {
+  hero: <BurnoutHeroCard />,
+  dark1: (
+    <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
+      <div className="overflow-hidden rounded-3xl shadow-2xl">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={TEAM_MEETING_IMAGE} alt="" className="h-[420px] w-full object-cover" style={{ objectPosition: "35% 25%" }} loading="lazy" />
+      </div>
+      <div className="absolute -left-2 top-0 w-[240px] rounded-2xl bg-white p-4 shadow-2xl">
+        <div className="flex items-center justify-between">
+          <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Mohsin Khan</div>
+          <span className="rounded-full bg-red-50 px-1.5 py-0.5 text-[8px] font-bold text-red-600">High Risk</span>
+        </div>
+        <div className="mt-2 flex gap-4">
+          <div>
+            <div className="text-[15px] font-bold text-gray-900">9.1h</div>
+            <div className="text-[8px] text-gray-400">avg/day</div>
           </div>
-        }
-      />
-
-      <FeatureStickyShowcase
-        eyebrow="GO DEEPER"
-        heading="Every Angle of Burnout Detection"
-        desc="From individual signals to team-wide risk tiers — TrackDots surfaces overwork before it becomes a resignation."
-        cards={STICKY_CARDS}
-      />
-
-      <FeatureHighlightPanel
-        reverse
-        heading="Built for Conversations, Not Verdicts"
-        desc="A High risk flag is a prompt to check in — never an automated judgment. Every recommendation is paired with the real activity behind it."
-        checklist={["Every flag paired with real evidence", "Written to prompt a conversation", "Never used for automated penalties"]}
-        linkLabel="See How Recommendations Work"
-        visual={
-          <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
-            <div className="overflow-hidden rounded-3xl shadow-2xl">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={TEAM_MEETING_IMAGE} alt="" className="h-[380px] w-full object-cover" style={{ objectPosition: "50% 40%" }} loading="lazy" />
-            </div>
-            <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
-              <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Nihar Ranjan Mohanta</div>
-              <span className="mt-1.5 inline-block rounded-full bg-amber-50 px-1.5 py-0.5 text-[8px] font-bold text-amber-600">
-                Medium Risk
-              </span>
-              <div className="mt-2 text-[9.5px] italic text-gray-500">&ldquo;Monitor this week — early signs of unsustainable work patterns.&rdquo;</div>
-            </div>
-            <div className="absolute -bottom-2 -right-4 flex items-center gap-2.5 rounded-2xl bg-brand-600 px-4 py-3 text-white shadow-2xl shadow-brand-600/40">
-              <ShieldCheck className="h-6 w-6" strokeWidth={1.8} />
-              <span className="text-[10px] font-semibold leading-tight">
-                People First,
-                <br />
-                Always
-              </span>
-            </div>
+          <div>
+            <div className="text-[15px] font-bold text-gray-900">10.4h</div>
+            <div className="text-[8px] text-gray-400">peak</div>
           </div>
-        }
-      />
-
-      <FeatureStatsRow
-        stats={[
-          { icon: Clock, value: "14-Day", label: "Rolling Window", desc: "Risk is calculated from a rolling 14 days of real activity, refreshed daily.", photoSrc: TEAM_MEETING_IMAGE, photoPosition: "20% 30%" },
-          { icon: Activity, value: "6", label: "Overwork Signals", desc: "Long hours, no breaks, weekend work, late nights, and more, tracked individually.", photoSrc: TEAM_MEETING_IMAGE, photoPosition: "50% 25%" },
-          { icon: ShieldCheck, value: "4-Tier", label: "Risk Classification", desc: "High, Medium, Watch, or All Clear — configurable to your organization's thresholds.", photoSrc: TEAM_MEETING_IMAGE, photoPosition: "85% 30%" },
-        ]}
-      />
-
-      <FeatureDarkHighlight
-        reverse
-        eyebrow="CONNECTED TO THE BIGGER PICTURE"
-        blocks={[
-          {
-            highlighted: true,
-            heading: "One Signal Among Many",
-            desc: "Burnout risk sits alongside anomaly flags and productivity trends for a complete view of team health.",
-            checklist: ["Shares signals with Anomaly Detection", "Feeds into Productivity Intelligence"],
-          },
-          {
-            heading: "Adjustable as Your Team Grows",
-            desc: "Thresholds can be revisited any time as team size, seasons, or workload patterns change.",
-            checklist: ["Thresholds configurable anytime", "Applies going forward, not retroactively"],
-          },
-        ]}
-        linkLabel="See Anomaly Detection"
-        visual={
-          <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
-            <div className="overflow-hidden rounded-3xl shadow-2xl">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={TEAM_MEETING_IMAGE} alt="" className="h-[420px] w-full object-cover sm:h-[460px]" style={{ objectPosition: "55% 55%" }} loading="lazy" />
-            </div>
-            <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
-              <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Team Risk — This Week</div>
-              <div className="mt-3 grid grid-cols-2 gap-2 text-center">
-                <div className="rounded-lg bg-gray-50 px-2.5 py-2 ring-1 ring-gray-100">
-                  <div className="text-[15px] font-extrabold text-red-500">1</div>
-                  <div className="text-[7.5px] font-semibold uppercase text-gray-400">High</div>
-                </div>
-                <div className="rounded-lg bg-gray-50 px-2.5 py-2 ring-1 ring-gray-100">
-                  <div className="text-[15px] font-extrabold text-amber-500">1</div>
-                  <div className="text-[7.5px] font-semibold uppercase text-gray-400">Medium</div>
-                </div>
-              </div>
-            </div>
-            <div className="absolute -bottom-2 -right-4 w-[220px] rounded-xl bg-gray-950 p-4 shadow-2xl ring-1 ring-white/10">
-              <div className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-wide text-white/50">
-                <Settings className="h-3.5 w-3.5" strokeWidth={1.8} />
-                Thresholds
-              </div>
-              <div className="mt-2 text-[13px] font-bold text-white">Yours to configure</div>
-              <div className="mt-2 text-[9px] text-white/40">Changes apply going forward</div>
-            </div>
+        </div>
+        <div className="mt-2.5 text-[9.5px] italic text-gray-500">&ldquo;Consider checking in.&rdquo;</div>
+      </div>
+      <div className="absolute -bottom-2 -right-4 w-[210px] rounded-xl bg-white p-4 shadow-2xl">
+        <div className="text-[9px] font-bold uppercase tracking-wide text-gray-400">Team Snapshot</div>
+        <div className="mt-1 text-[20px] font-bold text-gray-900">17 of 19</div>
+        <div className="mt-1.5 text-[9.5px] text-gray-400">Employees all clear this week</div>
+      </div>
+    </div>
+  ),
+  stickyWidgets: [
+    <RiskTiersWidget key="risk-tiers" />,
+    <SignalsWidget key="signals" />,
+    <ThresholdsWidget key="thresholds" />,
+    <RecommendationWidget key="recommendation" />,
+    <ProfileLinkWidget key="profile-link" />,
+  ],
+  panel: (
+    <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
+      <div className="overflow-hidden rounded-3xl shadow-2xl">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={TEAM_MEETING_IMAGE} alt="" className="h-[380px] w-full object-cover" style={{ objectPosition: "50% 40%" }} loading="lazy" />
+      </div>
+      <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
+        <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Nihar Ranjan Mohanta</div>
+        <span className="mt-1.5 inline-block rounded-full bg-amber-50 px-1.5 py-0.5 text-[8px] font-bold text-amber-600">
+          Medium Risk
+        </span>
+        <div className="mt-2 text-[9.5px] italic text-gray-500">&ldquo;Monitor this week — early signs of unsustainable work patterns.&rdquo;</div>
+      </div>
+      <div className="absolute -bottom-2 -right-4 flex items-center gap-2.5 rounded-2xl bg-brand-600 px-4 py-3 text-white shadow-2xl shadow-brand-600/40">
+        <ShieldCheck className="h-6 w-6" strokeWidth={1.8} />
+        <span className="text-[10px] font-semibold leading-tight">
+          People First,
+          <br />
+          Always
+        </span>
+      </div>
+    </div>
+  ),
+  dark2: (
+    <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
+      <div className="overflow-hidden rounded-3xl shadow-2xl">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={TEAM_MEETING_IMAGE} alt="" className="h-[420px] w-full object-cover sm:h-[460px]" style={{ objectPosition: "55% 55%" }} loading="lazy" />
+      </div>
+      <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
+        <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Team Risk — This Week</div>
+        <div className="mt-3 grid grid-cols-2 gap-2 text-center">
+          <div className="rounded-lg bg-gray-50 px-2.5 py-2 ring-1 ring-gray-100">
+            <div className="text-[15px] font-extrabold text-red-500">1</div>
+            <div className="text-[7.5px] font-semibold uppercase text-gray-400">High</div>
           </div>
-        }
-      />
+          <div className="rounded-lg bg-gray-50 px-2.5 py-2 ring-1 ring-gray-100">
+            <div className="text-[15px] font-extrabold text-amber-500">1</div>
+            <div className="text-[7.5px] font-semibold uppercase text-gray-400">Medium</div>
+          </div>
+        </div>
+      </div>
+      <div className="absolute -bottom-2 -right-4 w-[220px] rounded-xl bg-gray-950 p-4 shadow-2xl ring-1 ring-white/10">
+        <div className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-wide text-white/50">
+          <Settings className="h-3.5 w-3.5" strokeWidth={1.8} />
+          Thresholds
+        </div>
+        <div className="mt-2 text-[13px] font-bold text-white">Yours to configure</div>
+        <div className="mt-2 text-[9px] text-white/40">Changes apply going forward</div>
+      </div>
+    </div>
+  ),
+  statsPhotos: [
+    { photoSrc: TEAM_MEETING_IMAGE, photoPosition: "20% 30%" },
+    { photoSrc: TEAM_MEETING_IMAGE, photoPosition: "50% 25%" },
+    { photoSrc: TEAM_MEETING_IMAGE, photoPosition: "85% 30%" },
+  ],
+};
 
-      <FeatureComparison
-        heading="Get The Right Tool"
-        subheading="See how TrackDots' burnout detection compares to the old way."
-        columns={COMPARISON_COLUMNS}
-        rows={COMPARISON_ROWS}
-      />
-
-      <FeatureFAQ heading="Burnout Detection, Answered" items={FAQS} />
-
-      <FinalCTA />
-    </main>
-  );
+export default async function BurnoutDetectionPage() {
+  const content = await getFeaturePageContent(SLUG, FALLBACK);
+  return <FeaturePageSections content={content} visuals={VISUALS} />;
 }

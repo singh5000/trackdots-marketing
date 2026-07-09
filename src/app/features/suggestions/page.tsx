@@ -1,15 +1,6 @@
 import type { Metadata } from "next";
-import Navbar from "@/components/Navbar";
-import FinalCTA from "@/components/FinalCTA";
-import FeatureHero from "@/components/features/FeatureHero";
-import FeatureGrid from "@/components/features/FeatureGrid";
-import FeatureHighlightPanel from "@/components/features/FeatureHighlightPanel";
-import FeatureDarkHighlight from "@/components/features/FeatureDarkHighlight";
-import FeatureProblemSolution from "@/components/features/FeatureProblemSolution";
-import FeatureStickyShowcase, { type StickyCard } from "@/components/features/FeatureStickyShowcase";
-import FeatureStatsRow from "@/components/features/FeatureStatsRow";
-import FeatureComparison from "@/components/features/FeatureComparison";
-import FeatureFAQ from "@/components/features/FeatureFAQ";
+import FeaturePageSections, { type FeaturePageVisuals } from "@/components/features/FeaturePageSections";
+import { getFeaturePageContent } from "@/lib/featurepage";
 import { BarRows, ChecklistRows, StatGrid } from "@/components/features/widgets";
 import { TEAM_MEETING_IMAGE } from "@/lib/media";
 import {
@@ -28,51 +19,13 @@ import {
   Settings,
   Users,
 } from "@/components/icons";
+import { FALLBACK, SLUG } from "./content";
 
 export const metadata: Metadata = {
   title: "Suggestions & Complaints — TrackDots",
   description:
     "A ticketed system for employee suggestions and complaints — categorized, assignable, and tracked from submission to resolution.",
 };
-
-const CAPABILITIES = [
-  { icon: Inbox, title: "Suggestions & Complaints, One Inbox", desc: "Employees submit suggestions or complaints from one simple form, no separate tools." },
-  { icon: FileText, title: "Ticket Numbering & Categorization", desc: "Every submission gets a ticket number and a category, so nothing gets lost in a group chat." },
-  { icon: Eye, title: "Three Views, One System", desc: "Company Wide, Assigned to Me, or My Submissions — the same system serves everyone differently." },
-  { icon: Clock, title: "Status & Due-Date Tracking", desc: "Track every ticket from Open to Resolved, with an optional due date." },
-  { icon: Users, title: "Assignable to the Right Owner", desc: "Route tickets to the right person, and see exactly who owns what." },
-  { icon: Search, title: "Searchable Full History", desc: "Every past ticket stays searchable — nothing disappears once it's resolved." },
-];
-
-const PROBLEMS = [
-  "Suggestions and complaints raised in chat, then forgotten",
-  "No visibility into who's actually handling an issue",
-  "Sensitive concerns with no clear paper trail or resolution",
-];
-const BENEFITS = [
-  "Every suggestion and complaint logged with a ticket number",
-  "Clear ownership and status on every submission",
-  "A searchable record, from submission to resolution",
-];
-
-const COMPARISON_COLUMNS = ["TrackDots", "Basic Time Trackers", "Spreadsheets & Manual Logs"];
-const COMPARISON_ROWS: { capability: string; statuses: ("yes" | "partial" | "no")[] }[] = [
-  { capability: "Ticketed suggestions & complaints system", statuses: ["yes", "no", "no"] },
-  { capability: "Category & type tagging", statuses: ["yes", "no", "no"] },
-  { capability: "Assignable ownership per ticket", statuses: ["yes", "no", "no"] },
-  { capability: "Status & due-date tracking", statuses: ["yes", "partial", "no"] },
-  { capability: "Company-wide vs. personal views", statuses: ["yes", "no", "no"] },
-  { capability: "Searchable historical record", statuses: ["yes", "partial", "no"] },
-];
-
-const FAQS = [
-  { q: "What's the difference between a suggestion and a complaint?", a: "Both use the same ticketing system — Type simply tags which one it is, so reporting can separate the two." },
-  { q: "Can employees submit anonymously?", a: "Every submission is tied to an employee account for accountability, and is only visible to authorized company roles and the submitter." },
-  { q: "How are tickets categorized?", a: "Each ticket is tagged with a category like Infrastructure or Workplace, making it easy to spot patterns over time." },
-  { q: "Can a ticket be assigned to someone?", a: "Yes. Tickets can be routed to a specific owner, and the \"Assigned to Me\" view shows exactly what's on someone's plate." },
-  { q: "Can I set a due date on a ticket?", a: "Yes. An optional due date keeps time-sensitive issues from stalling." },
-  { q: "Can I see the history of all past tickets?", a: "Yes. Every ticket, resolved or not, stays searchable in the company-wide view." },
-];
 
 /** Same 820×540 sidebar+topbar "dashboard chrome" shell used across every
  * feature hero — content area swapped for the real Suggestions & Complaints
@@ -278,222 +231,98 @@ const SearchWidget = () => (
   </div>
 );
 
-const STICKY_CARDS: StickyCard[] = [
-  {
-    tone: "purple",
-    icon: FileText,
-    title: "Every Submission, Ticketed",
-    desc: "A ticket number, type, and category are attached the moment something's submitted.",
-    checks: ["Auto-numbered tickets", "Suggestion or Complaint type", "Category tagged per ticket"],
-    widget: <TicketWidget />,
-  },
-  {
-    tone: "dark",
-    icon: Eye,
-    title: "The Right View for Everyone",
-    desc: "The same system shows a company-wide list, a personal assignment queue, or just your own submissions.",
-    checks: ["Company Wide view", "Assigned to Me view", "My Submissions view"],
-    widget: <ViewsWidget />,
-  },
-  {
-    tone: "purple",
-    icon: Clock,
-    title: "Status, Always Current",
-    desc: "Every ticket moves through Open, In Progress, and Resolved — never stuck in limbo.",
-    checks: ["Clear status per ticket", "Optional due date", "Full quarter-over-quarter view"],
-    widget: <StatusWidget />,
-  },
-  {
-    tone: "dark",
-    icon: Users,
-    title: "Owned, Not Orphaned",
-    desc: "Every ticket can be routed to the right owner, so nothing falls through the cracks.",
-    checks: ["Assignable ownership", "Due dates for accountability", "Nothing left unowned"],
-    widget: <AssignmentWidget />,
-  },
-  {
-    tone: "purple",
-    icon: Search,
-    title: "Searchable, Even After It's Closed",
-    desc: "Resolved tickets stay in the record, fully searchable — useful history, not a dead end.",
-    checks: ["Full-text ticket search", "Resolved tickets retained", "Useful for spotting patterns"],
-    widget: <SearchWidget />,
-  },
-];
-
-export default function SuggestionsPage() {
-  return (
-    <main className="flex-1 bg-white">
-      <Navbar />
-
-      <FeatureHero
-        eyebrow="FEATURE — SUGGESTIONS & COMPLAINTS"
-        heading="Every Voice, Logged."
-        highlight="Every Issue, Tracked."
-        description="A ticketed system for employee suggestions and complaints — categorized, assignable, and tracked from submission to resolution."
-        visual={<SuggestionsHeroCard />}
-      />
-
-      <FeatureProblemSolution
-        eyebrow="THE ACCOUNTABILITY GAP"
-        heading="Stop Losing Feedback in Group Chats"
-        subheading="A suggestion raised in a hallway conversation rarely goes anywhere. A ticketed system does."
-        problems={PROBLEMS}
-        benefits={BENEFITS}
-      />
-
-      <FeatureGrid
-        eyebrow="HOW IT WORKS"
-        heading="From Submission to Resolution"
-        subheading="Every suggestion and complaint, tracked the same auditable way."
-        items={CAPABILITIES}
-      />
-
-      <FeatureDarkHighlight
-        eyebrow="TICKET SYSTEM"
-        blocks={[
-          {
-            highlighted: true,
-            heading: "Every Ticket, Fully Tagged",
-            desc: "Type, category, and status are attached to every submission from the moment it's created.",
-            checklist: ["Auto-numbered tickets", "Type & category tagged"],
-          },
-          {
-            heading: "Three Views, One Source of Truth",
-            desc: "Company Wide, Assigned to Me, and My Submissions all pull from the same underlying ticket system.",
-            checklist: ["Company-wide visibility", "Personal assignment queue"],
-          },
-        ]}
-        linkLabel="Explore Suggestions & Complaints"
-        visual={
-          <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
-            <div className="overflow-hidden rounded-3xl shadow-2xl">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={TEAM_MEETING_IMAGE} alt="" className="h-[420px] w-full object-cover" style={{ objectPosition: "40% 25%" }} loading="lazy" />
+const VISUALS: FeaturePageVisuals = {
+  hero: <SuggestionsHeroCard />,
+  dark1: (
+    <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
+      <div className="overflow-hidden rounded-3xl shadow-2xl">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={TEAM_MEETING_IMAGE} alt="" className="h-[420px] w-full object-cover" style={{ objectPosition: "40% 25%" }} loading="lazy" />
+      </div>
+      <div className="absolute -left-2 top-0 w-[240px] rounded-2xl bg-white p-4 shadow-2xl">
+        <div className="flex items-center justify-between">
+          <div className="font-mono text-[9px] font-bold text-gray-500">GRV-2026-0002</div>
+          <span className="rounded-full bg-green-50 px-1.5 py-0.5 text-[8px] font-bold text-green-600">Resolved</span>
+        </div>
+        <div className="mt-2 text-[12px] font-bold text-gray-900">Abuse of Office Property</div>
+        <div className="mt-1 text-[9.5px] text-gray-500">Complaint · Infrastructure</div>
+      </div>
+      <div className="absolute -bottom-2 -right-4 w-[210px] rounded-xl bg-white p-4 shadow-2xl">
+        <div className="text-[9px] font-bold uppercase tracking-wide text-gray-400">This Quarter</div>
+        <div className="mt-1 text-[20px] font-bold text-gray-900">18</div>
+        <div className="mt-1.5 text-[9.5px] text-gray-400">Tickets submitted, 13 resolved</div>
+      </div>
+    </div>
+  ),
+  stickyWidgets: [
+    <TicketWidget key="ticket" />,
+    <ViewsWidget key="views" />,
+    <StatusWidget key="status" />,
+    <AssignmentWidget key="assignment" />,
+    <SearchWidget key="search" />,
+  ],
+  panel: (
+    <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
+      <div className="overflow-hidden rounded-3xl shadow-2xl">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={TEAM_MEETING_IMAGE} alt="" className="h-[380px] w-full object-cover" style={{ objectPosition: "55% 35%" }} loading="lazy" />
+      </div>
+      <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
+        <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">My Submissions</div>
+        <div className="mt-3 space-y-2">
+          {[{ l: "GRV-2026-0007", v: "Open" }, { l: "GRV-2026-0003", v: "Resolved" }].map((s) => (
+            <div key={s.l} className="flex items-center justify-between rounded-lg bg-gray-50 px-2.5 py-2">
+              <span className="font-mono text-[9px] font-medium text-gray-500">{s.l}</span>
+              <span className="text-[9.5px] font-bold text-brand-600">{s.v}</span>
             </div>
-            <div className="absolute -left-2 top-0 w-[240px] rounded-2xl bg-white p-4 shadow-2xl">
-              <div className="flex items-center justify-between">
-                <div className="font-mono text-[9px] font-bold text-gray-500">GRV-2026-0002</div>
-                <span className="rounded-full bg-green-50 px-1.5 py-0.5 text-[8px] font-bold text-green-600">Resolved</span>
-              </div>
-              <div className="mt-2 text-[12px] font-bold text-gray-900">Abuse of Office Property</div>
-              <div className="mt-1 text-[9.5px] text-gray-500">Complaint · Infrastructure</div>
+          ))}
+        </div>
+      </div>
+      <div className="absolute -bottom-2 -right-4 flex items-center gap-2.5 rounded-2xl bg-brand-600 px-4 py-3 text-white shadow-2xl shadow-brand-600/40">
+        <Eye className="h-6 w-6" strokeWidth={1.8} />
+        <span className="text-[10px] font-semibold leading-tight">
+          Private,
+          <br />
+          By Default
+        </span>
+      </div>
+    </div>
+  ),
+  dark2: (
+    <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
+      <div className="overflow-hidden rounded-3xl shadow-2xl">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={TEAM_MEETING_IMAGE} alt="" className="h-[420px] w-full object-cover sm:h-[460px]" style={{ objectPosition: "50% 55%" }} loading="lazy" />
+      </div>
+      <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
+        <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">By Category — This Quarter</div>
+        <div className="mt-3 space-y-2">
+          {[{ c: "Infrastructure", v: "11" }, { c: "Workplace", v: "5" }, { c: "HR Related", v: "2" }].map((c) => (
+            <div key={c.c} className="flex items-center justify-between rounded-lg bg-gray-50 px-2.5 py-2">
+              <span className="text-[9.5px] font-medium text-gray-600">{c.c}</span>
+              <span className="text-[9.5px] font-bold text-brand-600">{c.v}</span>
             </div>
-            <div className="absolute -bottom-2 -right-4 w-[210px] rounded-xl bg-white p-4 shadow-2xl">
-              <div className="text-[9px] font-bold uppercase tracking-wide text-gray-400">This Quarter</div>
-              <div className="mt-1 text-[20px] font-bold text-gray-900">18</div>
-              <div className="mt-1.5 text-[9.5px] text-gray-400">Tickets submitted, 13 resolved</div>
-            </div>
-          </div>
-        }
-      />
+          ))}
+        </div>
+      </div>
+      <div className="absolute -bottom-2 -right-4 w-[220px] rounded-xl bg-gray-950 p-4 shadow-2xl ring-1 ring-white/10">
+        <div className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-wide text-white/50">
+          <Clock className="h-3.5 w-3.5" strokeWidth={1.8} />
+          Avg. Resolution
+        </div>
+        <div className="mt-2 text-[13.5px] font-bold text-white">6 days</div>
+        <div className="mt-2 text-[9px] text-white/40">From submission to resolved</div>
+      </div>
+    </div>
+  ),
+  statsPhotos: [
+    { photoSrc: TEAM_MEETING_IMAGE, photoPosition: "20% 30%" },
+    { photoSrc: TEAM_MEETING_IMAGE, photoPosition: "50% 25%" },
+    { photoSrc: TEAM_MEETING_IMAGE, photoPosition: "85% 30%" },
+  ],
+};
 
-      <FeatureStickyShowcase
-        eyebrow="GO DEEPER"
-        heading="Every Angle of Suggestions & Complaints"
-        desc="From submission to resolution — TrackDots keeps every voice accounted for."
-        cards={STICKY_CARDS}
-      />
-
-      <FeatureHighlightPanel
-        reverse
-        heading="Visible to the Right People, Only"
-        desc="Company-wide tickets are visible to authorized roles; personal submissions stay private to the employee and whoever it's assigned to."
-        checklist={["Role-scoped visibility", "Assignable to a specific owner", "Full history, always searchable"]}
-        linkLabel="See Roles & Permissions"
-        visual={
-          <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
-            <div className="overflow-hidden rounded-3xl shadow-2xl">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={TEAM_MEETING_IMAGE} alt="" className="h-[380px] w-full object-cover" style={{ objectPosition: "55% 35%" }} loading="lazy" />
-            </div>
-            <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
-              <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">My Submissions</div>
-              <div className="mt-3 space-y-2">
-                {[{ l: "GRV-2026-0007", v: "Open" }, { l: "GRV-2026-0003", v: "Resolved" }].map((s) => (
-                  <div key={s.l} className="flex items-center justify-between rounded-lg bg-gray-50 px-2.5 py-2">
-                    <span className="font-mono text-[9px] font-medium text-gray-500">{s.l}</span>
-                    <span className="text-[9.5px] font-bold text-brand-600">{s.v}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="absolute -bottom-2 -right-4 flex items-center gap-2.5 rounded-2xl bg-brand-600 px-4 py-3 text-white shadow-2xl shadow-brand-600/40">
-              <Eye className="h-6 w-6" strokeWidth={1.8} />
-              <span className="text-[10px] font-semibold leading-tight">
-                Private,
-                <br />
-                By Default
-              </span>
-            </div>
-          </div>
-        }
-      />
-
-      <FeatureStatsRow
-        stats={[
-          { icon: FileText, value: "Auto", label: "Ticket Numbering", desc: "Every submission gets a unique, sequential ticket number.", photoSrc: TEAM_MEETING_IMAGE, photoPosition: "20% 30%" },
-          { icon: Eye, value: "3", label: "Views in One System", desc: "Company Wide, Assigned to Me, and My Submissions.", photoSrc: TEAM_MEETING_IMAGE, photoPosition: "50% 25%" },
-          { icon: Search, value: "100%", label: "Searchable History", desc: "Every resolved ticket stays in the record, fully searchable.", photoSrc: TEAM_MEETING_IMAGE, photoPosition: "85% 30%" },
-        ]}
-      />
-
-      <FeatureDarkHighlight
-        reverse
-        eyebrow="RESOLUTION TRACKING"
-        blocks={[
-          {
-            highlighted: true,
-            heading: "Due Dates Keep Things Moving",
-            desc: "An optional due date on any ticket makes sure time-sensitive issues don't quietly stall.",
-            checklist: ["Optional due date per ticket", "Visible in every view"],
-          },
-          {
-            heading: "Patterns, Not Just Individual Tickets",
-            desc: "Category tagging makes it easy to spot recurring issues across the whole organization.",
-            checklist: ["Category-level reporting", "Useful for HR and leadership reviews"],
-          },
-        ]}
-        linkLabel="See Category Reporting"
-        visual={
-          <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
-            <div className="overflow-hidden rounded-3xl shadow-2xl">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={TEAM_MEETING_IMAGE} alt="" className="h-[420px] w-full object-cover sm:h-[460px]" style={{ objectPosition: "50% 55%" }} loading="lazy" />
-            </div>
-            <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
-              <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">By Category — This Quarter</div>
-              <div className="mt-3 space-y-2">
-                {[{ c: "Infrastructure", v: "11" }, { c: "Workplace", v: "5" }, { c: "HR Related", v: "2" }].map((c) => (
-                  <div key={c.c} className="flex items-center justify-between rounded-lg bg-gray-50 px-2.5 py-2">
-                    <span className="text-[9.5px] font-medium text-gray-600">{c.c}</span>
-                    <span className="text-[9.5px] font-bold text-brand-600">{c.v}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="absolute -bottom-2 -right-4 w-[220px] rounded-xl bg-gray-950 p-4 shadow-2xl ring-1 ring-white/10">
-              <div className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-wide text-white/50">
-                <Clock className="h-3.5 w-3.5" strokeWidth={1.8} />
-                Avg. Resolution
-              </div>
-              <div className="mt-2 text-[13.5px] font-bold text-white">6 days</div>
-              <div className="mt-2 text-[9px] text-white/40">From submission to resolved</div>
-            </div>
-          </div>
-        }
-      />
-
-      <FeatureComparison
-        heading="Get The Right Tool"
-        subheading="See how TrackDots' suggestions & complaints system compares to the old way."
-        columns={COMPARISON_COLUMNS}
-        rows={COMPARISON_ROWS}
-      />
-
-      <FeatureFAQ heading="Suggestions & Complaints, Answered" items={FAQS} />
-
-      <FinalCTA />
-    </main>
-  );
+export default async function SuggestionsPage() {
+  const content = await getFeaturePageContent(SLUG, FALLBACK);
+  return <FeaturePageSections content={content} visuals={VISUALS} />;
 }

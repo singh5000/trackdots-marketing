@@ -1,23 +1,12 @@
 import type { Metadata } from "next";
-import Navbar from "@/components/Navbar";
-import FinalCTA from "@/components/FinalCTA";
-import FeatureHero from "@/components/features/FeatureHero";
-import FeatureGrid from "@/components/features/FeatureGrid";
-import FeatureHighlightPanel from "@/components/features/FeatureHighlightPanel";
-import FeatureDarkHighlight from "@/components/features/FeatureDarkHighlight";
-import FeatureProblemSolution from "@/components/features/FeatureProblemSolution";
-import FeatureStickyShowcase, { type StickyCard } from "@/components/features/FeatureStickyShowcase";
-import FeatureStatsRow from "@/components/features/FeatureStatsRow";
-import FeatureComparison from "@/components/features/FeatureComparison";
-import FeatureFAQ from "@/components/features/FeatureFAQ";
+import FeaturePageSections, { type FeaturePageVisuals } from "@/components/features/FeaturePageSections";
+import { getFeaturePageContent } from "@/lib/featurepage";
 import { BarRows, ChecklistRows, StatGrid } from "@/components/features/widgets";
 import { TEAM_MEETING_IMAGE } from "@/lib/media";
 import {
   BarChart,
   Bell,
   ChevronDown,
-  Clock,
-  Cloud,
   DotsLogo,
   FileText,
   Folder,
@@ -26,56 +15,16 @@ import {
   Lock,
   Monitor,
   Search,
-  Server,
   Settings,
-  ShieldCheck,
   Users,
 } from "@/components/icons";
+import { FALLBACK, SLUG } from "./content";
 
 export const metadata: Metadata = {
   title: "ERP Integration — TrackDots",
   description:
     "A read-only REST API for pulling time and productivity data into external ERP, payroll, and HR systems — secured with organization-scoped API keys.",
 };
-
-const CAPABILITIES = [
-  { icon: Server, title: "Read-Only REST API", desc: "A dedicated, read-only endpoint for pulling time and productivity data into external systems." },
-  { icon: BarChart, title: "Per-Employee, Per-Day Detail", desc: "Total, productive, idle, and low-quality hours, broken down by employee and by day." },
-  { icon: Lock, title: "Secure API Key Authentication", desc: "Every request is authenticated with an organization-scoped API key — no shared credentials." },
-  { icon: Cloud, title: "Built for ERP, Payroll & HR Systems", desc: "Designed to feed time data into the external systems your organization already runs." },
-  { icon: Clock, title: "Flexible Date Ranges", desc: "Query a single day or a custom range of up to 90 days." },
-  { icon: ShieldCheck, title: "Org-Scoped & Access-Controlled", desc: "Every API key is scoped to a single organization — no cross-tenant access, ever." },
-];
-
-const PROBLEMS = [
-  "Time and productivity data trapped inside one dashboard",
-  "Manually re-entering hours into payroll or ERP systems",
-  "No safe way to let an external system pull tracked-time data",
-];
-const BENEFITS = [
-  "A dedicated, read-only API for time and productivity data",
-  "Secure, organization-scoped API key authentication",
-  "Built specifically for ERP, payroll, and HR system integration",
-];
-
-const COMPARISON_COLUMNS = ["TrackDots", "Basic Time Trackers", "Spreadsheets & Manual Logs"];
-const COMPARISON_ROWS: { capability: string; statuses: ("yes" | "partial" | "no")[] }[] = [
-  { capability: "Dedicated read-only time-data API", statuses: ["yes", "no", "no"] },
-  { capability: "Per-employee, per-day hour breakdown", statuses: ["yes", "no", "no"] },
-  { capability: "Organization-scoped API key auth", statuses: ["yes", "no", "no"] },
-  { capability: "Custom date-range queries (up to 90 days)", statuses: ["yes", "no", "no"] },
-  { capability: "Built for ERP / payroll / HR integration", statuses: ["yes", "no", "no"] },
-  { capability: "No manual CSV re-entry required", statuses: ["yes", "partial", "no"] },
-];
-
-const FAQS = [
-  { q: "What does the ERP API actually return?", a: "For each employee and day, it returns total, productive, idle, and low-quality hours, along with productivity percentage, pause counts, and first/last-seen times." },
-  { q: "Is this a two-way sync with my ERP system?", a: "No. It's a one-way, read-only API — your ERP, payroll, or HR system pulls data from TrackDots; nothing is written back." },
-  { q: "How is the API authenticated?", a: "Every request requires an organization-scoped API key sent in the X-ERP-API-KEY header." },
-  { q: "What date ranges can I query?", a: "A single day, or a custom range of up to 90 days, using date_from and date_to parameters." },
-  { q: "Can I query multiple employees at once?", a: "Yes. Up to 50 employee email addresses can be included in a single request." },
-  { q: "Who can generate an API key?", a: "API keys are issued and managed by TrackDots on a per-organization basis — reach out to support to get one provisioned." },
-];
 
 /** Same 820×540 sidebar+topbar "dashboard chrome" shell used across every
  * feature hero — but since ERP Integration is a developer-facing REST API,
@@ -267,213 +216,89 @@ const ScopeWidget = () => (
   </div>
 );
 
-const STICKY_CARDS: StickyCard[] = [
-  {
-    tone: "purple",
-    icon: Server,
-    title: "One Endpoint, Purpose-Built",
-    desc: "A single, dedicated REST endpoint returns exactly the time and productivity data external systems need.",
-    checks: ["GET /api/erp/hours/", "JSON response, no proprietary format", "No SDK required"],
-    widget: <EndpointWidget />,
-  },
-  {
-    tone: "dark",
-    icon: Lock,
-    title: "Authenticated, Every Request",
-    desc: "Every call requires a valid, organization-scoped API key — there's no anonymous access.",
-    checks: ["X-ERP-API-KEY header required", "Key tied to one organization", "Revocable at any time"],
-    widget: <AuthWidget />,
-  },
-  {
-    tone: "purple",
-    icon: BarChart,
-    title: "Real Detail, Not a Summary",
-    desc: "Total, productive, idle, and low-quality hours, plus a productivity percentage — per employee, per day.",
-    checks: ["Per-employee, per-day granularity", "Pause counts & durations included", "First/last-seen timestamps included"],
-    widget: <DetailWidget />,
-  },
-  {
-    tone: "dark",
-    icon: Clock,
-    title: "Query What You Need",
-    desc: "Pull a single day or a custom window of up to 90 days in one request.",
-    checks: ["Single-day or ranged queries", "Up to 90 days per request", "Up to 50 employees per request"],
-    widget: <RangeWidget />,
-  },
-  {
-    tone: "purple",
-    icon: ShieldCheck,
-    title: "Never Crosses Organizations",
-    desc: "Every API key is strictly scoped — there is no way for one organization's key to see another's data.",
-    checks: ["Strict organization scoping", "No cross-tenant access, ever", "Read-only, nothing is ever written back"],
-    widget: <ScopeWidget />,
-  },
-];
-
-export default function ErpIntegrationPage() {
-  return (
-    <main className="flex-1 bg-white">
-      <Navbar />
-
-      <FeatureHero
-        eyebrow="FEATURE — ERP INTEGRATION"
-        heading="Your Time Data,"
-        highlight="Anywhere You Need It."
-        description="A read-only REST API for pulling time and productivity data into external ERP, payroll, and HR systems — secured with organization-scoped API keys."
-        visual={<ErpHeroCard />}
-      />
-
-      <FeatureProblemSolution
-        eyebrow="THE SILOED-DATA GAP"
-        heading="Stop Re-Typing Hours Into Another System"
-        subheading="Time data that only lives in one dashboard means someone, somewhere, is re-entering it by hand. The API removes that step."
-        problems={PROBLEMS}
-        benefits={BENEFITS}
-      />
-
-      <FeatureGrid
-        eyebrow="HOW IT WORKS"
-        heading="One API, Built for Integration"
-        subheading="Read-only, organization-scoped, and designed specifically for ERP, payroll, and HR systems."
-        items={CAPABILITIES}
-      />
-
-      <FeatureDarkHighlight
-        eyebrow="THE ENDPOINT"
-        blocks={[
-          {
-            highlighted: true,
-            heading: "A Single, Purpose-Built Endpoint",
-            desc: "One GET request returns per-employee, per-day time data — no proprietary SDK, just JSON over HTTPS.",
-            checklist: ["GET /api/erp/hours/", "Plain JSON response"],
-          },
-          {
-            heading: "Authenticated by Design",
-            desc: "Every request must include a valid organization-scoped API key in the request header.",
-            checklist: ["X-ERP-API-KEY header required", "Keys issued per organization"],
-          },
-        ]}
-        linkLabel="Read the API Documentation"
-        visual={
-          <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
-            <div className="overflow-hidden rounded-3xl shadow-2xl">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={TEAM_MEETING_IMAGE} alt="" className="h-[420px] w-full object-cover" style={{ objectPosition: "45% 25%" }} loading="lazy" />
+const VISUALS: FeaturePageVisuals = {
+  hero: <ErpHeroCard />,
+  dark1: (
+    <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
+      <div className="overflow-hidden rounded-3xl shadow-2xl">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={TEAM_MEETING_IMAGE} alt="" className="h-[420px] w-full object-cover" style={{ objectPosition: "45% 25%" }} loading="lazy" />
+      </div>
+      <div className="absolute -left-2 top-0 w-[250px] rounded-2xl bg-gray-950 p-4 shadow-2xl">
+        <div className="flex items-center gap-2 text-[9px] font-semibold text-white/50">
+          <span className="rounded bg-green-500/20 px-1.5 py-0.5 font-bold text-green-400">GET</span>
+          /api/erp/hours/
+        </div>
+        <div className="mt-2 font-mono text-[9.5px] text-white/70">X-ERP-API-KEY: ••••7f3a</div>
+      </div>
+      <div className="absolute -bottom-2 -right-4 w-[210px] rounded-xl bg-white p-4 shadow-2xl">
+        <div className="text-[9px] font-bold uppercase tracking-wide text-gray-400">Response Format</div>
+        <div className="mt-1 text-[15px] font-bold text-gray-900">JSON</div>
+        <div className="mt-1.5 text-[9.5px] text-gray-400">Per employee, per day</div>
+      </div>
+    </div>
+  ),
+  stickyWidgets: [
+    <EndpointWidget key="endpoint" />,
+    <AuthWidget key="auth" />,
+    <DetailWidget key="detail" />,
+    <RangeWidget key="range" />,
+    <ScopeWidget key="scope" />,
+  ],
+  panel: (
+    <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
+      <div className="overflow-hidden rounded-3xl shadow-2xl">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={TEAM_MEETING_IMAGE} alt="" className="h-[380px] w-full object-cover" style={{ objectPosition: "55% 35%" }} loading="lazy" />
+      </div>
+      <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
+        <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Direction</div>
+        <div className="mt-2 flex items-center gap-2 text-[13px] font-bold text-gray-900">
+          TrackDots <span className="text-brand-600">→</span> Your ERP
+        </div>
+        <div className="mt-1 text-[9.5px] text-gray-500">Never the other way around</div>
+      </div>
+      <div className="absolute -bottom-2 -right-4 flex items-center gap-2.5 rounded-2xl bg-brand-600 px-4 py-3 text-white shadow-2xl shadow-brand-600/40">
+        <Lock className="h-6 w-6" strokeWidth={1.8} />
+        <span className="text-[10px] font-semibold leading-tight">
+          Read-Only,
+          <br />
+          Always
+        </span>
+      </div>
+    </div>
+  ),
+  dark2: (
+    <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
+      <div className="overflow-hidden rounded-3xl shadow-2xl">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={TEAM_MEETING_IMAGE} alt="" className="h-[420px] w-full object-cover sm:h-[460px]" style={{ objectPosition: "60% 55%" }} loading="lazy" />
+      </div>
+      <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
+        <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Works Well With</div>
+        <div className="mt-3 space-y-2">
+          {["ERP systems", "Payroll platforms", "HR information systems"].map((f) => (
+            <div key={f} className="rounded-lg bg-gray-50 px-2.5 py-2 text-[10px] font-medium text-gray-700">
+              {f}
             </div>
-            <div className="absolute -left-2 top-0 w-[250px] rounded-2xl bg-gray-950 p-4 shadow-2xl">
-              <div className="flex items-center gap-2 text-[9px] font-semibold text-white/50">
-                <span className="rounded bg-green-500/20 px-1.5 py-0.5 font-bold text-green-400">GET</span>
-                /api/erp/hours/
-              </div>
-              <div className="mt-2 font-mono text-[9.5px] text-white/70">X-ERP-API-KEY: ••••7f3a</div>
-            </div>
-            <div className="absolute -bottom-2 -right-4 w-[210px] rounded-xl bg-white p-4 shadow-2xl">
-              <div className="text-[9px] font-bold uppercase tracking-wide text-gray-400">Response Format</div>
-              <div className="mt-1 text-[15px] font-bold text-gray-900">JSON</div>
-              <div className="mt-1.5 text-[9.5px] text-gray-400">Per employee, per day</div>
-            </div>
-          </div>
-        }
-      />
+          ))}
+        </div>
+      </div>
+      <div className="absolute -bottom-2 -right-4 w-[210px] rounded-xl bg-white p-4 shadow-2xl">
+        <div className="text-[9px] font-bold uppercase tracking-wide text-gray-400">Setup Time</div>
+        <div className="mt-1 text-[20px] font-bold text-gray-900">Minutes</div>
+        <div className="mt-1.5 text-[9.5px] text-gray-400">Once your key is provisioned</div>
+      </div>
+    </div>
+  ),
+  statsPhotos: [
+    { photoSrc: TEAM_MEETING_IMAGE, photoPosition: "20% 30%" },
+    { photoSrc: TEAM_MEETING_IMAGE, photoPosition: "50% 25%" },
+    { photoSrc: TEAM_MEETING_IMAGE, photoPosition: "85% 30%" },
+  ],
+};
 
-      <FeatureStickyShowcase
-        eyebrow="GO DEEPER"
-        heading="Every Angle of the ERP API"
-        desc="From authentication to response detail — TrackDots' API is built to be a good citizen in your existing stack."
-        cards={STICKY_CARDS}
-      />
-
-      <FeatureHighlightPanel
-        reverse
-        heading="Read-Only, On Purpose"
-        desc="The API only ever sends data out — it never writes back to TrackDots, and it never touches another organization's data."
-        checklist={["Strictly one-way, read-only", "Organization-scoped API keys", "No shared or global credentials"]}
-        linkLabel="See Security Details"
-        visual={
-          <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
-            <div className="overflow-hidden rounded-3xl shadow-2xl">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={TEAM_MEETING_IMAGE} alt="" className="h-[380px] w-full object-cover" style={{ objectPosition: "55% 35%" }} loading="lazy" />
-            </div>
-            <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
-              <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Direction</div>
-              <div className="mt-2 flex items-center gap-2 text-[13px] font-bold text-gray-900">
-                TrackDots <span className="text-brand-600">→</span> Your ERP
-              </div>
-              <div className="mt-1 text-[9.5px] text-gray-500">Never the other way around</div>
-            </div>
-            <div className="absolute -bottom-2 -right-4 flex items-center gap-2.5 rounded-2xl bg-brand-600 px-4 py-3 text-white shadow-2xl shadow-brand-600/40">
-              <Lock className="h-6 w-6" strokeWidth={1.8} />
-              <span className="text-[10px] font-semibold leading-tight">
-                Read-Only,
-                <br />
-                Always
-              </span>
-            </div>
-          </div>
-        }
-      />
-
-      <FeatureStatsRow
-        stats={[
-          { icon: Server, value: "1", label: "Dedicated Endpoint", desc: "GET /api/erp/hours/ — one endpoint, purpose-built for time data.", photoSrc: TEAM_MEETING_IMAGE, photoPosition: "20% 30%" },
-          { icon: Clock, value: "90-Day", label: "Max Query Range", desc: "Query a single day or a custom range of up to 90 days.", photoSrc: TEAM_MEETING_IMAGE, photoPosition: "50% 25%" },
-          { icon: Users, value: "50", label: "Employees Per Request", desc: "Query up to 50 employee email addresses in a single call.", photoSrc: TEAM_MEETING_IMAGE, photoPosition: "85% 30%" },
-        ]}
-      />
-
-      <FeatureDarkHighlight
-        reverse
-        eyebrow="BUILT FOR YOUR STACK"
-        blocks={[
-          {
-            highlighted: true,
-            heading: "Payroll, HR, or ERP — Any of Them",
-            desc: "The API doesn't assume which system you're feeding — the response is generic enough to fit any of them.",
-            checklist: ["Works with payroll platforms", "Works with ERP and HR systems"],
-          },
-          {
-            heading: "Provisioned When You Need It",
-            desc: "Reach out to TrackDots support and an organization-scoped key is issued for your integration.",
-            checklist: ["Issued per organization", "Revocable at any time"],
-          },
-        ]}
-        linkLabel="Request API Access"
-        visual={
-          <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
-            <div className="overflow-hidden rounded-3xl shadow-2xl">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={TEAM_MEETING_IMAGE} alt="" className="h-[420px] w-full object-cover sm:h-[460px]" style={{ objectPosition: "60% 55%" }} loading="lazy" />
-            </div>
-            <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
-              <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Works Well With</div>
-              <div className="mt-3 space-y-2">
-                {["ERP systems", "Payroll platforms", "HR information systems"].map((f) => (
-                  <div key={f} className="rounded-lg bg-gray-50 px-2.5 py-2 text-[10px] font-medium text-gray-700">
-                    {f}
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="absolute -bottom-2 -right-4 w-[210px] rounded-xl bg-white p-4 shadow-2xl">
-              <div className="text-[9px] font-bold uppercase tracking-wide text-gray-400">Setup Time</div>
-              <div className="mt-1 text-[20px] font-bold text-gray-900">Minutes</div>
-              <div className="mt-1.5 text-[9.5px] text-gray-400">Once your key is provisioned</div>
-            </div>
-          </div>
-        }
-      />
-
-      <FeatureComparison
-        heading="Get The Right Tool"
-        subheading="See how TrackDots' ERP API compares to the old way."
-        columns={COMPARISON_COLUMNS}
-        rows={COMPARISON_ROWS}
-      />
-
-      <FeatureFAQ heading="ERP Integration, Answered" items={FAQS} />
-
-      <FinalCTA />
-    </main>
-  );
+export default async function ErpIntegrationPage() {
+  const content = await getFeaturePageContent(SLUG, FALLBACK);
+  return <FeaturePageSections content={content} visuals={VISUALS} />;
 }

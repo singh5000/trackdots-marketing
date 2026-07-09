@@ -1,24 +1,13 @@
 import type { Metadata } from "next";
-import Navbar from "@/components/Navbar";
-import FinalCTA from "@/components/FinalCTA";
-import FeatureHero from "@/components/features/FeatureHero";
-import FeatureGrid from "@/components/features/FeatureGrid";
-import FeatureHighlightPanel from "@/components/features/FeatureHighlightPanel";
-import FeatureDarkHighlight from "@/components/features/FeatureDarkHighlight";
-import FeatureProblemSolution from "@/components/features/FeatureProblemSolution";
-import FeatureStickyShowcase, { type StickyCard } from "@/components/features/FeatureStickyShowcase";
-import FeatureStatsRow from "@/components/features/FeatureStatsRow";
-import FeatureComparison from "@/components/features/FeatureComparison";
-import FeatureFAQ from "@/components/features/FeatureFAQ";
+import FeaturePageSections, { type FeaturePageVisuals } from "@/components/features/FeaturePageSections";
+import { getFeaturePageContent } from "@/lib/featurepage";
 import { BarRows, ChecklistRows, StatGrid } from "@/components/features/widgets";
 import { TEAM_MEETING_IMAGE } from "@/lib/media";
 import {
   BarChart,
   Bell,
-  Calendar,
   CheckCircle,
   ChevronDown,
-  Clock,
   DotsLogo,
   FileText,
   Folder,
@@ -30,51 +19,13 @@ import {
   TrendUp,
   Users,
 } from "@/components/icons";
+import { FALLBACK, SLUG } from "./content";
 
 export const metadata: Metadata = {
   title: "Leave Management — TrackDots",
   description:
     "Employee self-service leave requests — Short Leave, Half Day, or Full Day, tagged Paid or LWP — approved in one place and synced straight into attendance and payroll.",
 };
-
-const CAPABILITIES = [
-  { icon: Calendar, title: "Employee Self-Service Requests", desc: "Employees submit leave requests with type, dates, and a reason — no paper forms." },
-  { icon: Clock, title: "Three Leave Types", desc: "Short Leave (2 hours), Half Day, or Full Day — each handled with its own rules." },
-  { icon: FileText, title: "Paid vs. LWP Categorization", desc: "Every request is tagged Leave (Paid) or LWP (Unpaid), feeding straight into payroll." },
-  { icon: CheckCircle, title: "Manager Approval Queue", desc: "Pending, Approved, Rejected, or Cancelled — every request tracked through a clear status pipeline." },
-  { icon: Settings, title: "Per-Day Record Regeneration", desc: "Changing a leave's date range automatically regenerates the underlying day-by-day records." },
-  { icon: TrendUp, title: "Direct Attendance & Payroll Integration", desc: "Approved leave flows straight into the attendance grid and payroll run — no manual re-entry." },
-];
-
-const PROBLEMS = [
-  "Leave requests scattered across email, chat, and paper forms",
-  "No clear link between an approved leave and what payroll actually pays",
-  "Manually updating attendance every time a leave gets approved",
-];
-const BENEFITS = [
-  "Every leave request submitted, tracked, and approved in one place",
-  "Paid vs. unpaid categorization built into every request",
-  "Approved leave flows straight into attendance and payroll",
-];
-
-const COMPARISON_COLUMNS = ["TrackDots", "Basic Time Trackers", "Spreadsheets & Manual Logs"];
-const COMPARISON_ROWS: { capability: string; statuses: ("yes" | "partial" | "no")[] }[] = [
-  { capability: "Employee self-service leave requests", statuses: ["yes", "no", "no"] },
-  { capability: "Multiple leave types (short/half/full day)", statuses: ["yes", "no", "no"] },
-  { capability: "Paid vs. LWP categorization", statuses: ["yes", "no", "no"] },
-  { capability: "Status pipeline (Pending → Cancelled)", statuses: ["yes", "no", "no"] },
-  { capability: "Automatic attendance sync on approval", statuses: ["yes", "no", "no"] },
-  { capability: "Direct payroll integration", statuses: ["yes", "no", "no"] },
-];
-
-const FAQS = [
-  { q: "What leave types does TrackDots support?", a: "Short Leave (2 hours), Half Day, or Full Day — each configurable and tracked separately." },
-  { q: "What's the difference between Leave and LWP?", a: "Leave is paid time off; LWP (Leave Without Pay) is unpaid — both are tracked the same way but flow differently into payroll." },
-  { q: "Can I edit a leave request after it's submitted?", a: "Yes. Managers or HR can edit the type, dates, shift, or reason, and per-day records regenerate automatically." },
-  { q: "What happens when a leave is approved?", a: "It's reflected immediately in the employee's attendance grid and rolls into the next payroll run automatically." },
-  { q: "Can I filter leave requests by employee or type?", a: "Yes. Requests can be filtered by status, leave type, and individual employee." },
-  { q: "Can employees see the status of their own requests?", a: "Yes, on plans with the employee self-view portal enabled, employees can track their own pending, approved, and rejected requests." },
-];
 
 /** Same 820×540 sidebar+topbar "dashboard chrome" shell used across every
  * feature hero — content area swapped for the real Leave Management layout
@@ -291,220 +242,96 @@ const SyncWidget = () => (
   </div>
 );
 
-const STICKY_CARDS: StickyCard[] = [
-  {
-    tone: "purple",
-    icon: Clock,
-    title: "Three Types, Each Handled Right",
-    desc: "Short Leave, Half Day, and Full Day each carry their own rules for how they affect attendance.",
-    checks: ["Short Leave — 2 hours", "Half Day — AM or PM shift", "Full Day — whole-day leave"],
-    widget: <TypesWidget />,
-  },
-  {
-    tone: "dark",
-    icon: FileText,
-    title: "Paid or Unpaid, Always Clear",
-    desc: "Every request is tagged Leave (Paid) or LWP (Unpaid) from the moment it's submitted.",
-    checks: ["Paid vs. unpaid tagged per request", "Flows directly into payroll", "No ambiguity at month-end"],
-    widget: <CategoryWidget />,
-  },
-  {
-    tone: "purple",
-    icon: CheckCircle,
-    title: "A Status for Every Request",
-    desc: "Pending, Approved, Rejected, or Cancelled — nothing sits in limbo.",
-    checks: ["Four-stage status pipeline", "Filterable by status", "Full history retained"],
-    widget: <PipelineWidget />,
-  },
-  {
-    tone: "dark",
-    icon: Settings,
-    title: "Dates Change, Records Follow",
-    desc: "Editing a leave's date range automatically regenerates the day-by-day records behind it.",
-    checks: ["Automatic per-day regeneration", "No manual recalculation", "Existing decisions flagged for review"],
-    widget: <RegenWidget />,
-  },
-  {
-    tone: "purple",
-    icon: TrendUp,
-    title: "Approved Means Applied",
-    desc: "The moment a leave is approved, attendance and payroll both reflect it — automatically.",
-    checks: ["Automatic attendance sync", "Automatic payroll sync", "No manual re-entry, ever"],
-    widget: <SyncWidget />,
-  },
-];
-
-export default function LeavesPage() {
-  return (
-    <main className="flex-1 bg-white">
-      <Navbar />
-
-      <FeatureHero
-        eyebrow="FEATURE — LEAVE MANAGEMENT"
-        heading="Leave Requests, Approved"
-        highlight="Without the Paper Trail."
-        description="Employee self-service leave requests — Short Leave, Half Day, or Full Day, tagged Paid or LWP — approved in one place and synced straight into attendance and payroll."
-        visual={<LeavesHeroCard />}
-      />
-
-      <FeatureProblemSolution
-        eyebrow="THE PAPER-TRAIL GAP"
-        heading="Stop Chasing Leave Requests Across Inboxes"
-        subheading="Email threads and paper forms don't sync with payroll. Leave Management does it automatically."
-        problems={PROBLEMS}
-        benefits={BENEFITS}
-      />
-
-      <FeatureGrid
-        eyebrow="HOW IT WORKS"
-        heading="From Request to Payslip, Automatically"
-        subheading="Submitted by the employee, approved by a manager, applied everywhere it matters."
-        items={CAPABILITIES}
-      />
-
-      <FeatureDarkHighlight
-        eyebrow="APPROVAL QUEUE"
-        blocks={[
-          {
-            highlighted: true,
-            heading: "Every Request, One Queue",
-            desc: "Filter by status, leave type, or employee to find exactly the requests that need a decision.",
-            checklist: ["Filter by status, type, or employee", "Full request history retained"],
-          },
-          {
-            heading: "Approve or Reject, With Context",
-            desc: "Every request shows its type, dates, category, and the employee's reason before a decision is made.",
-            checklist: ["Reason shown per request", "HR note field for internal context"],
-          },
-        ]}
-        linkLabel="Explore Leave Management"
-        visual={
-          <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
-            <div className="overflow-hidden rounded-3xl shadow-2xl">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={TEAM_MEETING_IMAGE} alt="" className="h-[420px] w-full object-cover" style={{ objectPosition: "40% 25%" }} loading="lazy" />
+const VISUALS: FeaturePageVisuals = {
+  hero: <LeavesHeroCard />,
+  dark1: (
+    <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
+      <div className="overflow-hidden rounded-3xl shadow-2xl">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={TEAM_MEETING_IMAGE} alt="" className="h-[420px] w-full object-cover" style={{ objectPosition: "40% 25%" }} loading="lazy" />
+      </div>
+      <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
+        <div className="flex items-center justify-between">
+          <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Rajesh Kumar</div>
+          <span className="rounded-full bg-amber-50 px-1.5 py-0.5 text-[8px] font-bold text-amber-600">Pending</span>
+        </div>
+        <div className="mt-2 text-[12px] font-bold text-gray-900">Half Day · Jul 8, 2026</div>
+        <div className="text-[9.5px] text-gray-500">Leave (Paid)</div>
+        <div className="mt-3 flex gap-2">
+          <span className="flex-1 rounded-lg bg-green-600 py-1.5 text-center text-[10px] font-bold text-white">Approve</span>
+          <span className="flex-1 rounded-lg bg-gray-100 py-1.5 text-center text-[10px] font-bold text-gray-600">Reject</span>
+        </div>
+      </div>
+      <div className="absolute -bottom-2 -right-4 w-[210px] rounded-xl bg-white p-4 shadow-2xl">
+        <div className="text-[9px] font-bold uppercase tracking-wide text-gray-400">This Month</div>
+        <div className="mt-1 text-[20px] font-bold text-gray-900">15</div>
+        <div className="mt-1.5 text-[9.5px] text-gray-400">Leave requests processed</div>
+      </div>
+    </div>
+  ),
+  stickyWidgets: [
+    <TypesWidget key="types" />,
+    <CategoryWidget key="category" />,
+    <PipelineWidget key="pipeline" />,
+    <RegenWidget key="regen" />,
+    <SyncWidget key="sync" />,
+  ],
+  panel: (
+    <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
+      <div className="overflow-hidden rounded-3xl shadow-2xl">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={TEAM_MEETING_IMAGE} alt="" className="h-[380px] w-full object-cover" style={{ objectPosition: "55% 40%" }} loading="lazy" />
+      </div>
+      <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
+        <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Kulbir Singh — Approved</div>
+        <div className="mt-2 text-[12px] font-bold text-gray-900">Full Day · Jul 10, 2026</div>
+        <div className="text-[9.5px] text-gray-500">LWP (Unpaid)</div>
+      </div>
+      <div className="absolute -bottom-2 -right-4 flex items-center gap-2.5 rounded-2xl bg-brand-600 px-4 py-3 text-white shadow-2xl shadow-brand-600/40">
+        <TrendUp className="h-6 w-6" strokeWidth={1.8} />
+        <span className="text-[10px] font-semibold leading-tight">
+          Synced,
+          <br />
+          Instantly
+        </span>
+      </div>
+    </div>
+  ),
+  dark2: (
+    <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
+      <div className="overflow-hidden rounded-3xl shadow-2xl">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={TEAM_MEETING_IMAGE} alt="" className="h-[420px] w-full object-cover sm:h-[460px]" style={{ objectPosition: "50% 55%" }} loading="lazy" />
+      </div>
+      <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
+        <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">My Leaves</div>
+        <div className="mt-3 space-y-2">
+          {[{ l: "Jul 7 · Short Leave", v: "Approved", c: "text-green-600" }, { l: "Jul 12 · Full Day", v: "Rejected", c: "text-red-500" }].map((r) => (
+            <div key={r.l} className="flex items-center justify-between rounded-lg bg-gray-50 px-2.5 py-2">
+              <span className="text-[9.5px] font-medium text-gray-600">{r.l}</span>
+              <span className={`text-[9.5px] font-bold ${r.c}`}>{r.v}</span>
             </div>
-            <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
-              <div className="flex items-center justify-between">
-                <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Rajesh Kumar</div>
-                <span className="rounded-full bg-amber-50 px-1.5 py-0.5 text-[8px] font-bold text-amber-600">Pending</span>
-              </div>
-              <div className="mt-2 text-[12px] font-bold text-gray-900">Half Day · Jul 8, 2026</div>
-              <div className="text-[9.5px] text-gray-500">Leave (Paid)</div>
-              <div className="mt-3 flex gap-2">
-                <span className="flex-1 rounded-lg bg-green-600 py-1.5 text-center text-[10px] font-bold text-white">Approve</span>
-                <span className="flex-1 rounded-lg bg-gray-100 py-1.5 text-center text-[10px] font-bold text-gray-600">Reject</span>
-              </div>
-            </div>
-            <div className="absolute -bottom-2 -right-4 w-[210px] rounded-xl bg-white p-4 shadow-2xl">
-              <div className="text-[9px] font-bold uppercase tracking-wide text-gray-400">This Month</div>
-              <div className="mt-1 text-[20px] font-bold text-gray-900">15</div>
-              <div className="mt-1.5 text-[9.5px] text-gray-400">Leave requests processed</div>
-            </div>
-          </div>
-        }
-      />
+          ))}
+        </div>
+      </div>
+      <div className="absolute -bottom-2 -right-4 w-[220px] rounded-xl bg-gray-950 p-4 shadow-2xl ring-1 ring-white/10">
+        <div className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-wide text-white/50">
+          <CheckCircle className="h-3.5 w-3.5" strokeWidth={1.8} />
+          Always Visible
+        </div>
+        <div className="mt-2 text-[13px] font-bold text-white">No status is a secret</div>
+        <div className="mt-2 text-[9px] text-white/40">Every employee sees their own history</div>
+      </div>
+    </div>
+  ),
+  statsPhotos: [
+    { photoSrc: TEAM_MEETING_IMAGE, photoPosition: "20% 30%" },
+    { photoSrc: TEAM_MEETING_IMAGE, photoPosition: "50% 25%" },
+    { photoSrc: TEAM_MEETING_IMAGE, photoPosition: "85% 30%" },
+  ],
+};
 
-      <FeatureStickyShowcase
-        eyebrow="GO DEEPER"
-        heading="Every Angle of Leave Management"
-        desc="From submission to payroll sync — TrackDots keeps every leave request accounted for."
-        cards={STICKY_CARDS}
-      />
-
-      <FeatureHighlightPanel
-        reverse
-        heading="Built to Feed Attendance & Payroll"
-        desc="Leave isn't tracked in isolation — every approved request updates the attendance grid and the next payroll run automatically."
-        checklist={["Automatic attendance grid update", "Automatic payroll sync", "No duplicate data entry, ever"]}
-        linkLabel="See Attendance Tracking"
-        visual={
-          <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
-            <div className="overflow-hidden rounded-3xl shadow-2xl">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={TEAM_MEETING_IMAGE} alt="" className="h-[380px] w-full object-cover" style={{ objectPosition: "55% 40%" }} loading="lazy" />
-            </div>
-            <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
-              <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Kulbir Singh — Approved</div>
-              <div className="mt-2 text-[12px] font-bold text-gray-900">Full Day · Jul 10, 2026</div>
-              <div className="text-[9.5px] text-gray-500">LWP (Unpaid)</div>
-            </div>
-            <div className="absolute -bottom-2 -right-4 flex items-center gap-2.5 rounded-2xl bg-brand-600 px-4 py-3 text-white shadow-2xl shadow-brand-600/40">
-              <TrendUp className="h-6 w-6" strokeWidth={1.8} />
-              <span className="text-[10px] font-semibold leading-tight">
-                Synced,
-                <br />
-                Instantly
-              </span>
-            </div>
-          </div>
-        }
-      />
-
-      <FeatureStatsRow
-        stats={[
-          { icon: Calendar, value: "3", label: "Leave Types", desc: "Short Leave, Half Day, and Full Day, each with their own rules.", photoSrc: TEAM_MEETING_IMAGE, photoPosition: "20% 30%" },
-          { icon: FileText, value: "Paid / LWP", label: "Category Tagging", desc: "Every request tagged for payroll from the moment it's submitted.", photoSrc: TEAM_MEETING_IMAGE, photoPosition: "50% 25%" },
-          { icon: TrendUp, value: "Auto", label: "Attendance & Payroll Sync", desc: "Approved leave updates both automatically — no manual re-entry.", photoSrc: TEAM_MEETING_IMAGE, photoPosition: "85% 30%" },
-        ]}
-      />
-
-      <FeatureDarkHighlight
-        reverse
-        eyebrow="EMPLOYEE SELF-SERVICE"
-        blocks={[
-          {
-            highlighted: true,
-            heading: "Submitted in Seconds",
-            desc: "Employees pick a type, date range, and reason — no separate form or spreadsheet.",
-            checklist: ["Self-service request form", "Reason field included"],
-          },
-          {
-            heading: "Status Visible the Whole Way",
-            desc: "Employees see their request move from Pending to Approved or Rejected in real time.",
-            checklist: ["Self-view status tracking", "No chasing HR for updates"],
-          },
-        ]}
-        linkLabel="See Employee Self-View"
-        visual={
-          <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
-            <div className="overflow-hidden rounded-3xl shadow-2xl">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={TEAM_MEETING_IMAGE} alt="" className="h-[420px] w-full object-cover sm:h-[460px]" style={{ objectPosition: "50% 55%" }} loading="lazy" />
-            </div>
-            <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
-              <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">My Leaves</div>
-              <div className="mt-3 space-y-2">
-                {[{ l: "Jul 7 · Short Leave", v: "Approved", c: "text-green-600" }, { l: "Jul 12 · Full Day", v: "Rejected", c: "text-red-500" }].map((r) => (
-                  <div key={r.l} className="flex items-center justify-between rounded-lg bg-gray-50 px-2.5 py-2">
-                    <span className="text-[9.5px] font-medium text-gray-600">{r.l}</span>
-                    <span className={`text-[9.5px] font-bold ${r.c}`}>{r.v}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="absolute -bottom-2 -right-4 w-[220px] rounded-xl bg-gray-950 p-4 shadow-2xl ring-1 ring-white/10">
-              <div className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-wide text-white/50">
-                <CheckCircle className="h-3.5 w-3.5" strokeWidth={1.8} />
-                Always Visible
-              </div>
-              <div className="mt-2 text-[13px] font-bold text-white">No status is a secret</div>
-              <div className="mt-2 text-[9px] text-white/40">Every employee sees their own history</div>
-            </div>
-          </div>
-        }
-      />
-
-      <FeatureComparison
-        heading="Get The Right Tool"
-        subheading="See how TrackDots' leave management compares to the old way."
-        columns={COMPARISON_COLUMNS}
-        rows={COMPARISON_ROWS}
-      />
-
-      <FeatureFAQ heading="Leave Management, Answered" items={FAQS} />
-
-      <FinalCTA />
-    </main>
-  );
+export default async function LeavesPage() {
+  const content = await getFeaturePageContent(SLUG, FALLBACK);
+  return <FeaturePageSections content={content} visuals={VISUALS} />;
 }

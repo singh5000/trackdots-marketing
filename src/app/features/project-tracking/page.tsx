@@ -1,22 +1,12 @@
 import type { Metadata } from "next";
-import Navbar from "@/components/Navbar";
-import FinalCTA from "@/components/FinalCTA";
-import FeatureHero from "@/components/features/FeatureHero";
-import FeatureGrid from "@/components/features/FeatureGrid";
-import FeatureHighlightPanel from "@/components/features/FeatureHighlightPanel";
-import FeatureDarkHighlight from "@/components/features/FeatureDarkHighlight";
-import FeatureProblemSolution from "@/components/features/FeatureProblemSolution";
-import FeatureStickyShowcase, { type StickyCard } from "@/components/features/FeatureStickyShowcase";
-import FeatureStatsRow from "@/components/features/FeatureStatsRow";
-import FeatureComparison from "@/components/features/FeatureComparison";
-import FeatureFAQ from "@/components/features/FeatureFAQ";
+import FeaturePageSections, { type FeaturePageVisuals } from "@/components/features/FeaturePageSections";
+import { getFeaturePageContent } from "@/lib/featurepage";
 import { BarRows, ChecklistRows, StatGrid } from "@/components/features/widgets";
 import { TEAM_MEETING_IMAGE } from "@/lib/media";
 import {
   BarChart,
   Bell,
   ChevronDown,
-  Clock,
   DotsLogo,
   FileText,
   Folder,
@@ -25,54 +15,15 @@ import {
   Monitor,
   Search,
   Settings,
-  TrendUp,
   Users,
 } from "@/components/icons";
+import { FALLBACK, SLUG } from "./content";
 
 export const metadata: Metadata = {
   title: "Project Tracking — TrackDots",
   description:
     "Every project, team member, client, budget, and deadline in one place — with a status pipeline from Planning through Archived.",
 };
-
-const CAPABILITIES = [
-  { icon: Folder, title: "Full Project Roster", desc: "Every project in one place, with team members, client, budget, and deadline at a glance." },
-  { icon: TrendUp, title: "Status Pipeline", desc: "Track projects through Planning, Active, On Hold, Completed, or Archived." },
-  { icon: Users, title: "Team Assignment", desc: "Assign any number of employees to a project, and see every assignment in one view." },
-  { icon: FileText, title: "Phase & Description Tracking", desc: "Keep a short phase or description current for every project, right in the list." },
-  { icon: Monitor, title: "Client Association", desc: "Tag projects to a client for easy filtering and reporting." },
-  { icon: Settings, title: "One-Click Profile & Edit", desc: "Open a full project profile or edit any detail without leaving the list." },
-];
-
-const PROBLEMS = [
-  "Project status scattered across spreadsheets and chat threads",
-  "No single view of who's actually assigned to what",
-  "Deadlines and budgets tracked nowhere central",
-];
-const BENEFITS = [
-  "Every project, member, and deadline in one list",
-  "A clear status pipeline from Planning to Archived",
-  "Assign, edit, and review projects without leaving the page",
-];
-
-const COMPARISON_COLUMNS = ["TrackDots", "Basic Time Trackers", "Spreadsheets & Manual Logs"];
-const COMPARISON_ROWS: { capability: string; statuses: ("yes" | "partial" | "no")[] }[] = [
-  { capability: "Centralized project roster", statuses: ["yes", "partial", "no"] },
-  { capability: "Status pipeline (Planning → Archived)", statuses: ["yes", "no", "no"] },
-  { capability: "Team member assignment per project", statuses: ["yes", "partial", "no"] },
-  { capability: "Client association per project", statuses: ["yes", "no", "no"] },
-  { capability: "Direct link to time-tracking data", statuses: ["yes", "no", "no"] },
-  { capability: "Budget & deadline tracking", statuses: ["yes", "partial", "partial"] },
-];
-
-const FAQS = [
-  { q: "Can I assign multiple employees to a project?", a: "Yes. Any number of employees can be assigned to a project, and every assignment shows in the project list." },
-  { q: "What statuses can a project have?", a: "Planning, Active, On Hold, Completed, or Archived — filterable with a single click." },
-  { q: "Can I track a budget and deadline per project?", a: "Yes. Both are optional fields shown directly in the project list." },
-  { q: "Can I associate a project with a client?", a: "Yes. Projects can be tagged to a client for easy filtering and reporting." },
-  { q: "Does project tracking connect to time tracking?", a: "Yes. Time tracked while working on a project rolls up into that project's reporting." },
-  { q: "Can I edit a project after creating it?", a: "Yes. Every project can be edited in place — name, description, members, client, budget, and deadline." },
-];
 
 /** Same 820×540 sidebar+topbar "dashboard chrome" shell used across every
  * feature hero — content area swapped for the real Projects layout
@@ -303,212 +254,88 @@ const TimeLinkWidget = () => (
   </div>
 );
 
-const STICKY_CARDS: StickyCard[] = [
-  {
-    tone: "purple",
-    icon: TrendUp,
-    title: "Every Project, One Pipeline",
-    desc: "Planning, Active, On Hold, Completed, or Archived — every project's status is always current.",
-    checks: ["Five-stage status pipeline", "Filter by status in one click", "Never a stale spreadsheet"],
-    widget: <PipelineWidget />,
-  },
-  {
-    tone: "dark",
-    icon: Users,
-    title: "Who's On What, Instantly",
-    desc: "Every project shows exactly which employees are assigned, at a glance.",
-    checks: ["Any number of members per project", "Avatars shown directly in the list", "Assign or remove in seconds"],
-    widget: <MembersWidget />,
-  },
-  {
-    tone: "purple",
-    icon: Clock,
-    title: "Deadlines That Don't Get Lost",
-    desc: "Every project's deadline is visible right in the roster — no separate calendar to check.",
-    checks: ["Deadline shown per project", "Optional budget field", "Sortable by due date"],
-    widget: <DeadlinesWidget />,
-  },
-  {
-    tone: "dark",
-    icon: FileText,
-    title: "Phase & Context, Always Current",
-    desc: "A short phase or description keeps everyone aligned on where a project actually stands.",
-    checks: ["Editable phase per project", "Visible directly in the list", "No separate status meeting needed"],
-    widget: <PhaseWidget />,
-  },
-  {
-    tone: "purple",
-    icon: BarChart,
-    title: "Connected to Real Time Data",
-    desc: "Hours logged against a project roll up automatically from the same activity tracking used everywhere else.",
-    checks: ["Hours logged per project", "Top contributors surfaced", "Same data as Time Tracking"],
-    widget: <TimeLinkWidget />,
-  },
-];
+const VISUALS: FeaturePageVisuals = {
+  hero: <ProjectTrackingHeroCard />,
+  dark1: (
+    <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
+      <div className="overflow-hidden rounded-3xl shadow-2xl">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={TEAM_MEETING_IMAGE} alt="" className="h-[420px] w-full object-cover" style={{ objectPosition: "40% 30%" }} loading="lazy" />
+      </div>
+      <div className="absolute -left-2 top-0 w-[240px] rounded-2xl bg-white p-4 shadow-2xl">
+        <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Client Portal Redesign</div>
+        <div className="mt-1 text-[9.5px] text-gray-400">Acme Retail · Development Phase</div>
+        <span className="mt-2 inline-block rounded-full bg-green-50 px-2 py-0.5 text-[9px] font-bold text-green-600">Active</span>
+      </div>
+      <div className="absolute -bottom-2 -right-4 w-[210px] rounded-xl bg-white p-4 shadow-2xl">
+        <div className="text-[9px] font-bold uppercase tracking-wide text-gray-400">Total Projects</div>
+        <div className="mt-1 text-[20px] font-bold text-gray-900">15</div>
+        <div className="mt-1.5 text-[9.5px] text-gray-400">13 active, 1 planning, 1 completed</div>
+      </div>
+    </div>
+  ),
+  stickyWidgets: [
+    <PipelineWidget key="pipeline" />,
+    <MembersWidget key="members" />,
+    <DeadlinesWidget key="deadlines" />,
+    <PhaseWidget key="phase" />,
+    <TimeLinkWidget key="time-link" />,
+  ],
+  panel: (
+    <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
+      <div className="overflow-hidden rounded-3xl shadow-2xl">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={TEAM_MEETING_IMAGE} alt="" className="h-[380px] w-full object-cover" style={{ objectPosition: "55% 40%" }} loading="lazy" />
+      </div>
+      <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
+        <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Q3 Marketing Push — Team</div>
+        <div className="mt-3 flex -space-x-1.5">
+          {["Sia Chandan", "Akansha Dogra", "Anchal Sahi", "Vivek Bharti"].map((m) => (
+            <span
+              key={m}
+              className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-white bg-gradient-to-br from-violet-400 to-brand-600 text-[8px] font-bold text-white"
+            >
+              {m.split(" ").map((w) => w[0]).join("")}
+            </span>
+          ))}
+        </div>
+      </div>
+      <div className="absolute -bottom-2 -right-4 w-[210px] rounded-xl bg-white p-4 shadow-2xl">
+        <div className="text-[9px] font-bold uppercase tracking-wide text-gray-400">Members Assigned</div>
+        <div className="mt-1 text-[20px] font-bold text-gray-900">4</div>
+        <div className="mt-1.5 text-[9.5px] text-gray-400">Across this one project</div>
+      </div>
+    </div>
+  ),
+  dark2: (
+    <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
+      <div className="overflow-hidden rounded-3xl shadow-2xl">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={TEAM_MEETING_IMAGE} alt="" className="h-[420px] w-full object-cover sm:h-[460px]" style={{ objectPosition: "65% 55%" }} loading="lazy" />
+      </div>
+      <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
+        <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Client — Acme Retail</div>
+        <div className="mt-2 text-[13px] font-bold text-gray-900">1 active project</div>
+        <div className="mt-1 text-[9.5px] text-gray-400">Deadline: Dec 31, 2026</div>
+      </div>
+      <div className="absolute -bottom-2 -right-4 w-[220px] rounded-xl bg-gray-950 p-4 shadow-2xl ring-1 ring-white/10">
+        <div className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-wide text-white/50">
+          <Folder className="h-3.5 w-3.5" strokeWidth={1.8} />
+          Reporting
+        </div>
+        <div className="mt-2 text-[13px] font-bold text-white">Ready per client</div>
+        <div className="mt-2 text-[9px] text-white/40">No extra setup required</div>
+      </div>
+    </div>
+  ),
+  statsPhotos: [
+    { photoSrc: TEAM_MEETING_IMAGE, photoPosition: "20% 30%" },
+    { photoSrc: TEAM_MEETING_IMAGE, photoPosition: "50% 25%" },
+    { photoSrc: TEAM_MEETING_IMAGE, photoPosition: "85% 30%" },
+  ],
+};
 
-export default function ProjectTrackingPage() {
-  return (
-    <main className="flex-1 bg-white">
-      <Navbar />
-
-      <FeatureHero
-        eyebrow="FEATURE — PROJECT TRACKING"
-        heading="Every Project, Every Member,"
-        highlight="One Clear View."
-        description="Projects, team assignments, clients, budgets, and deadlines — all in one roster, with a status pipeline from Planning through Archived."
-        visual={<ProjectTrackingHeroCard />}
-      />
-
-      <FeatureProblemSolution
-        eyebrow="THE ORGANIZATION GAP"
-        heading="Stop Managing Projects in Spreadsheets"
-        subheading="Status updates scattered across chats and sheets never stay current. Project Tracking keeps one source of truth."
-        problems={PROBLEMS}
-        benefits={BENEFITS}
-      />
-
-      <FeatureGrid
-        eyebrow="HOW IT WORKS"
-        heading="A Roster That Stays Current"
-        subheading="Every project, member, and deadline, kept in one place."
-        items={CAPABILITIES}
-      />
-
-      <FeatureDarkHighlight
-        eyebrow="PROJECT ROSTER"
-        blocks={[
-          {
-            highlighted: true,
-            heading: "Every Project, One List",
-            desc: "Name, client, members, budget, deadline, status, and phase — all visible without opening a single project.",
-            checklist: ["Full project roster in one table", "Filterable by status"],
-          },
-          {
-            heading: "Open Full Detail in One Click",
-            desc: "Jump into a project's full profile or edit any field directly from the list.",
-            checklist: ["One-click project profile", "Inline edit for any field"],
-          },
-        ]}
-        linkLabel="Explore Project Tracking"
-        visual={
-          <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
-            <div className="overflow-hidden rounded-3xl shadow-2xl">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={TEAM_MEETING_IMAGE} alt="" className="h-[420px] w-full object-cover" style={{ objectPosition: "40% 30%" }} loading="lazy" />
-            </div>
-            <div className="absolute -left-2 top-0 w-[240px] rounded-2xl bg-white p-4 shadow-2xl">
-              <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Client Portal Redesign</div>
-              <div className="mt-1 text-[9.5px] text-gray-400">Acme Retail · Development Phase</div>
-              <span className="mt-2 inline-block rounded-full bg-green-50 px-2 py-0.5 text-[9px] font-bold text-green-600">Active</span>
-            </div>
-            <div className="absolute -bottom-2 -right-4 w-[210px] rounded-xl bg-white p-4 shadow-2xl">
-              <div className="text-[9px] font-bold uppercase tracking-wide text-gray-400">Total Projects</div>
-              <div className="mt-1 text-[20px] font-bold text-gray-900">15</div>
-              <div className="mt-1.5 text-[9.5px] text-gray-400">13 active, 1 planning, 1 completed</div>
-            </div>
-          </div>
-        }
-      />
-
-      <FeatureStickyShowcase
-        eyebrow="GO DEEPER"
-        heading="Every Angle of Project Tracking"
-        desc="From team assignment to real logged hours — TrackDots keeps every project's status honest."
-        cards={STICKY_CARDS}
-      />
-
-      <FeatureHighlightPanel
-        reverse
-        heading="Built to Connect With Everything Else"
-        desc="Projects aren't an island — assigned employees, tracked time, and reporting all reference the same roster."
-        checklist={["Shared employee roster across the platform", "Time tracked rolls up per project", "No duplicate data entry"]}
-        linkLabel="See How Time Rolls Up"
-        visual={
-          <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
-            <div className="overflow-hidden rounded-3xl shadow-2xl">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={TEAM_MEETING_IMAGE} alt="" className="h-[380px] w-full object-cover" style={{ objectPosition: "55% 40%" }} loading="lazy" />
-            </div>
-            <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
-              <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Q3 Marketing Push — Team</div>
-              <div className="mt-3 flex -space-x-1.5">
-                {["Sia Chandan", "Akansha Dogra", "Anchal Sahi", "Vivek Bharti"].map((m) => (
-                  <span
-                    key={m}
-                    className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-white bg-gradient-to-br from-violet-400 to-brand-600 text-[8px] font-bold text-white"
-                  >
-                    {m.split(" ").map((w) => w[0]).join("")}
-                  </span>
-                ))}
-              </div>
-            </div>
-            <div className="absolute -bottom-2 -right-4 w-[210px] rounded-xl bg-white p-4 shadow-2xl">
-              <div className="text-[9px] font-bold uppercase tracking-wide text-gray-400">Members Assigned</div>
-              <div className="mt-1 text-[20px] font-bold text-gray-900">4</div>
-              <div className="mt-1.5 text-[9.5px] text-gray-400">Across this one project</div>
-            </div>
-          </div>
-        }
-      />
-
-      <FeatureStatsRow
-        stats={[
-          { icon: Folder, value: "15", label: "Projects Tracked", desc: "Every active, planning, and completed project in one roster.", photoSrc: TEAM_MEETING_IMAGE, photoPosition: "20% 30%" },
-          { icon: TrendUp, value: "5-Stage", label: "Status Pipeline", desc: "Planning, Active, On Hold, Completed, or Archived.", photoSrc: TEAM_MEETING_IMAGE, photoPosition: "50% 25%" },
-          { icon: Users, value: "Unlimited", label: "Team Members", desc: "Assign any number of employees to any project.", photoSrc: TEAM_MEETING_IMAGE, photoPosition: "85% 30%" },
-        ]}
-      />
-
-      <FeatureDarkHighlight
-        reverse
-        eyebrow="CLIENT-READY"
-        blocks={[
-          {
-            highlighted: true,
-            heading: "Every Project, Tied to a Client",
-            desc: "Tag any project to a client for cleaner filtering, reporting, and billing conversations.",
-            checklist: ["Optional client association", "Filterable by client"],
-          },
-          {
-            heading: "Budgets & Deadlines, Front and Center",
-            desc: "Optional budget and deadline fields keep commercial context visible without a separate spreadsheet.",
-            checklist: ["Optional budget field", "Deadline shown in the roster"],
-          },
-        ]}
-        linkLabel="See Client Reporting"
-        visual={
-          <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
-            <div className="overflow-hidden rounded-3xl shadow-2xl">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={TEAM_MEETING_IMAGE} alt="" className="h-[420px] w-full object-cover sm:h-[460px]" style={{ objectPosition: "65% 55%" }} loading="lazy" />
-            </div>
-            <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
-              <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Client — Acme Retail</div>
-              <div className="mt-2 text-[13px] font-bold text-gray-900">1 active project</div>
-              <div className="mt-1 text-[9.5px] text-gray-400">Deadline: Dec 31, 2026</div>
-            </div>
-            <div className="absolute -bottom-2 -right-4 w-[220px] rounded-xl bg-gray-950 p-4 shadow-2xl ring-1 ring-white/10">
-              <div className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-wide text-white/50">
-                <Folder className="h-3.5 w-3.5" strokeWidth={1.8} />
-                Reporting
-              </div>
-              <div className="mt-2 text-[13px] font-bold text-white">Ready per client</div>
-              <div className="mt-2 text-[9px] text-white/40">No extra setup required</div>
-            </div>
-          </div>
-        }
-      />
-
-      <FeatureComparison
-        heading="Get The Right Tool"
-        subheading="See how TrackDots' project tracking compares to the old way."
-        columns={COMPARISON_COLUMNS}
-        rows={COMPARISON_ROWS}
-      />
-
-      <FeatureFAQ heading="Project Tracking, Answered" items={FAQS} />
-
-      <FinalCTA />
-    </main>
-  );
+export default async function ProjectTrackingPage() {
+  const content = await getFeaturePageContent(SLUG, FALLBACK);
+  return <FeaturePageSections content={content} visuals={VISUALS} />;
 }

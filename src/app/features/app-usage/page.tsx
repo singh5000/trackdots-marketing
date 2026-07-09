@@ -1,79 +1,30 @@
 import type { Metadata } from "next";
-import Navbar from "@/components/Navbar";
-import FinalCTA from "@/components/FinalCTA";
-import FeatureHero from "@/components/features/FeatureHero";
-import FeatureGrid from "@/components/features/FeatureGrid";
-import FeatureHighlightPanel from "@/components/features/FeatureHighlightPanel";
-import FeatureDarkHighlight from "@/components/features/FeatureDarkHighlight";
-import FeatureProblemSolution from "@/components/features/FeatureProblemSolution";
-import FeatureStickyShowcase, { type StickyCard } from "@/components/features/FeatureStickyShowcase";
-import FeatureStatsRow from "@/components/features/FeatureStatsRow";
-import FeatureComparison from "@/components/features/FeatureComparison";
-import FeatureFAQ from "@/components/features/FeatureFAQ";
+import FeaturePageSections, { type FeaturePageVisuals } from "@/components/features/FeaturePageSections";
+import { getFeaturePageContent } from "@/lib/featurepage";
 import { BarRows, DonutLegend, StatGrid } from "@/components/features/widgets";
 import { TEAM_MEETING_IMAGE } from "@/lib/media";
 import {
   BarChart,
   Bell,
   ChevronDown,
-  Clock,
   DotsLogo,
   FileText,
   Folder,
   Inbox,
   LayoutGrid,
   Monitor,
-  PieChart,
   Search,
   Settings,
   TrendUp,
   Users,
 } from "@/components/icons";
+import { FALLBACK, SLUG } from "./content";
 
 export const metadata: Metadata = {
   title: "App Usage Reports — TrackDots",
   description:
     "See exactly which apps and websites drive real work — automatically categorized as productive, neutral, or unproductive, ranked and broken down per employee.",
 };
-
-const CAPABILITIES = [
-  { icon: PieChart, title: "Productive / Neutral / Unproductive Split", desc: "Every tracked app and website is automatically categorized, so you always know where time actually goes." },
-  { icon: BarChart, title: "Top Apps, Ranked by Usage", desc: "See exactly which apps consume the most time across the whole team, ranked from highest to lowest." },
-  { icon: Users, title: "Per-App Employee Breakdown", desc: "Click any app in the ranking to see exactly which employees used it, and for how long." },
-  { icon: Settings, title: "Configurable App Categories", desc: "Reclassify any app as productive, neutral, or unproductive to match how your organization actually works." },
-  { icon: Monitor, title: "Team-Wide & Individual Views", desc: "See usage across the whole organization, or drill into a single employee's app usage." },
-  { icon: Clock, title: "Flexible Date Ranges", desc: "View today, this week, last 7 days, or last 30 days with a single click." },
-];
-
-const PROBLEMS = [
-  "No idea which apps are actually driving productive work",
-  "Manually guessing which tools are time sinks",
-  "App usage buried in raw logs, never summarized",
-];
-const BENEFITS = [
-  "Every app automatically categorized and ranked by usage",
-  "One click to see who's using what, and for how long",
-  "A clear, team-wide picture updated every day",
-];
-
-const COMPARISON_COLUMNS = ["TrackDots", "Basic Time Trackers", "Spreadsheets & Manual Logs"];
-const COMPARISON_ROWS: { capability: string; statuses: ("yes" | "partial" | "no")[] }[] = [
-  { capability: "Automatic productive/neutral/unproductive split", statuses: ["yes", "no", "no"] },
-  { capability: "Top apps ranked by usage", statuses: ["yes", "partial", "no"] },
-  { capability: "Per-app employee drill-down", statuses: ["yes", "no", "no"] },
-  { capability: "Configurable app categories", statuses: ["yes", "no", "no"] },
-  { capability: "Team-wide and individual views", statuses: ["yes", "partial", "no"] },
-  { capability: "Direct feed into productivity scoring", statuses: ["yes", "no", "no"] },
-];
-
-const FAQS = [
-  { q: "How does TrackDots classify apps as productive or not?", a: "Every tracked app and website is categorized as productive, neutral, or unproductive using sensible defaults — and your organization can fully customize the rules." },
-  { q: "Can I change how a specific app is categorized?", a: "Yes. Any app's category can be reclassified per organization, and the change applies going forward." },
-  { q: "Can I see who used a specific app?", a: "Yes. Clicking any app in the Top Apps table shows exactly which employees used it and for how long." },
-  { q: "Does this cover websites as well as desktop apps?", a: "Yes. Browser-based usage and native desktop apps are both tracked and categorized the same way." },
-  { q: "Can I view usage for just one employee?", a: "Yes. App usage reports support both team-wide and single-employee views." },
-  { q: "Does app usage feed into the productivity score?", a: "Yes. App categorization is one of the signals behind TrackDots' broader productivity scoring." },
-];
 
 /** Same 820×540 sidebar+topbar "dashboard chrome" shell used across every
  * feature hero — content area swapped for the real App Usage layout
@@ -307,224 +258,100 @@ const CategoryRulesWidget = () => (
   </div>
 );
 
-const STICKY_CARDS: StickyCard[] = [
-  {
-    tone: "purple",
-    icon: PieChart,
-    title: "Every App, Categorized Automatically",
-    desc: "Productive, neutral, or unproductive — every tracked app is classified without any manual tagging.",
-    checks: ["92% of today's time productive", "Updated live through the day", "Team-wide and per-employee"],
-    widget: <CategorySplitWidget />,
-  },
-  {
-    tone: "dark",
-    icon: BarChart,
-    title: "Ranked by Real Usage",
-    desc: "Apps are ranked by total time across the team, so the biggest time sinks are impossible to miss.",
-    checks: ["Ranked by total tracked time", "Share of total time shown", "Unique-app count included"],
-    widget: <UniqueAppsWidget />,
-  },
-  {
-    tone: "purple",
-    icon: Users,
-    title: "Drill Into Any App",
-    desc: "Click chrome, Code, or any app in the ranking to see exactly who used it, and for how long.",
-    checks: ["Per-employee time breakdown", "Sorted by usage within the app", "Works for any app in the ranking"],
-    widget: <ChromeUsersWidget />,
-  },
-  {
-    tone: "dark",
-    icon: Settings,
-    title: "Categories That Match Your Team",
-    desc: "Default categories are just a starting point — reclassify any app to fit how your organization works.",
-    checks: ["Fully configurable per organization", "Applies going forward", "No engineering ticket required"],
-    widget: <CategoryRulesWidget />,
-  },
-  {
-    tone: "purple",
-    icon: TrendUp,
-    title: "Trends, Not Just a Snapshot",
-    desc: "See how usage of any single app is trending across the weeks, not just today.",
-    checks: ["Multi-week trend view", "Compare week over week", "Spot growing time sinks early"],
-    widget: <RangeWidget />,
-  },
-];
-
-export default function AppUsagePage() {
-  return (
-    <main className="flex-1 bg-white">
-      <Navbar />
-
-      <FeatureHero
-        eyebrow="FEATURE — APP USAGE REPORTS"
-        heading="See Which Apps Actually"
-        highlight="Drive Real Work."
-        description="Every tracked app and website is automatically categorized as productive, neutral, or unproductive — ranked and broken down per employee."
-        visual={<AppUsageHeroCard />}
-      />
-
-      <FeatureProblemSolution
-        eyebrow="THE VISIBILITY GAP"
-        heading="Stop Guessing Where the Hours Go"
-        subheading="Raw activity logs don't tell you what's actually productive. App Usage Reports do."
-        problems={PROBLEMS}
-        benefits={BENEFITS}
-      />
-
-      <FeatureGrid
-        eyebrow="HOW IT WORKS"
-        heading="A Ranking That Builds Itself"
-        subheading="Automatic, configurable, and broken down to the individual employee."
-        items={CAPABILITIES}
-      />
-
-      <FeatureDarkHighlight
-        eyebrow="TOP APPS"
-        blocks={[
-          {
-            highlighted: true,
-            heading: "The Whole Team's Usage, Ranked",
-            desc: "Every app is ranked by total time across the team, with its share of total tracked time.",
-            checklist: ["Ranked by total tracked time", "Share of total time per app"],
-          },
-          {
-            heading: "Ten Apps Tell the Whole Story",
-            desc: "Most teams' entire tracked time concentrates in a handful of apps — TrackDots surfaces them instantly.",
-            checklist: ["Unique-app count, team-wide", "Updated live, every day"],
-          },
-        ]}
-        linkLabel="Explore App Usage Reports"
-        visual={
-          <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
-            <div className="overflow-hidden rounded-3xl shadow-2xl">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={TEAM_MEETING_IMAGE} alt="" className="h-[420px] w-full object-cover" style={{ objectPosition: "50% 30%" }} loading="lazy" />
+const VISUALS: FeaturePageVisuals = {
+  hero: <AppUsageHeroCard />,
+  dark1: (
+    <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
+      <div className="overflow-hidden rounded-3xl shadow-2xl">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={TEAM_MEETING_IMAGE} alt="" className="h-[420px] w-full object-cover" style={{ objectPosition: "50% 30%" }} loading="lazy" />
+      </div>
+      <div className="absolute -left-2 top-0 w-[220px] rounded-2xl bg-white p-4 shadow-2xl">
+        <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Top App — Today</div>
+        <div className="mt-2 text-[16px] font-bold text-gray-900">chrome</div>
+        <div className="text-[11px] font-semibold text-brand-600">53h 39m · 53% share</div>
+        <div className="mt-2 text-[9px] text-gray-400">Used by 10 of 13 employees</div>
+      </div>
+      <div className="absolute -bottom-2 -right-4 w-[210px] rounded-xl bg-white p-4 shadow-2xl">
+        <div className="text-[9px] font-bold uppercase tracking-wide text-gray-400">Unique Apps Used</div>
+        <div className="mt-1 text-[20px] font-bold text-gray-900">10</div>
+        <div className="mt-1.5 text-[9.5px] text-gray-400">Across the whole team today</div>
+      </div>
+    </div>
+  ),
+  stickyWidgets: [
+    <CategorySplitWidget key="category-split" />,
+    <UniqueAppsWidget key="unique-apps" />,
+    <ChromeUsersWidget key="chrome-users" />,
+    <CategoryRulesWidget key="category-rules" />,
+    <RangeWidget key="range" />,
+  ],
+  panel: (
+    <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
+      <div className="overflow-hidden rounded-3xl shadow-2xl">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={TEAM_MEETING_IMAGE} alt="" className="h-[380px] w-full object-cover" style={{ objectPosition: "55% 40%" }} loading="lazy" />
+      </div>
+      <div className="absolute -left-2 top-0 w-[240px] rounded-2xl bg-white p-4 shadow-2xl">
+        <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Category Rules</div>
+        <div className="mt-3 space-y-2">
+          {[
+            { app: "chrome, Code", cat: "Productive", c: "text-green-600" },
+            { app: "google sheets", cat: "Neutral", c: "text-gray-500" },
+          ].map((r) => (
+            <div key={r.app} className="flex items-center justify-between rounded-lg bg-gray-50 px-2.5 py-2">
+              <span className="text-[9.5px] font-medium text-gray-600">{r.app}</span>
+              <span className={`text-[9.5px] font-bold ${r.c}`}>{r.cat}</span>
             </div>
-            <div className="absolute -left-2 top-0 w-[220px] rounded-2xl bg-white p-4 shadow-2xl">
-              <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Top App — Today</div>
-              <div className="mt-2 text-[16px] font-bold text-gray-900">chrome</div>
-              <div className="text-[11px] font-semibold text-brand-600">53h 39m · 53% share</div>
-              <div className="mt-2 text-[9px] text-gray-400">Used by 10 of 13 employees</div>
+          ))}
+        </div>
+      </div>
+      <div className="absolute -bottom-2 -right-4 w-[210px] rounded-xl bg-white p-4 shadow-2xl">
+        <div className="text-[9px] font-bold uppercase tracking-wide text-gray-400">Applies</div>
+        <div className="mt-1 text-[15px] font-bold text-gray-900">Org-Wide, Instantly</div>
+        <div className="mt-1.5 text-[9.5px] text-gray-400">No engineering ticket required</div>
+      </div>
+    </div>
+  ),
+  dark2: (
+    <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
+      <div className="overflow-hidden rounded-3xl shadow-2xl">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={TEAM_MEETING_IMAGE} alt="" className="h-[420px] w-full object-cover sm:h-[460px]" style={{ objectPosition: "65% 50%" }} loading="lazy" />
+      </div>
+      <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
+        <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">chrome — Top Users</div>
+        <div className="mt-3 space-y-2">
+          {[
+            { name: "Prabhjot Kaur", v: "7h 37m" },
+            { name: "Nihar Ranjan Mohanta", v: "6h 34m" },
+            { name: "Vivek Bharti", v: "6h 23m" },
+          ].map((u) => (
+            <div key={u.name} className="flex items-center justify-between">
+              <span className="truncate text-[9.5px] text-gray-600">{u.name}</span>
+              <span className="text-[9.5px] font-bold text-gray-900">{u.v}</span>
             </div>
-            <div className="absolute -bottom-2 -right-4 w-[210px] rounded-xl bg-white p-4 shadow-2xl">
-              <div className="text-[9px] font-bold uppercase tracking-wide text-gray-400">Unique Apps Used</div>
-              <div className="mt-1 text-[20px] font-bold text-gray-900">10</div>
-              <div className="mt-1.5 text-[9.5px] text-gray-400">Across the whole team today</div>
-            </div>
-          </div>
-        }
-      />
+          ))}
+        </div>
+      </div>
+      <div className="absolute -bottom-2 -right-4 w-[220px] rounded-xl bg-gray-950 p-4 shadow-2xl ring-1 ring-white/10">
+        <div className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-wide text-white/50">
+          <TrendUp className="h-3.5 w-3.5" strokeWidth={1.8} />
+          Productivity Intelligence
+        </div>
+        <div className="mt-2 text-[13px] font-bold text-white">One signal of many</div>
+        <div className="mt-2 text-[9px] text-white/40">App usage feeds the broader score</div>
+      </div>
+    </div>
+  ),
+  statsPhotos: [
+    { photoSrc: TEAM_MEETING_IMAGE, photoPosition: "20% 30%" },
+    { photoSrc: TEAM_MEETING_IMAGE, photoPosition: "50% 25%" },
+    { photoSrc: TEAM_MEETING_IMAGE, photoPosition: "85% 30%" },
+  ],
+};
 
-      <FeatureStickyShowcase
-        eyebrow="GO DEEPER"
-        heading="Every Angle of App Usage"
-        desc="From category rules to per-employee drill-downs — TrackDots turns raw app activity into a clear picture."
-        cards={STICKY_CARDS}
-      />
-
-      <FeatureHighlightPanel
-        reverse
-        heading="Categories That Match Your Reality"
-        desc="Default productive / neutral / unproductive rules are just a starting point — every app can be reclassified to fit how your team actually works."
-        checklist={["Fully configurable app categories", "Changes apply going forward", "Same rules across team and individual views"]}
-        linkLabel="See Category Configuration"
-        visual={
-          <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
-            <div className="overflow-hidden rounded-3xl shadow-2xl">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={TEAM_MEETING_IMAGE} alt="" className="h-[380px] w-full object-cover" style={{ objectPosition: "55% 40%" }} loading="lazy" />
-            </div>
-            <div className="absolute -left-2 top-0 w-[240px] rounded-2xl bg-white p-4 shadow-2xl">
-              <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Category Rules</div>
-              <div className="mt-3 space-y-2">
-                {[
-                  { app: "chrome, Code", cat: "Productive", c: "text-green-600" },
-                  { app: "google sheets", cat: "Neutral", c: "text-gray-500" },
-                ].map((r) => (
-                  <div key={r.app} className="flex items-center justify-between rounded-lg bg-gray-50 px-2.5 py-2">
-                    <span className="text-[9.5px] font-medium text-gray-600">{r.app}</span>
-                    <span className={`text-[9.5px] font-bold ${r.c}`}>{r.cat}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="absolute -bottom-2 -right-4 w-[210px] rounded-xl bg-white p-4 shadow-2xl">
-              <div className="text-[9px] font-bold uppercase tracking-wide text-gray-400">Applies</div>
-              <div className="mt-1 text-[15px] font-bold text-gray-900">Org-Wide, Instantly</div>
-              <div className="mt-1.5 text-[9.5px] text-gray-400">No engineering ticket required</div>
-            </div>
-          </div>
-        }
-      />
-
-      <FeatureStatsRow
-        stats={[
-          { icon: PieChart, value: "92%", label: "Productive Time", desc: "Today's share of tracked time spent in apps categorized as productive.", photoSrc: TEAM_MEETING_IMAGE, photoPosition: "20% 30%" },
-          { icon: BarChart, value: "10", label: "Unique Apps", desc: "The number of distinct apps and websites used across the team today.", photoSrc: TEAM_MEETING_IMAGE, photoPosition: "50% 25%" },
-          { icon: Users, value: "Per-App", label: "Employee Drill-Down", desc: "Click any app in the ranking to see exactly who used it, and for how long.", photoSrc: TEAM_MEETING_IMAGE, photoPosition: "85% 30%" },
-        ]}
-      />
-
-      <FeatureDarkHighlight
-        reverse
-        eyebrow="PER-EMPLOYEE DETAIL"
-        blocks={[
-          {
-            highlighted: true,
-            heading: "Click Through to the Individual",
-            desc: "Every app in the ranking expands into a per-employee breakdown, sorted by usage.",
-            checklist: ["Per-employee time per app", "Sorted highest to lowest"],
-          },
-          {
-            heading: "Feeds Straight Into Productivity Intelligence",
-            desc: "App categorization is one of the signals behind TrackDots' broader productivity scoring.",
-            checklist: ["Contributes to productivity scoring", "Available in weekly reports"],
-          },
-        ]}
-        linkLabel="See Productivity Intelligence"
-        visual={
-          <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
-            <div className="overflow-hidden rounded-3xl shadow-2xl">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={TEAM_MEETING_IMAGE} alt="" className="h-[420px] w-full object-cover sm:h-[460px]" style={{ objectPosition: "65% 50%" }} loading="lazy" />
-            </div>
-            <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
-              <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">chrome — Top Users</div>
-              <div className="mt-3 space-y-2">
-                {[
-                  { name: "Prabhjot Kaur", v: "7h 37m" },
-                  { name: "Nihar Ranjan Mohanta", v: "6h 34m" },
-                  { name: "Vivek Bharti", v: "6h 23m" },
-                ].map((u) => (
-                  <div key={u.name} className="flex items-center justify-between">
-                    <span className="truncate text-[9.5px] text-gray-600">{u.name}</span>
-                    <span className="text-[9.5px] font-bold text-gray-900">{u.v}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="absolute -bottom-2 -right-4 w-[220px] rounded-xl bg-gray-950 p-4 shadow-2xl ring-1 ring-white/10">
-              <div className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-wide text-white/50">
-                <TrendUp className="h-3.5 w-3.5" strokeWidth={1.8} />
-                Productivity Intelligence
-              </div>
-              <div className="mt-2 text-[13px] font-bold text-white">One signal of many</div>
-              <div className="mt-2 text-[9px] text-white/40">App usage feeds the broader score</div>
-            </div>
-          </div>
-        }
-      />
-
-      <FeatureComparison
-        heading="Get The Right Tool"
-        subheading="See how TrackDots' app usage reports compare to the old way."
-        columns={COMPARISON_COLUMNS}
-        rows={COMPARISON_ROWS}
-      />
-
-      <FeatureFAQ heading="App Usage Reports, Answered" items={FAQS} />
-
-      <FinalCTA />
-    </main>
-  );
+export default async function AppUsagePage() {
+  const content = await getFeaturePageContent(SLUG, FALLBACK);
+  return <FeaturePageSections content={content} visuals={VISUALS} />;
 }

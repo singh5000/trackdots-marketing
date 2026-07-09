@@ -1,23 +1,12 @@
 import type { Metadata } from "next";
-import Navbar from "@/components/Navbar";
-import FinalCTA from "@/components/FinalCTA";
-import FeatureHero from "@/components/features/FeatureHero";
-import FeatureGrid from "@/components/features/FeatureGrid";
-import FeatureHighlightPanel from "@/components/features/FeatureHighlightPanel";
-import FeatureDarkHighlight from "@/components/features/FeatureDarkHighlight";
-import FeatureProblemSolution from "@/components/features/FeatureProblemSolution";
-import FeatureStickyShowcase, { type StickyCard } from "@/components/features/FeatureStickyShowcase";
-import FeatureStatsRow from "@/components/features/FeatureStatsRow";
-import FeatureComparison from "@/components/features/FeatureComparison";
-import FeatureFAQ from "@/components/features/FeatureFAQ";
+import FeaturePageSections, { type FeaturePageVisuals } from "@/components/features/FeaturePageSections";
+import { getFeaturePageContent } from "@/lib/featurepage";
 import { BarRows, ChecklistRows, StatGrid } from "@/components/features/widgets";
 import { TEAM_MEETING_IMAGE } from "@/lib/media";
 import {
-  Activity,
   BarChart,
   Bell,
   ChevronDown,
-  Clock,
   DotsLogo,
   FileText,
   Folder,
@@ -27,54 +16,15 @@ import {
   Search,
   Settings,
   ShieldCheck,
-  TrendUp,
   Users,
 } from "@/components/icons";
+import { FALLBACK, SLUG } from "./content";
 
 export const metadata: Metadata = {
   title: "Anomaly Detection — TrackDots",
   description:
     "Automatically flags unusual work patterns — no-activity streaks, sudden hour drops, erratic hours — ranked by severity so nothing gets missed.",
 };
-
-const CAPABILITIES = [
-  { icon: Activity, title: "No-Activity Streak Detection", desc: "Flags employees with multiple consecutive weekdays of zero tracked activity." },
-  { icon: TrendUp, title: "Sudden Hour-Drop Alerts", desc: "Surfaces days where tracked hours fall sharply below an employee's own personal average." },
-  { icon: Clock, title: "Erratic Start-Time Detection", desc: "Flags when a daily start time swings widely across an employee's recent active days." },
-  { icon: Monitor, title: "Unusual Working-Hours Flags", desc: "Surfaces work logged unusually early or late relative to normal hours." },
-  { icon: ShieldCheck, title: "Severity-Ranked Flags", desc: "Every anomaly is ranked Critical, Warning, or Info, so managers know what needs attention first." },
-  { icon: Users, title: "Team-Wide Clear vs. Flagged View", desc: "See every employee's status at a glance — flagged or all clear — across the whole team." },
-];
-
-const PROBLEMS = [
-  "Disengagement and burnout going unnoticed until it's a crisis",
-  "No early warning when someone's work pattern changes",
-  "Manually eyeballing dashboards to spot who needs a check-in",
-];
-const BENEFITS = [
-  "No-activity streaks and sudden drops flagged automatically",
-  "Erratic hours and unusual patterns surfaced early",
-  "Every flag ranked by severity, so nothing gets missed",
-];
-
-const COMPARISON_COLUMNS = ["TrackDots", "Basic Time Trackers", "Spreadsheets & Manual Logs"];
-const COMPARISON_ROWS: { capability: string; statuses: ("yes" | "partial" | "no")[] }[] = [
-  { capability: "Automatic no-activity streak detection", statuses: ["yes", "no", "no"] },
-  { capability: "Sudden hour-drop alerts", statuses: ["yes", "no", "no"] },
-  { capability: "Erratic start-time detection", statuses: ["yes", "no", "no"] },
-  { capability: "Unusual working-hours flags", statuses: ["yes", "no", "no"] },
-  { capability: "Severity-ranked flags (Critical/Warning/Info)", statuses: ["yes", "no", "no"] },
-  { capability: "Team-wide flagged vs. clear view", statuses: ["yes", "partial", "no"] },
-];
-
-const FAQS = [
-  { q: "What counts as a \"no-activity streak\"?", a: "Ten or more consecutive weekdays with zero tracked activity for an employee triggers a flag." },
-  { q: "What is a \"sudden hour drop\"?", a: "A day where an employee's tracked hours fall sharply below their own personal average is flagged for review." },
-  { q: "What does \"erratic start times\" mean?", a: "It flags when an employee's daily start time swings widely across their recent active days, which can signal disengagement or scheduling issues." },
-  { q: "How are anomalies prioritized?", a: "Every flag is ranked Critical, Warning, or Info, so managers can focus on what needs attention first." },
-  { q: "Does this replace a manager's judgment?", a: "No. Anomaly Detection surfaces patterns worth a look — every flag can be reviewed against the employee's actual activity diary before any conversation happens." },
-  { q: "Can employees see their own flags?", a: "Yes, on plans with the employee self-view portal enabled." },
-];
 
 /** Same 820×540 sidebar+topbar "dashboard chrome" shell used across every
  * feature hero — content area swapped for the real Anomaly Detection layout
@@ -284,95 +234,10 @@ const ClearWidget = () => (
   </div>
 );
 
-const STICKY_CARDS: StickyCard[] = [
-  {
-    tone: "purple",
-    icon: ShieldCheck,
-    title: "Every Flag, Ranked by Severity",
-    desc: "Critical, Warning, or Info — so managers always know what deserves attention first.",
-    checks: ["0 Critical, 7 Warning today", "9 total flags across the team", "Updated automatically, daily"],
-    widget: <SeverityWidget />,
-  },
-  {
-    tone: "dark",
-    icon: Activity,
-    title: "Silence Doesn't Go Unnoticed",
-    desc: "Ten or more consecutive weekdays of zero tracked activity is flagged the moment it happens.",
-    checks: ["Consecutive-weekday detection", "Flagged automatically", "No manual monitoring needed"],
-    widget: <StreakWidget />,
-  },
-  {
-    tone: "purple",
-    icon: TrendUp,
-    title: "Drops From the Norm, Caught Early",
-    desc: "Every employee's hours are compared against their own personal average, not a generic benchmark.",
-    checks: ["Personal-average comparison", "Percentage drop shown", "Flagged same day"],
-    widget: <HourDropWidget />,
-  },
-  {
-    tone: "dark",
-    icon: Clock,
-    title: "Pattern Changes, Not Just Numbers",
-    desc: "Erratic start times and unusual working hours are surfaced even when total hours look normal.",
-    checks: ["Start-time variance detection", "Unusual-hours detection", "Multiple flags per employee, when relevant"],
-    widget: <ErraticWidget />,
-  },
-  {
-    tone: "purple",
-    icon: Users,
-    title: "The Whole Team, One Glance",
-    desc: "Every employee shows as flagged or all-clear, so reviewing the team takes minutes, not hours.",
-    checks: ["Team-wide flagged vs. clear view", "Per-employee 30-day activity chart", "Links straight to the activity diary"],
-    widget: <ClearWidget />,
-  },
-];
-
-export default function AnomalyDetectionPage() {
-  return (
-    <main className="flex-1 bg-white">
-      <Navbar />
-
-      <FeatureHero
-        eyebrow="FEATURE — ANOMALY DETECTION"
-        heading="Catch Unusual Patterns"
-        highlight="Before They Become a Crisis."
-        description="No-activity streaks, sudden hour drops, and erratic hours are flagged automatically — ranked by severity, so nothing gets missed."
-        visual={<AnomalyHeroCard />}
-      />
-
-      <FeatureProblemSolution
-        eyebrow="THE EARLY-WARNING GAP"
-        heading="Don't Wait for a Crisis to Notice"
-        subheading="By the time disengagement is obvious, it's already cost you weeks. Anomaly Detection catches it early."
-        problems={PROBLEMS}
-        benefits={BENEFITS}
-      />
-
-      <FeatureGrid
-        eyebrow="HOW IT WORKS"
-        heading="Patterns Surfaced Automatically"
-        subheading="No dashboard-watching required — anomalies are flagged and ranked for you."
-        items={CAPABILITIES}
-      />
-
-      <FeatureDarkHighlight
-        eyebrow="FLAGGED PATTERNS"
-        blocks={[
-          {
-            highlighted: true,
-            heading: "Four Kinds of Anomalies, Detected Automatically",
-            desc: "No-activity streaks, sudden hour drops, erratic start times, and unusual working hours are all flagged without setup.",
-            checklist: ["No-activity streak detection", "Sudden hour-drop alerts"],
-          },
-          {
-            heading: "Every Flag Links to the Evidence",
-            desc: "Jump straight from any flag to the employee's activity diary or profile to see the full picture.",
-            checklist: ["One click to activity diary", "One click to employee profile"],
-          },
-        ]}
-        linkLabel="Explore Anomaly Detection"
-        visual={
-          <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
+const VISUALS: FeaturePageVisuals = {
+  hero: <AnomalyHeroCard />,
+  dark1: (
+    <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
             <div className="overflow-hidden rounded-3xl shadow-2xl">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={TEAM_MEETING_IMAGE} alt="" className="h-[420px] w-full object-cover" style={{ objectPosition: "40% 25%" }} loading="lazy" />
@@ -393,24 +258,16 @@ export default function AnomalyDetectionPage() {
               <div className="mt-1.5 text-[9.5px] text-gray-400">0 critical · 7 warning · 12 all clear</div>
             </div>
           </div>
-        }
-      />
-
-      <FeatureStickyShowcase
-        eyebrow="GO DEEPER"
-        heading="Every Angle of Anomaly Detection"
-        desc="From silent streaks to erratic hours — TrackDots surfaces what deserves a manager's attention."
-        cards={STICKY_CARDS}
-      />
-
-      <FeatureHighlightPanel
-        reverse
-        heading="Signals, Not Snap Judgments"
-        desc="Every anomaly is a pattern worth a look, backed by the employee's real activity diary — never an automated verdict."
-        checklist={["Every flag links to real activity data", "Severity-ranked, never one-size-fits-all", "Built to start conversations, not replace them"]}
-        linkLabel="See How Flags Are Reviewed"
-        visual={
-          <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
+  ),
+  stickyWidgets: [
+    <SeverityWidget key="severity" />,
+    <StreakWidget key="streak" />,
+    <HourDropWidget key="hour-drop" />,
+    <ErraticWidget key="erratic" />,
+    <ClearWidget key="clear" />,
+  ],
+  panel: (
+    <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
             <div className="overflow-hidden rounded-3xl shadow-2xl">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={TEAM_MEETING_IMAGE} alt="" className="h-[380px] w-full object-cover" style={{ objectPosition: "55% 35%" }} loading="lazy" />
@@ -435,36 +292,9 @@ export default function AnomalyDetectionPage() {
               </span>
             </div>
           </div>
-        }
-      />
-
-      <FeatureStatsRow
-        stats={[
-          { icon: ShieldCheck, value: "3-Tier", label: "Severity Ranking", desc: "Every flag is ranked Critical, Warning, or Info.", photoSrc: TEAM_MEETING_IMAGE, photoPosition: "20% 30%" },
-          { icon: Activity, value: "4", label: "Anomaly Types Detected", desc: "No-activity streaks, hour drops, erratic starts, and unusual hours.", photoSrc: TEAM_MEETING_IMAGE, photoPosition: "50% 25%" },
-          { icon: Users, value: "12 of 21", label: "All Clear Today", desc: "The rest of the team flagged nothing unusual in the last 30 days.", photoSrc: TEAM_MEETING_IMAGE, photoPosition: "85% 30%" },
-        ]}
-      />
-
-      <FeatureDarkHighlight
-        reverse
-        eyebrow="CONNECTED TO THE BIGGER PICTURE"
-        blocks={[
-          {
-            highlighted: true,
-            heading: "One Signal Among Many",
-            desc: "Anomaly flags sit alongside burnout risk and productivity trends for a complete view of team health.",
-            checklist: ["Feeds into Burnout Risk", "Feeds into Productivity Intelligence"],
-          },
-          {
-            heading: "Reviewed by People, Not Just Algorithms",
-            desc: "Every flag exists to prompt a manager conversation — not to make an automated decision about anyone.",
-            checklist: ["Always paired with real activity evidence", "Never used for automated penalties"],
-          },
-        ]}
-        linkLabel="See Burnout Detection"
-        visual={
-          <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
+  ),
+  dark2: (
+    <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
             <div className="overflow-hidden rounded-3xl shadow-2xl">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={TEAM_MEETING_IMAGE} alt="" className="h-[420px] w-full object-cover sm:h-[460px]" style={{ objectPosition: "60% 50%" }} loading="lazy" />
@@ -489,19 +319,15 @@ export default function AnomalyDetectionPage() {
               <div className="mt-2 text-[9px] text-white/40">Reviewed alongside their activity diary</div>
             </div>
           </div>
-        }
-      />
+  ),
+  statsPhotos: [
+    { photoSrc: TEAM_MEETING_IMAGE, photoPosition: "20% 30%" },
+    { photoSrc: TEAM_MEETING_IMAGE, photoPosition: "50% 25%" },
+    { photoSrc: TEAM_MEETING_IMAGE, photoPosition: "85% 30%" },
+  ],
+};
 
-      <FeatureComparison
-        heading="Get The Right Tool"
-        subheading="See how TrackDots' anomaly detection compares to the old way."
-        columns={COMPARISON_COLUMNS}
-        rows={COMPARISON_ROWS}
-      />
-
-      <FeatureFAQ heading="Anomaly Detection, Answered" items={FAQS} />
-
-      <FinalCTA />
-    </main>
-  );
+export default async function AnomalyDetectionPage() {
+  const content = await getFeaturePageContent(SLUG, FALLBACK);
+  return <FeaturePageSections content={content} visuals={VISUALS} />;
 }

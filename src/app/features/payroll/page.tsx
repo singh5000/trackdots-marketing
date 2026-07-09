@@ -1,22 +1,11 @@
 import type { Metadata } from "next";
-import Navbar from "@/components/Navbar";
-import FinalCTA from "@/components/FinalCTA";
-import FeatureHero from "@/components/features/FeatureHero";
-import FeatureGrid from "@/components/features/FeatureGrid";
-import FeatureHighlightPanel from "@/components/features/FeatureHighlightPanel";
-import FeatureDarkHighlight from "@/components/features/FeatureDarkHighlight";
-import FeatureProblemSolution from "@/components/features/FeatureProblemSolution";
-import FeatureStickyShowcase, { type StickyCard } from "@/components/features/FeatureStickyShowcase";
-import FeatureStatsRow from "@/components/features/FeatureStatsRow";
-import FeatureComparison from "@/components/features/FeatureComparison";
-import FeatureFAQ from "@/components/features/FeatureFAQ";
+import FeaturePageSections, { type FeaturePageVisuals } from "@/components/features/FeaturePageSections";
+import { getFeaturePageContent } from "@/lib/featurepage";
 import { BarRows, ChecklistRows, StatGrid } from "@/components/features/widgets";
 import { TEAM_MEETING_IMAGE } from "@/lib/media";
 import {
   BarChart,
   Bell,
-  Calendar,
-  CalendarCheck,
   ChevronDown,
   DotsLogo,
   Download,
@@ -29,51 +18,13 @@ import {
   Settings,
   Users,
 } from "@/components/icons";
+import { FALLBACK, SLUG } from "./content";
 
 export const metadata: Metadata = {
   title: "Payroll Management — TrackDots",
   description:
     "Attendance-based salary projection with automatic PF and professional-tax deductions, per-employee adjustments, and one-click salary letters and Excel export.",
 };
-
-const CAPABILITIES = [
-  { icon: CalendarCheck, title: "Attendance-Linked Payroll", desc: "Paid days are calculated directly from attendance — present, leave, half-day, LWP, and absences all roll up automatically." },
-  { icon: BarChart, title: "Automatic Gross & Net Projection", desc: "See projected gross and net payroll for the whole organization before the month even closes." },
-  { icon: FileText, title: "PF & Professional Tax Deductions", desc: "Provident Fund and professional tax are calculated and deducted automatically, per employee." },
-  { icon: Settings, title: "Manual Adjustments", desc: "Add one-off adjustments per employee without touching the underlying attendance data." },
-  { icon: Download, title: "Salary Letters & Excel Export", desc: "Generate salary letters or export the full payroll run to Excel in one click." },
-  { icon: Calendar, title: "Month-by-Month Payroll Runs", desc: "Navigate month to month, with a clear In Progress or Finalized status for each run." },
-];
-
-const PROBLEMS = [
-  "Payroll recalculated by hand from attendance spreadsheets every month",
-  "PF and professional tax computed manually, per employee",
-  "No single source of truth between attendance and what people are actually paid",
-];
-const BENEFITS = [
-  "Paid days calculated automatically from real attendance",
-  "PF and professional tax deducted automatically, every run",
-  "Gross and net payroll projected before the month even closes",
-];
-
-const COMPARISON_COLUMNS = ["TrackDots", "Basic Time Trackers", "Spreadsheets & Manual Logs"];
-const COMPARISON_ROWS: { capability: string; statuses: ("yes" | "partial" | "no")[] }[] = [
-  { capability: "Attendance-linked paid-days calculation", statuses: ["yes", "no", "no"] },
-  { capability: "Automatic PF & professional tax deduction", statuses: ["yes", "no", "no"] },
-  { capability: "Projected gross & net before month close", statuses: ["yes", "no", "no"] },
-  { capability: "Per-employee manual adjustments", statuses: ["yes", "partial", "partial"] },
-  { capability: "One-click salary letters", statuses: ["yes", "no", "no"] },
-  { capability: "One-click Excel export", statuses: ["yes", "partial", "partial"] },
-];
-
-const FAQS = [
-  { q: "How are paid days calculated?", a: "Directly from attendance — present days, full-day leave, half-days, short leaves, LWP, and absences all roll up into a paid-days total automatically." },
-  { q: "Does TrackDots calculate PF and professional tax?", a: "Yes. Both are calculated and deducted automatically per employee as part of every payroll run." },
-  { q: "Can I make one-off adjustments to an employee's pay?", a: "Yes. Adjustments can be added per employee without changing their underlying attendance record." },
-  { q: "Can I see payroll before the month is finished?", a: "Yes. TrackDots projects gross and net payroll for the current month in progress, updated as attendance comes in." },
-  { q: "Can I generate salary letters?", a: "Yes. Salary letters can be generated per employee directly from the payroll run." },
-  { q: "Can I export payroll data?", a: "Yes. A full payroll run can be exported to Excel in one click." },
-];
 
 /** Same 820×540 sidebar+topbar "dashboard chrome" shell used across every
  * feature hero — content area swapped for the real Payroll layout
@@ -289,210 +240,86 @@ const ExportWidget = () => (
   </div>
 );
 
-const STICKY_CARDS: StickyCard[] = [
-  {
-    tone: "purple",
-    icon: CalendarCheck,
-    title: "Attendance Becomes Payroll",
-    desc: "Paid days flow straight from the attendance grid — present, leave, half-day, LWP, and absences all counted automatically.",
-    checks: ["No manual attendance re-entry", "Same source data as Attendance Tracking", "Recalculated as the month progresses"],
-    widget: <PaidDaysWidget />,
-  },
-  {
-    tone: "dark",
-    icon: BarChart,
-    title: "Projected Before the Month Closes",
-    desc: "Gross and net payroll are projected in real time, even while the month is still in progress.",
-    checks: ["Live gross & net projection", "Updated as attendance comes in", "No waiting for month-end"],
-    widget: <ProjectionWidget />,
-  },
-  {
-    tone: "purple",
-    icon: FileText,
-    title: "Statutory Deductions, Automated",
-    desc: "PF and professional tax are calculated per employee, every run, without a separate spreadsheet.",
-    checks: ["Automatic PF calculation", "Automatic professional tax", "Per-employee breakdown"],
-    widget: <DeductionsWidget />,
-  },
-  {
-    tone: "dark",
-    icon: Settings,
-    title: "Adjustments, Without the Mess",
-    desc: "Add a one-off bonus or deduction for an employee without ever touching their attendance history.",
-    checks: ["Per-employee manual adjustments", "Underlying attendance stays untouched", "Fully visible in the payroll run"],
-    widget: <AdjustmentWidget />,
-  },
-  {
-    tone: "purple",
-    icon: Download,
-    title: "Done in One Click",
-    desc: "Generate a salary letter or export the entire run to Excel — no separate finance tool required.",
-    checks: ["One-click salary letters", "One-click Excel export", "Per-employee or full run"],
-    widget: <ExportWidget />,
-  },
-];
-
-export default function PayrollPage() {
-  return (
-    <main className="flex-1 bg-white">
-      <Navbar />
-
-      <FeatureHero
-        eyebrow="FEATURE — PAYROLL MANAGEMENT"
-        heading="Payroll That Calculates"
-        highlight="Itself From Attendance."
-        description="Attendance-based salary projection with automatic PF and professional-tax deductions, per-employee adjustments, and one-click salary letters and Excel export."
-        visual={<PayrollHeroCard />}
-      />
-
-      <FeatureProblemSolution
-        eyebrow="THE RECONCILIATION GAP"
-        heading="Stop Rebuilding Payroll From Scratch Every Month"
-        subheading="When attendance and payroll live in different systems, someone has to reconcile them by hand. TrackDots doesn't."
-        problems={PROBLEMS}
-        benefits={BENEFITS}
-      />
-
-      <FeatureGrid
-        eyebrow="HOW IT WORKS"
-        heading="From Attendance to Payable, Automatically"
-        subheading="One source of truth, from the first clock-in to the final payslip."
-        items={CAPABILITIES}
-      />
-
-      <FeatureDarkHighlight
-        eyebrow="PAYROLL RUN"
-        blocks={[
-          {
-            highlighted: true,
-            heading: "One Run, Every Employee",
-            desc: "Paid days, deductions, and payable amount for the whole organization, calculated in a single monthly run.",
-            checklist: ["Whole-organization payroll run", "Paid days from real attendance"],
-          },
-          {
-            heading: "In Progress, Not a Black Box",
-            desc: "Every run shows its status clearly, and projections update live as the month's attendance comes in.",
-            checklist: ["Clear In Progress / Finalized status", "Live projected gross & net"],
-          },
-        ]}
-        linkLabel="Explore Payroll Management"
-        visual={
-          <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
-            <div className="overflow-hidden rounded-3xl shadow-2xl">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={TEAM_MEETING_IMAGE} alt="" className="h-[420px] w-full object-cover" style={{ objectPosition: "45% 25%" }} loading="lazy" />
+const VISUALS: FeaturePageVisuals = {
+  hero: <PayrollHeroCard />,
+  dark1: (
+    <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
+      <div className="overflow-hidden rounded-3xl shadow-2xl">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={TEAM_MEETING_IMAGE} alt="" className="h-[420px] w-full object-cover" style={{ objectPosition: "45% 25%" }} loading="lazy" />
+      </div>
+      <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
+        <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">July 2026 Run</div>
+        <div className="mt-2 text-[16px] font-bold text-gray-900">₹8,90,263</div>
+        <div className="text-[10px] font-semibold text-green-600">Projected net · 20 employees</div>
+      </div>
+      <div className="absolute -bottom-2 -right-4 w-[210px] rounded-xl bg-white p-4 shadow-2xl">
+        <div className="text-[9px] font-bold uppercase tracking-wide text-gray-400">Status</div>
+        <div className="mt-1 text-[15px] font-bold text-amber-600">⏳ In Progress</div>
+        <div className="mt-1.5 text-[9.5px] text-gray-400">23 working days this month</div>
+      </div>
+    </div>
+  ),
+  stickyWidgets: [
+    <PaidDaysWidget key="paid-days" />,
+    <ProjectionWidget key="projection" />,
+    <DeductionsWidget key="deductions" />,
+    <AdjustmentWidget key="adjustment" />,
+    <ExportWidget key="export" />,
+  ],
+  panel: (
+    <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
+      <div className="overflow-hidden rounded-3xl shadow-2xl">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={TEAM_MEETING_IMAGE} alt="" className="h-[380px] w-full object-cover" style={{ objectPosition: "55% 35%" }} loading="lazy" />
+      </div>
+      <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
+        <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Ankur Mishra — July</div>
+        <div className="mt-3 space-y-2">
+          {[{ l: "PF", v: "−₹1,800" }, { l: "Professional Tax", v: "−₹200" }].map((d) => (
+            <div key={d.l} className="flex items-center justify-between rounded-lg bg-gray-50 px-2.5 py-2">
+              <span className="text-[9.5px] font-medium text-gray-500">{d.l}</span>
+              <span className="text-[10px] font-bold text-red-500">{d.v}</span>
             </div>
-            <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
-              <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">July 2026 Run</div>
-              <div className="mt-2 text-[16px] font-bold text-gray-900">₹8,90,263</div>
-              <div className="text-[10px] font-semibold text-green-600">Projected net · 20 employees</div>
-            </div>
-            <div className="absolute -bottom-2 -right-4 w-[210px] rounded-xl bg-white p-4 shadow-2xl">
-              <div className="text-[9px] font-bold uppercase tracking-wide text-gray-400">Status</div>
-              <div className="mt-1 text-[15px] font-bold text-amber-600">⏳ In Progress</div>
-              <div className="mt-1.5 text-[9.5px] text-gray-400">23 working days this month</div>
-            </div>
-          </div>
-        }
-      />
+          ))}
+        </div>
+      </div>
+      <div className="absolute -bottom-2 -right-4 w-[210px] rounded-xl bg-white p-4 shadow-2xl">
+        <div className="text-[9px] font-bold uppercase tracking-wide text-gray-400">Net Payable</div>
+        <div className="mt-1 text-[18px] font-bold text-gray-900">₹69,397</div>
+        <div className="mt-1.5 text-[9.5px] text-gray-400">After all deductions</div>
+      </div>
+    </div>
+  ),
+  dark2: (
+    <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
+      <div className="overflow-hidden rounded-3xl shadow-2xl">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={TEAM_MEETING_IMAGE} alt="" className="h-[420px] w-full object-cover sm:h-[460px]" style={{ objectPosition: "60% 55%" }} loading="lazy" />
+      </div>
+      <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
+        <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">July 2026 Payslips</div>
+        <div className="mt-2 text-[13px] font-bold text-gray-900">20 of 20 generated</div>
+        <div className="mt-1 text-[9.5px] text-gray-400">Available in self-view portal</div>
+      </div>
+      <div className="absolute -bottom-2 -right-4 flex items-center gap-2.5 rounded-2xl bg-brand-600 px-4 py-3 text-white shadow-2xl shadow-brand-600/40">
+        <Download className="h-6 w-6" strokeWidth={1.8} />
+        <span className="text-[10px] font-semibold leading-tight">
+          Export
+          <br />
+          Ready
+        </span>
+      </div>
+    </div>
+  ),
+  statsPhotos: [
+    { photoSrc: TEAM_MEETING_IMAGE, photoPosition: "20% 30%" },
+    { photoSrc: TEAM_MEETING_IMAGE, photoPosition: "50% 25%" },
+    { photoSrc: TEAM_MEETING_IMAGE, photoPosition: "85% 30%" },
+  ],
+};
 
-      <FeatureStickyShowcase
-        eyebrow="GO DEEPER"
-        heading="Every Angle of Payroll Management"
-        desc="From attendance to deductions to export — TrackDots keeps payroll accurate and defensible."
-        cards={STICKY_CARDS}
-      />
-
-      <FeatureHighlightPanel
-        reverse
-        heading="Every Deduction, Fully Itemized"
-        desc="PF, professional tax, and LWP deductions are all broken out per employee, never a single opaque number."
-        checklist={["PF calculated automatically", "Professional tax calculated automatically", "LWP deduction tied to real attendance"]}
-        linkLabel="See Deduction Rules"
-        visual={
-          <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
-            <div className="overflow-hidden rounded-3xl shadow-2xl">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={TEAM_MEETING_IMAGE} alt="" className="h-[380px] w-full object-cover" style={{ objectPosition: "55% 35%" }} loading="lazy" />
-            </div>
-            <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
-              <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Ankur Mishra — July</div>
-              <div className="mt-3 space-y-2">
-                {[{ l: "PF", v: "−₹1,800" }, { l: "Professional Tax", v: "−₹200" }].map((d) => (
-                  <div key={d.l} className="flex items-center justify-between rounded-lg bg-gray-50 px-2.5 py-2">
-                    <span className="text-[9.5px] font-medium text-gray-500">{d.l}</span>
-                    <span className="text-[10px] font-bold text-red-500">{d.v}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="absolute -bottom-2 -right-4 w-[210px] rounded-xl bg-white p-4 shadow-2xl">
-              <div className="text-[9px] font-bold uppercase tracking-wide text-gray-400">Net Payable</div>
-              <div className="mt-1 text-[18px] font-bold text-gray-900">₹69,397</div>
-              <div className="mt-1.5 text-[9.5px] text-gray-400">After all deductions</div>
-            </div>
-          </div>
-        }
-      />
-
-      <FeatureStatsRow
-        stats={[
-          { icon: CalendarCheck, value: "Auto", label: "Attendance-Linked", desc: "Paid days calculated directly from real attendance, every run.", photoSrc: TEAM_MEETING_IMAGE, photoPosition: "20% 30%" },
-          { icon: FileText, value: "PF + Tax", label: "Statutory Deductions", desc: "Provident Fund and professional tax calculated automatically per employee.", photoSrc: TEAM_MEETING_IMAGE, photoPosition: "50% 25%" },
-          { icon: Download, value: "1-Click", label: "Export & Salary Letters", desc: "Generate salary letters or export the full run to Excel instantly.", photoSrc: TEAM_MEETING_IMAGE, photoPosition: "85% 30%" },
-        ]}
-      />
-
-      <FeatureDarkHighlight
-        reverse
-        eyebrow="AUDIT-READY"
-        blocks={[
-          {
-            highlighted: true,
-            heading: "Every Adjustment, Fully Logged",
-            desc: "Manual adjustments never overwrite attendance data — they're layered on top, fully visible in the run.",
-            checklist: ["Adjustments never modify attendance", "Fully visible per employee"],
-          },
-          {
-            heading: "Payslips, Ready When You Are",
-            desc: "Once a run is finalized, payslips are generated and available to every employee.",
-            checklist: ["Payslip generation per run", "Available in the employee self-view portal"],
-          },
-        ]}
-        linkLabel="See Payslips"
-        visual={
-          <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
-            <div className="overflow-hidden rounded-3xl shadow-2xl">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={TEAM_MEETING_IMAGE} alt="" className="h-[420px] w-full object-cover sm:h-[460px]" style={{ objectPosition: "60% 55%" }} loading="lazy" />
-            </div>
-            <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
-              <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">July 2026 Payslips</div>
-              <div className="mt-2 text-[13px] font-bold text-gray-900">20 of 20 generated</div>
-              <div className="mt-1 text-[9.5px] text-gray-400">Available in self-view portal</div>
-            </div>
-            <div className="absolute -bottom-2 -right-4 flex items-center gap-2.5 rounded-2xl bg-brand-600 px-4 py-3 text-white shadow-2xl shadow-brand-600/40">
-              <Download className="h-6 w-6" strokeWidth={1.8} />
-              <span className="text-[10px] font-semibold leading-tight">
-                Export
-                <br />
-                Ready
-              </span>
-            </div>
-          </div>
-        }
-      />
-
-      <FeatureComparison
-        heading="Get The Right Tool"
-        subheading="See how TrackDots' payroll management compares to the old way."
-        columns={COMPARISON_COLUMNS}
-        rows={COMPARISON_ROWS}
-      />
-
-      <FeatureFAQ heading="Payroll Management, Answered" items={FAQS} />
-
-      <FinalCTA />
-    </main>
-  );
+export default async function PayrollPage() {
+  const content = await getFeaturePageContent(SLUG, FALLBACK);
+  return <FeaturePageSections content={content} visuals={VISUALS} />;
 }

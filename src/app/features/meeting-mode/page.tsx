@@ -1,24 +1,12 @@
 import type { Metadata } from "next";
-import Navbar from "@/components/Navbar";
-import FinalCTA from "@/components/FinalCTA";
-import FeatureHero from "@/components/features/FeatureHero";
-import FeatureGrid from "@/components/features/FeatureGrid";
-import FeatureHighlightPanel from "@/components/features/FeatureHighlightPanel";
-import FeatureDarkHighlight from "@/components/features/FeatureDarkHighlight";
-import FeatureProblemSolution from "@/components/features/FeatureProblemSolution";
-import FeatureStickyShowcase, { type StickyCard } from "@/components/features/FeatureStickyShowcase";
-import FeatureStatsRow from "@/components/features/FeatureStatsRow";
-import FeatureComparison from "@/components/features/FeatureComparison";
-import FeatureFAQ from "@/components/features/FeatureFAQ";
+import FeaturePageSections, { type FeaturePageVisuals } from "@/components/features/FeaturePageSections";
+import { getFeaturePageContent } from "@/lib/featurepage";
 import { BarRows, ChecklistRows, StatGrid } from "@/components/features/widgets";
 import { TEAM_MEETING_IMAGE } from "@/lib/media";
 import {
   BarChart,
   Bell,
-  Calendar,
-  CheckCircle,
   ChevronDown,
-  Clock,
   DotsLogo,
   FileText,
   Folder,
@@ -28,55 +16,16 @@ import {
   Search,
   Settings,
   ShieldCheck,
-  TrendUp,
   Users,
   XCircle,
 } from "@/components/icons";
+import { FALLBACK, SLUG } from "./content";
 
 export const metadata: Metadata = {
   title: "Meeting Mode — TrackDots",
   description:
     "Employees declare meeting sessions with a note; once a manager approves, that time counts as fully productive — never a mark against idle time.",
 };
-
-const CAPABILITIES = [
-  { icon: Calendar, title: "Employee-Declared Sessions", desc: "Employees declare their own meeting sessions with a quick note on what the meeting was." },
-  { icon: CheckCircle, title: "One-Tap Manager Approval", desc: "Managers approve or reject every declared meeting from a single pending queue." },
-  { icon: TrendUp, title: "Counts as Fully Productive", desc: "Once approved, meeting time counts as 100% productive — no unfair idle penalties." },
-  { icon: FileText, title: "Full Status History", desc: "Every request keeps its status — pending, approved, or rejected — with who decided and when." },
-  { icon: ShieldCheck, title: "Never Auto-Approved", desc: "Every declared meeting requires explicit manager approval before it affects any score." },
-  { icon: Clock, title: "Exempt From Idle Detection", desc: "Approved meeting time is automatically excluded from idle-time calculations." },
-];
-
-const PROBLEMS = [
-  "Meetings silently counted as idle or unproductive time",
-  "No record of why a block of time wasn't at the keyboard",
-  "Employees penalized for time spent in real, necessary meetings",
-];
-const BENEFITS = [
-  "Employees declare meetings with a one-line note",
-  "Managers approve or reject in a single tap",
-  "Approved meetings always count as fully productive",
-];
-
-const COMPARISON_COLUMNS = ["TrackDots", "Basic Time Trackers", "Spreadsheets & Manual Logs"];
-const COMPARISON_ROWS: { capability: string; statuses: ("yes" | "partial" | "no")[] }[] = [
-  { capability: "Employee-declared meeting sessions", statuses: ["yes", "no", "no"] },
-  { capability: "Manager approval queue", statuses: ["yes", "no", "no"] },
-  { capability: "Approved time counts as productive", statuses: ["yes", "no", "no"] },
-  { capability: "Automatic idle-time exemption", statuses: ["yes", "no", "no"] },
-  { capability: "Full pending / approved / rejected history", statuses: ["yes", "no", "no"] },
-  { capability: "Feeds directly into productivity scoring", statuses: ["yes", "no", "no"] },
-];
-
-const FAQS = [
-  { q: "How does an employee declare a meeting?", a: "From their dashboard, an employee marks a time range as a meeting and adds a short note describing it — no separate app or calendar sync required." },
-  { q: "Does a declared meeting count as productive automatically?", a: "No. It stays Pending until a manager explicitly approves it. Only approved meetings count as fully productive time." },
-  { q: "What happens if a manager rejects a meeting request?", a: "The time reverts to being scored as regular tracked activity, exactly as if Meeting Mode had never been used." },
-  { q: "Does meeting time affect idle-time reporting?", a: "Yes. Approved meeting time is automatically excluded from idle-time calculations, so it never drags down an employee's efficiency score." },
-  { q: "Can I see a history of past approvals?", a: "Yes. Every meeting request keeps a permanent status of pending, approved, or rejected, visible to managers and HR." },
-  { q: "Can employees see the status of their own requests?", a: "Yes, on plans with the employee self-view portal enabled, employees can track their own pending, approved, and rejected requests." },
-];
 
 /** Same 820×540 sidebar+topbar "dashboard chrome" shell used across every
  * feature hero — content area swapped for the real Meeting Approvals layout
@@ -294,95 +243,10 @@ const IdleExemptWidget = () => (
   </div>
 );
 
-const STICKY_CARDS: StickyCard[] = [
-  {
-    tone: "purple",
-    icon: Calendar,
-    title: "Declared in Seconds",
-    desc: "Employees mark a time range as a meeting and add a short note — no calendar sync required.",
-    checks: ["One-line note per session", "No separate app needed", "Available to every employee"],
-    widget: <NoteWidget />,
-  },
-  {
-    tone: "dark",
-    icon: CheckCircle,
-    title: "One Queue, One Tap",
-    desc: "Every declared meeting lands in a single pending queue for a manager to approve or reject.",
-    checks: ["Single pending-approvals queue", "Approve or reject in one tap", "Nothing acted on automatically"],
-    widget: <ApprovalQueueWidget />,
-  },
-  {
-    tone: "purple",
-    icon: TrendUp,
-    title: "Counts as Real Work",
-    desc: "Once approved, meeting time counts as fully productive — never a mark against an employee.",
-    checks: ["100% productive once approved", "No manual score adjustment needed", "Applied instantly"],
-    widget: <ScoringImpactWidget />,
-  },
-  {
-    tone: "dark",
-    icon: FileText,
-    title: "Nothing Happens Silently",
-    desc: "Every request keeps a permanent status — pending, approved, or rejected — visible to managers and HR.",
-    checks: ["Full status history retained", "Visible to managers and HR", "Never auto-approved"],
-    widget: <StatusHistoryWidget />,
-  },
-  {
-    tone: "purple",
-    icon: Clock,
-    title: "Idle Time, Correctly Excluded",
-    desc: "Approved meeting time is automatically carved out of idle-time calculations for the day.",
-    checks: ["Automatic idle exemption", "No manual recalculation", "Reflected the same day"],
-    widget: <IdleExemptWidget />,
-  },
-];
-
-export default function MeetingModePage() {
-  return (
-    <main className="flex-1 bg-white">
-      <Navbar />
-
-      <FeatureHero
-        eyebrow="FEATURE — MEETING MODE"
-        heading="Meetings Are Work."
-        highlight="Score Them That Way."
-        description="Employees declare meeting sessions with a note; once a manager approves, that time counts as fully productive — never a mark against idle time."
-        visual={<MeetingHeroCard />}
-      />
-
-      <FeatureProblemSolution
-        eyebrow="THE FAIRNESS GAP"
-        heading="Stop Penalizing Real Meetings"
-        subheading="A block of time away from the keyboard isn't automatically wasted time. Meeting Mode tells the difference."
-        problems={PROBLEMS}
-        benefits={BENEFITS}
-      />
-
-      <FeatureGrid
-        eyebrow="HOW IT WORKS"
-        heading="Declared, Approved, Counted"
-        subheading="A simple, auditable loop from employee to manager to productivity score."
-        items={CAPABILITIES}
-      />
-
-      <FeatureDarkHighlight
-        eyebrow="APPROVAL QUEUE"
-        blocks={[
-          {
-            highlighted: true,
-            heading: "Every Request, One Place",
-            desc: "Declared meetings land in a single pending queue, with employee, time range, and note all visible at a glance.",
-            checklist: ["Single pending-approvals queue", "Employee note shown per request"],
-          },
-          {
-            heading: "Approve or Reject, Instantly",
-            desc: "Managers act on each request in one tap — nothing is approved automatically.",
-            checklist: ["One-tap approve or reject", "Never auto-approved"],
-          },
-        ]}
-        linkLabel="Explore Meeting Approvals"
-        visual={
-          <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
+const VISUALS: FeaturePageVisuals = {
+  hero: <MeetingHeroCard />,
+  dark1: (
+    <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
             <div className="overflow-hidden rounded-3xl shadow-2xl">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={TEAM_MEETING_IMAGE} alt="" className="h-[420px] w-full object-cover" style={{ objectPosition: "45% 25%" }} loading="lazy" />
@@ -405,24 +269,16 @@ export default function MeetingModePage() {
               <div className="mt-1.5 text-[9.5px] text-gray-400">Awaiting manager review</div>
             </div>
           </div>
-        }
-      />
-
-      <FeatureStickyShowcase
-        eyebrow="GO DEEPER"
-        heading="Every Angle of Meeting Mode"
-        desc="From declaration to approval to scoring — TrackDots keeps meeting time fair and fully accounted for."
-        cards={STICKY_CARDS}
-      />
-
-      <FeatureHighlightPanel
-        reverse
-        heading="Never Approved Without a Human"
-        desc="No meeting counts as productive time until a manager explicitly reviews and approves it — there's no auto-approval to exploit."
-        checklist={["Every request reviewed by a manager", "Approve or reject, never automatic", "Full history, always visible"]}
-        linkLabel="See How Approvals Work"
-        visual={
-          <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
+  ),
+  stickyWidgets: [
+    <NoteWidget key="note" />,
+    <ApprovalQueueWidget key="approval-queue" />,
+    <ScoringImpactWidget key="scoring-impact" />,
+    <StatusHistoryWidget key="status-history" />,
+    <IdleExemptWidget key="idle-exempt" />,
+  ],
+  panel: (
+    <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
             <div className="overflow-hidden rounded-3xl shadow-2xl">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={TEAM_MEETING_IMAGE} alt="" className="h-[380px] w-full object-cover" style={{ objectPosition: "60% 35%" }} loading="lazy" />
@@ -453,36 +309,9 @@ export default function MeetingModePage() {
               </span>
             </div>
           </div>
-        }
-      />
-
-      <FeatureStatsRow
-        stats={[
-          { icon: CheckCircle, value: "1-Tap", label: "Approve or Reject", desc: "Managers act on every declared meeting from a single pending queue.", photoSrc: TEAM_MEETING_IMAGE, photoPosition: "20% 30%" },
-          { icon: TrendUp, value: "100%", label: "Productive Once Approved", desc: "Approved meeting time always counts as fully productive work.", photoSrc: TEAM_MEETING_IMAGE, photoPosition: "50% 25%" },
-          { icon: Clock, value: "Auto", label: "Idle Exemption", desc: "Approved meeting time is automatically excluded from idle calculations.", photoSrc: TEAM_MEETING_IMAGE, photoPosition: "85% 30%" },
-        ]}
-      />
-
-      <FeatureDarkHighlight
-        reverse
-        eyebrow="CONNECTED TO IDLE TIME"
-        blocks={[
-          {
-            highlighted: true,
-            heading: "No Double Penalty",
-            desc: "Time spent in an approved meeting is carved out of idle time automatically — employees are never penalized twice.",
-            checklist: ["Automatic idle-time exemption", "Reflected the same day"],
-          },
-          {
-            heading: "One Consistent Picture",
-            desc: "Meeting time, active time, and idle time all reconcile into a single, honest daily total.",
-            checklist: ["Consistent across every report", "No manual reconciliation needed"],
-          },
-        ]}
-        linkLabel="See Idle Time Tracking"
-        visual={
-          <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
+  ),
+  dark2: (
+    <div className="relative w-full max-w-[440px] pb-10 pl-8 pt-8">
             <div className="overflow-hidden rounded-3xl shadow-2xl">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={TEAM_MEETING_IMAGE} alt="" className="h-[420px] w-full object-cover sm:h-[460px]" style={{ objectPosition: "50% 55%" }} loading="lazy" />
@@ -509,19 +338,15 @@ export default function MeetingModePage() {
               <div className="mt-2 text-[9px] text-white/40">Approved meetings excluded automatically</div>
             </div>
           </div>
-        }
-      />
+  ),
+  statsPhotos: [
+    { photoSrc: TEAM_MEETING_IMAGE, photoPosition: "20% 30%" },
+    { photoSrc: TEAM_MEETING_IMAGE, photoPosition: "50% 25%" },
+    { photoSrc: TEAM_MEETING_IMAGE, photoPosition: "85% 30%" },
+  ],
+};
 
-      <FeatureComparison
-        heading="Get The Right Tool"
-        subheading="See how TrackDots' meeting handling compares to the old way."
-        columns={COMPARISON_COLUMNS}
-        rows={COMPARISON_ROWS}
-      />
-
-      <FeatureFAQ heading="Meeting Mode, Answered" items={FAQS} />
-
-      <FinalCTA />
-    </main>
-  );
+export default async function MeetingModePage() {
+  const content = await getFeaturePageContent(SLUG, FALLBACK);
+  return <FeaturePageSections content={content} visuals={VISUALS} />;
 }
