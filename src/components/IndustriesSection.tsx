@@ -16,36 +16,42 @@ const INDUSTRIES = [
     tint: "bg-brand-50 text-brand-600 ring-brand-100",
     title: "IT & Software",
     desc: "Track sprints, focus time, and delivery across every engineering team.",
+    href: "/solutions/it-software",
   },
   {
     icon: LayoutGrid,
     tint: "bg-blue-50 text-blue-600 ring-blue-100",
     title: "Digital Agencies",
     desc: "Bill clients accurately with time tied directly to projects and tasks.",
+    href: "/solutions/digital-agencies",
   },
   {
     icon: BarChart,
     tint: "bg-green-50 text-green-600 ring-green-100",
     title: "Consulting Firms",
     desc: "See utilization and capacity across every consultant, in real time.",
+    href: "/solutions/consulting",
   },
   {
     icon: Inbox,
     tint: "bg-amber-50 text-amber-600 ring-amber-100",
     title: "BPO & Support Teams",
     desc: "Monitor attendance, shifts, and productivity across large, distributed teams.",
+    href: "/solutions/bpo",
   },
   {
     icon: CreditCard,
     tint: "bg-violet-50 text-violet-600 ring-violet-100",
     title: "Accounting & Finance",
     desc: "Keep payroll, attendance, and compliance accurate every single month.",
+    href: "/solutions/accounting",
   },
   {
     icon: FileText,
     tint: "bg-rose-50 text-rose-600 ring-rose-100",
     title: "Legal Services",
     desc: "Track billable hours and case work with a clear, auditable record.",
+    href: "/solutions/legal",
   },
 ];
 
@@ -80,7 +86,7 @@ export default function IndustriesSection() {
             <h3 className="mt-4 text-[17px] font-bold text-gray-900">{ind.title}</h3>
             <p className="mt-2 flex-1 text-[14px] leading-relaxed text-gray-500">{ind.desc}</p>
             <a
-              href="#"
+              href={ind.href}
               className="mt-4 flex w-fit items-center gap-1.5 text-[13.5px] font-semibold text-brand-600 transition-all hover:gap-2.5"
             >
               Explore

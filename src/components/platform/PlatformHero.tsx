@@ -30,11 +30,6 @@ const TONE_TEXT: Record<string, string> = {
   violet: "text-violet-600",
   amber: "text-amber-600",
 };
-const TONE_BG: Record<string, string> = {
-  blue: "bg-blue-500",
-  violet: "bg-violet-500",
-  amber: "bg-amber-500",
-};
 const TONE_TAB_ACTIVE: Record<string, string> = {
   blue: "bg-blue-600 text-white shadow-lg shadow-blue-600/25",
   violet: "bg-violet-600 text-white shadow-lg shadow-violet-600/25",

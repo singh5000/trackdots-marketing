@@ -9,8 +9,8 @@ import Navbar from "@/components/Navbar";
 import PersonaSection from "@/components/PersonaSection";
 import PricingSection from "@/components/PricingSection";
 import PrivacySection from "@/components/PrivacySection";
-import TestimonialsSection from "@/components/TestimonialsSection";
 import VisibilityBanner from "@/components/VisibilityBanner";
+import WhyTrackDotsSection from "@/components/WhyTrackDotsSection";
 import WorkVisibilitySection from "@/components/WorkVisibilitySection";
 
 export default function Home() {
@@ -26,7 +26,7 @@ export default function Home() {
       <VisibilityBanner />
       <ImpactSection />
       <IndustriesSection />
-      <TestimonialsSection />
+      <WhyTrackDotsSection />
       <PricingSection />
       <FAQSection />
       <FinalCTA />

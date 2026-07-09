@@ -68,7 +68,7 @@ export default function PricingComparisonTable() {
     <section className="w-full px-5 py-20 md:px-8 lg:px-[80px]">
       <div className="mx-auto max-w-2xl text-center">
         <h2 className="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-[44px]">Full Feature Comparison</h2>
-        <p className="mt-4 text-lg text-gray-500">Every feature, side by side, so there's never a surprise later.</p>
+        <p className="mt-4 text-lg text-gray-500">Every feature, side by side, so there&apos;s never a surprise later.</p>
       </div>
 
       <div className="mx-auto mt-12 max-w-[1180px] overflow-hidden rounded-2xl border border-gray-100 shadow-sm">

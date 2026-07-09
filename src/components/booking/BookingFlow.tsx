@@ -40,13 +40,17 @@ export default function BookingFlow() {
 
   useEffect(() => {
     if (!date) return;
-    setLoadingSlots(true);
-    setTime(null);
     fetchAvailability(date).then((s) => {
       setSlots(s);
       setLoadingSlots(false);
     });
   }, [date]);
+
+  function handleDateSelect(iso: string) {
+    setDate(iso);
+    setTime(null);
+    setLoadingSlots(true);
+  }
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -123,7 +127,7 @@ export default function BookingFlow() {
         <div className="p-8">
           {step === "slot" && (
             <div className="grid gap-8 sm:grid-cols-[1fr_210px]">
-              <Calendar selected={date} onSelect={setDate} />
+              <Calendar selected={date} onSelect={handleDateSelect} />
               <div>
                 <div className="mb-3 text-[13px] font-semibold text-gray-700">
                   {date ? formatDateLabel(date) : "Pick a date"}

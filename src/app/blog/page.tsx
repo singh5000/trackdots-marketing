@@ -35,7 +35,7 @@ export default async function BlogPage() {
             </span>
           </h1>
           <p className="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-gray-600">
-            Product updates, and what we've learned building monitoring software that teams
+            Product updates, and what we&apos;ve learned building monitoring software that teams
             actually trust.
           </p>
         </div>

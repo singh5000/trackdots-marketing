@@ -39,7 +39,7 @@ export default function VisibilityBanner() {
 
             <div className="mt-8 flex flex-wrap items-center gap-3.5">
               <a
-                href="#"
+                href="/features/app-usage"
                 className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-[14.5px] font-semibold text-gray-900 shadow-lg transition-colors hover:bg-gray-50"
               >
                 Find Your Visibility Gaps

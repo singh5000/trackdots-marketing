@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import BlogCard from "@/components/blog/BlogCard";
 import ArticleContent from "@/components/blog/ArticleContent";
@@ -89,7 +90,7 @@ export default async function BlogPostPage({
               <div>
                 {/* Breadcrumb */}
                 <div className="flex flex-wrap items-center gap-1.5 text-[13px] text-gray-500">
-                  <a href="/blog" className="hover:text-brand-600">Blog</a>
+                  <Link href="/blog" className="hover:text-brand-600">Blog</Link>
                   <span>/</span>
                   <span className="font-medium text-gray-700">{post.category}</span>
                 </div>

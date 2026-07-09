@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
+import Link from "next/link";
 import { ArrowRight, Calendar, ChevronDown } from "../icons";
 import { FEATURE_GROUPS, SOLUTION_LINKS } from "./navData";
 
@@ -69,9 +70,9 @@ export default function MobileNav({ onNavigate }: { onNavigate: () => void }) {
         </div>
       </Accordion>
 
-      <a href="#" onClick={onNavigate} className="border-b border-gray-100 py-4 text-[16px] font-semibold text-gray-900">
+      <Link href="/blog" onClick={onNavigate} className="border-b border-gray-100 py-4 text-[16px] font-semibold text-gray-900">
         Resources
-      </a>
+      </Link>
       <a href="/pricing" onClick={onNavigate} className="py-4 text-[16px] font-semibold text-gray-900">
         Pricing
       </a>

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { DotsLogo, LinkedinSocial, Mail, XSocial } from "./icons";
 
 type LinkItem = { label: string; href: string };
@@ -50,13 +51,6 @@ const RESOURCES: LinkItem[] = [
   { label: "System Status", href: "/status" },
 ];
 
-const LEGAL: LinkItem[] = [
-  { label: "Privacy Policy", href: "/legal/privacy-policy" },
-  { label: "Terms of Service", href: "/legal/terms" },
-  { label: "Security", href: "/legal/security" },
-  { label: "GDPR", href: "/legal/gdpr" },
-];
-
 function FooterColumn({ title, links }: { title: string; links: LinkItem[] }) {
   return (
     <div>
@@ -64,9 +58,9 @@ function FooterColumn({ title, links }: { title: string; links: LinkItem[] }) {
       <ul className="mt-4 space-y-3">
         {links.map((l) => (
           <li key={l.label}>
-            <a href={l.href} className="text-[14px] text-gray-400 transition-colors hover:text-white">
+            <Link href={l.href} className="text-[14px] text-gray-400 transition-colors hover:text-white">
               {l.label}
-            </a>
+            </Link>
           </li>
         ))}
       </ul>
@@ -81,10 +75,10 @@ export default function Footer() {
         <div className="grid gap-12 lg:grid-cols-[1.2fr_1fr_1fr_1fr_1fr_1fr]">
           {/* Brand column */}
           <div className="lg:col-span-1">
-            <a href="/" className="flex items-center gap-2.5">
+            <Link href="/" className="flex items-center gap-2.5">
               <DotsLogo />
               <span className="text-[20px] font-bold tracking-tight text-white">TrackDots</span>
-            </a>
+            </Link>
             <p className="mt-4 max-w-xs text-[14px] leading-relaxed text-gray-400">
               The all-in-one employee monitoring, productivity, and payroll
               platform for modern teams.
@@ -126,17 +120,6 @@ export default function Footer() {
           <p className="text-[13px] text-gray-500">
             © {new Date().getFullYear()} TrackDots. All rights reserved.
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
-            {LEGAL.map((l) => (
-              <a
-                key={l.label}
-                href={l.href}
-                className="text-[13px] text-gray-500 transition-colors hover:text-white"
-              >
-                {l.label}
-              </a>
-            ))}
-          </div>
         </div>
       </div>
     </footer>

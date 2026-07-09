@@ -1,7 +1,7 @@
 import { FileText, Monitor, Sparkles, TrendUp, Users } from "@/components/icons";
 import type { ComponentType, SVGProps } from "react";
 
-const WP_API_URL = process.env.WP_API_URL ?? "http://localhost/trackdots-backend/wp-json/wp/v2";
+const WP_API_URL = process.env.WP_API_URL ?? "https://wp-be.trackdots.net/wp-json/wp/v2";
 
 export type Post = {
   slug: string;
@@ -90,22 +90,30 @@ function mapPost(raw: WPRawPost): Post {
 }
 
 export async function getAllPosts(): Promise<Post[]> {
-  const res = await fetch(`${WP_API_URL}/posts?_embed&per_page=100&orderby=date&order=desc`, {
-    next: { revalidate: 60 },
-  });
-  if (!res.ok) return [];
-  const raw: WPRawPost[] = await res.json();
-  return raw.map(mapPost);
+  try {
+    const res = await fetch(`${WP_API_URL}/posts?_embed&per_page=100&orderby=date&order=desc`, {
+      next: { revalidate: 60 },
+    });
+    if (!res.ok) return [];
+    const raw: WPRawPost[] = await res.json();
+    return raw.map(mapPost);
+  } catch {
+    return [];
+  }
 }
 
 export async function getPostBySlug(slug: string): Promise<Post | null> {
-  const res = await fetch(`${WP_API_URL}/posts?slug=${encodeURIComponent(slug)}&_embed`, {
-    next: { revalidate: 60 },
-  });
-  if (!res.ok) return null;
-  const raw: WPRawPost[] = await res.json();
-  if (raw.length === 0) return null;
-  return mapPost(raw[0]);
+  try {
+    const res = await fetch(`${WP_API_URL}/posts?slug=${encodeURIComponent(slug)}&_embed`, {
+      next: { revalidate: 60 },
+    });
+    if (!res.ok) return null;
+    const raw: WPRawPost[] = await res.json();
+    if (raw.length === 0) return null;
+    return mapPost(raw[0]);
+  } catch {
+    return null;
+  }
 }
 
 /** Adds a slugified `id` + scroll-anchor class to every h2 in the HTML, and returns the extracted TOC. */

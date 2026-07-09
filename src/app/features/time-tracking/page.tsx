@@ -14,8 +14,6 @@ import FeatureFAQ from "@/components/features/FeatureFAQ";
 import { TEAM_MEETING_IMAGE } from "@/lib/media";
 import {
   Activity,
-  ArrowLeft,
-  ArrowRight,
   BarChart,
   Calendar,
   CheckCircle,

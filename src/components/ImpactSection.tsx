@@ -10,6 +10,7 @@ const STAT_CARDS = [
     label: "ANOMALY SIGNALS, DETECTED AUTOMATICALLY",
     desc: "From sudden hour drops to input flatlines, TrackDots flags unusual patterns before they become problems.",
     link: "See Anomaly Detection",
+    href: "/features/anomaly-detection",
   },
   {
     photo: PHOTO(26),
@@ -18,6 +19,7 @@ const STAT_CARDS = [
     label: "ROLLING BURNOUT RISK WINDOW",
     desc: "Six weighted signals — long hours, no breaks, late nights and more — surface burnout risk early.",
     link: "See Burnout Detection",
+    href: "/features/burnout-detection",
   },
 ];
 
@@ -76,7 +78,7 @@ export default function ImpactSection() {
           </div>
 
           <a
-            href="#"
+            href="/platform-overview"
             className="mt-8 flex w-fit items-center gap-1.5 text-[14px] font-semibold text-brand-600 transition-all hover:gap-2.5"
           >
             Explore All Features
@@ -109,7 +111,7 @@ export default function ImpactSection() {
               </div>
               <p className="mt-3 flex-1 text-[14px] leading-relaxed text-gray-600">{card.desc}</p>
               <a
-                href="#"
+                href={card.href}
                 className="mt-5 flex w-fit items-center gap-1.5 text-[14px] font-semibold text-brand-600 transition-all hover:gap-2.5"
               >
                 {card.link}

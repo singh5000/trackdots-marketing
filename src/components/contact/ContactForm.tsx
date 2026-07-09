@@ -5,7 +5,7 @@ import { ArrowRight, CheckCircle } from "../icons";
 
 const TEAM_SIZES = ["1–10 employees", "11–50 employees", "51–200 employees", "200+ employees"];
 
-const WP_SITE_URL = process.env.NEXT_PUBLIC_WP_SITE_URL ?? "http://localhost/trackdots-backend";
+const WP_SITE_URL = process.env.NEXT_PUBLIC_WP_SITE_URL ?? "https://wp-be.trackdots.net";
 
 function Field({
   label,

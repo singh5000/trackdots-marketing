@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
+import Link from "next/link";
 import { ArrowRight, ChevronDown, DotsLogo, Menu, X } from "./icons";
 import FeaturesMegaMenu from "./nav/FeaturesMegaMenu";
 import SolutionsMegaMenu from "./nav/SolutionsMegaMenu";
@@ -10,7 +11,7 @@ const NAV_ITEMS = [
   { label: "Product", dropdown: false, href: "/platform-overview" },
   { label: "Features", dropdown: true, href: "#" },
   { label: "Solutions", dropdown: true, href: "#" },
-  { label: "Resources", dropdown: true, href: "#" },
+  { label: "Resources", dropdown: false, href: "/blog" },
   { label: "Pricing", dropdown: false, href: "/pricing" },
 ];
 
@@ -31,13 +32,13 @@ export default function Navbar() {
       >
       <div className="flex h-[72px] w-full items-center justify-between px-5 md:px-8 lg:px-[80px]">
         {/* Logo */}
-        <a href="/" className="flex items-center gap-2.5">
+        <Link href="/" className="flex items-center gap-2.5">
           <DotsLogo />
           <span className="text-[22px] font-bold tracking-tight">
             <span className="text-gray-900">Track</span>
             <span className="text-brand-600">Dots</span>
           </span>
-        </a>
+        </Link>
 
         {/* Nav links — desktop */}
         <nav className="hidden items-center gap-8 lg:flex">

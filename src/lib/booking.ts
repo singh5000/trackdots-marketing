@@ -1,4 +1,4 @@
-const WP_SITE_URL = process.env.NEXT_PUBLIC_WP_SITE_URL ?? "http://localhost/trackdots-backend";
+const WP_SITE_URL = process.env.NEXT_PUBLIC_WP_SITE_URL ?? "https://wp-be.trackdots.net";
 
 export async function fetchAvailability(date: string): Promise<string[]> {
   try {
