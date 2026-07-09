@@ -1,13 +1,35 @@
 import type { Metadata } from "next";
+import Navbar from "@/components/Navbar";
 import ComingSoonPage from "@/components/misc/ComingSoonPage";
+import PageBuilder from "@/components/pagebuilder/PageBuilder";
 import { Users } from "@/components/icons";
+import { getPageBuilderPage } from "@/lib/pages";
 
-export const metadata: Metadata = {
+const FALLBACK = {
   title: "Careers — TrackDots",
   description: "We're not actively hiring right now, but we're always interested in hearing from good people.",
 };
 
-export default function CareersPage() {
+export async function generateMetadata(): Promise<Metadata> {
+  const wpPage = await getPageBuilderPage("careers");
+  return {
+    title: wpPage?.seo.title || FALLBACK.title,
+    description: wpPage?.seo.description || FALLBACK.description,
+  };
+}
+
+export default async function CareersPage() {
+  const wpPage = await getPageBuilderPage("careers");
+
+  if (wpPage) {
+    return (
+      <main className="flex-1 bg-white">
+        <Navbar />
+        <PageBuilder sections={wpPage.sections} />
+      </main>
+    );
+  }
+
   return (
     <ComingSoonPage
       icon={Users}

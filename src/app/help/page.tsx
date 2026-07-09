@@ -1,12 +1,9 @@
 import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import FeatureFAQ from "@/components/features/FeatureFAQ";
+import PageBuilder from "@/components/pagebuilder/PageBuilder";
 import { ArrowRight, Calendar, FileText, Mail } from "@/components/icons";
-
-export const metadata: Metadata = {
-  title: "Help Center — TrackDots",
-  description: "Answers to common setup and account questions, and how to reach the TrackDots team.",
-};
+import { getPageBuilderPage } from "@/lib/pages";
 
 const HELP_TOPICS = [
   {
@@ -40,7 +37,31 @@ const FAQS = [
   { q: "I have a technical question not covered here.", a: "Email us directly or book a demo — a real person from our team will help, not a support queue." },
 ];
 
-export default function HelpCenterPage() {
+const FALLBACK = {
+  title: "Help Center — TrackDots",
+  description: "Answers to common setup and account questions, and how to reach the TrackDots team.",
+};
+
+export async function generateMetadata(): Promise<Metadata> {
+  const wpPage = await getPageBuilderPage("help");
+  return {
+    title: wpPage?.seo.title || FALLBACK.title,
+    description: wpPage?.seo.description || FALLBACK.description,
+  };
+}
+
+export default async function HelpCenterPage() {
+  const wpPage = await getPageBuilderPage("help");
+
+  if (wpPage) {
+    return (
+      <main className="flex-1 bg-white">
+        <Navbar />
+        <PageBuilder sections={wpPage.sections} />
+      </main>
+    );
+  }
+
   return (
     <main className="flex-1 bg-white">
       <Navbar />
