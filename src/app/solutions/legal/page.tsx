@@ -109,10 +109,10 @@ const MATTER_STATS = [
 ];
 
 const STAFF_ROWS = [
-  { name: "Piyush Rajput", role: "Software Engineer", tool: "chrome · 4h 34m", focus: "Focus 4h 34m" },
-  { name: "Rajesh Kumar", role: "Senior Software Engineer", tool: "chrome · 2h 41m", focus: "Focus 4h 32m" },
-  { name: "Nihar Ranjan Mohanta", role: "Software Engineer", tool: "chrome · 20m", focus: "Focus 4h 21m" },
-  { name: "Prabhjot Kaur", role: "Quality Analyst", tool: "chrome · 7h 37m", focus: "Focus 4h 05m" },
+  { name: "Peter Reynolds", role: "Software Engineer", tool: "chrome · 4h 34m", focus: "Focus 4h 34m" },
+  { name: "Ryan Kennedy", role: "Senior Software Engineer", tool: "chrome · 2h 41m", focus: "Focus 4h 32m" },
+  { name: "Nathan Reed", role: "Software Engineer", tool: "chrome · 20m", focus: "Focus 4h 21m" },
+  { name: "Paula Knight", role: "Quality Analyst", tool: "chrome · 7h 37m", focus: "Focus 4h 05m" },
 ];
 
 function LegalHeroCard() {
@@ -234,9 +234,9 @@ const FocusWidget = () => (
       dark
       kicker="Focus Sessions — Today"
       rows={[
-        { label: "Piyush", pct: 95, value: "4h 34m", color: "green" },
-        { label: "Rajesh", pct: 94, value: "4h 32m", color: "green" },
-        { label: "Nihar", pct: 90, value: "4h 21m", color: "green" },
+        { label: "Peter", pct: 95, value: "4h 34m", color: "green" },
+        { label: "Ryan", pct: 94, value: "4h 32m", color: "green" },
+        { label: "Nathan", pct: 90, value: "4h 21m", color: "green" },
       ]}
     />
   </div>
@@ -261,9 +261,9 @@ const ProjectHoursWidget = () => (
       dark
       kicker="Vendor Contract Dispute — This Week"
       rows={[
-        { label: "Piyush", pct: 72, value: "14h", color: "brand" },
-        { label: "Rajesh", pct: 60, value: "12h", color: "blue" },
-        { label: "Nihar", pct: 50, value: "10h", color: "violet" },
+        { label: "Peter", pct: 72, value: "14h", color: "brand" },
+        { label: "Ryan", pct: 60, value: "12h", color: "blue" },
+        { label: "Nathan", pct: 50, value: "10h", color: "violet" },
       ]}
     />
   </div>
@@ -278,7 +278,7 @@ const RealizationWidget = () => (
     </div>
     <div className="mt-1.5 flex items-center justify-between rounded-lg bg-white/10 px-3 py-2.5">
       <span className="text-[10.5px] text-white/80">Top realization</span>
-      <span className="text-[10.5px] font-bold text-white">Piyush Rajput</span>
+      <span className="text-[10.5px] font-bold text-white">Peter Reynolds</span>
     </div>
   </div>
 );
@@ -377,7 +377,7 @@ export default function LegalServicesSolutionPage() {
               <img src={TEAM_MEETING_IMAGE} alt="" className="h-[420px] w-full object-cover" style={{ objectPosition: "40% 25%" }} loading="lazy" />
             </div>
             <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
-              <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Piyush Rajput</div>
+              <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Peter Reynolds</div>
               <div className="mt-2 text-[16px] font-bold text-gray-900">4h 34m</div>
               <div className="text-[10px] font-semibold text-green-600">Longest focus session today</div>
             </div>

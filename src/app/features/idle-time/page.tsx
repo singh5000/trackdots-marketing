@@ -48,10 +48,10 @@ const IDLE_STATS = [
 ];
 
 const IDLE_EMPLOYEES = [
-  { name: "Nihar Ranjan Mohanta", role: "Software Engineer", pct: 96, active: "7h 14m", idle: "20m" },
-  { name: "Ankur Mishra", role: "Senior Software Engineer", pct: 97, active: "7h 18m", idle: "13m" },
-  { name: "Sia Chandan", role: "HR Manager", pct: 98, active: "8h 12m", idle: "10m" },
-  { name: "Akansha Dogra", role: "SEO Executive", pct: 100, active: "8h 11m", idle: "0m" },
+  { name: "Nathan Reed", role: "Software Engineer", pct: 96, active: "7h 14m", idle: "20m" },
+  { name: "Adam Mitchell", role: "Senior Software Engineer", pct: 97, active: "7h 18m", idle: "13m" },
+  { name: "Sophie Carter", role: "HR Manager", pct: 98, active: "8h 12m", idle: "10m" },
+  { name: "Alice Dawson", role: "SEO Executive", pct: 100, active: "8h 11m", idle: "0m" },
 ];
 
 function IdleHeroCard() {

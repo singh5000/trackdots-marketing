@@ -40,10 +40,10 @@ const HERO_SIDEBAR_ITEMS = [
 ];
 
 const PROJECT_ROWS = [
-  { name: "Client Portal Redesign", client: "Acme Retail", members: ["Mohsin Khan", "Prabhjot Kaur", "Ankur Mishra"], deadline: "Dec 31, 2026", status: "Active", phase: "Development Phase" },
-  { name: "Mobile App Revamp", client: "Internal", members: ["Piyush Rajput", "Nihar Ranjan Mohanta"], deadline: "—", status: "Active", phase: "Ongoing Development" },
-  { name: "Q3 Marketing Push", client: "Northwind Digital", members: ["Sia Chandan", "Akansha Dogra", "Anchal Sahi", "Vivek Bharti"], deadline: "Dec 31, 2026", status: "Active", phase: "Digital Marketing" },
-  { name: "Internal Tooling", client: "Internal", members: ["Mohsin Khan", "Amit Chawla"], deadline: "—", status: "Planning", phase: "—" },
+  { name: "Client Portal Redesign", client: "Acme Retail", members: ["Michael King", "Paula Knight", "Adam Mitchell"], deadline: "Dec 31, 2026", status: "Active", phase: "Development Phase" },
+  { name: "Mobile App Revamp", client: "Internal", members: ["Peter Reynolds", "Nathan Reed"], deadline: "—", status: "Active", phase: "Ongoing Development" },
+  { name: "Q3 Marketing Push", client: "Northwind Digital", members: ["Sophie Carter", "Alice Dawson", "Anna Shaw", "Victor Bennett"], deadline: "Dec 31, 2026", status: "Active", phase: "Digital Marketing" },
+  { name: "Internal Tooling", client: "Internal", members: ["Michael King", "Aaron Clarke"], deadline: "—", status: "Planning", phase: "—" },
 ];
 
 function projectStatusClasses(status: string) {
@@ -201,7 +201,7 @@ const MembersWidget = () => (
   <div className="w-full">
     <div className="mb-2 text-[9.5px] font-bold uppercase tracking-wider text-white/40">Client Portal Redesign — Team</div>
     <div className="space-y-1.5">
-      {["Mohsin Khan", "Prabhjot Kaur", "Ankur Mishra"].map((m) => (
+      {["Michael King", "Paula Knight", "Adam Mitchell"].map((m) => (
         <div key={m} className="flex items-center gap-2 rounded-md bg-white/10 px-3 py-1.5 text-[10px] text-white/85">
           <span className="flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-br from-amber-400 to-orange-500 text-[7px] font-bold text-white">
             {m.split(" ").map((w) => w[0]).join("")}
@@ -290,7 +290,7 @@ const VISUALS: FeaturePageVisuals = {
       <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
         <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Q3 Marketing Push — Team</div>
         <div className="mt-3 flex -space-x-1.5">
-          {["Sia Chandan", "Akansha Dogra", "Anchal Sahi", "Vivek Bharti"].map((m) => (
+          {["Sophie Carter", "Alice Dawson", "Anna Shaw", "Victor Bennett"].map((m) => (
             <span
               key={m}
               className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-white bg-gradient-to-br from-violet-400 to-brand-600 text-[8px] font-bold text-white"

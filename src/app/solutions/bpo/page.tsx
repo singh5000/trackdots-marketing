@@ -108,10 +108,10 @@ const FLOOR_STATS = [
 ];
 
 const AGENT_ROWS = [
-  { name: "Akansha Dogra", role: "SEO Executive", active: "8h 11m", idle: "0m", pct: 100 },
-  { name: "Sia Chandan", role: "HR Manager", active: "8h 12m", idle: "10m", pct: 98 },
-  { name: "Ankur Mishra", role: "Senior Software Engineer", active: "7h 18m", idle: "13m", pct: 97 },
-  { name: "Nihar Ranjan Mohanta", role: "Software Engineer", active: "7h 14m", idle: "20m", pct: 96 },
+  { name: "Alice Dawson", role: "SEO Executive", active: "8h 11m", idle: "0m", pct: 100 },
+  { name: "Sophie Carter", role: "HR Manager", active: "8h 12m", idle: "10m", pct: 98 },
+  { name: "Adam Mitchell", role: "Senior Software Engineer", active: "7h 18m", idle: "13m", pct: 97 },
+  { name: "Nathan Reed", role: "Software Engineer", active: "7h 14m", idle: "20m", pct: 96 },
 ];
 
 function FloorHeroCard() {

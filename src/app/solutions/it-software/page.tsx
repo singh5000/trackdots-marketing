@@ -110,10 +110,10 @@ const ENGINEERING_STATS = [
 ];
 
 const ENGINEER_ROWS = [
-  { name: "Piyush Rajput", role: "Software Engineer", tool: "Code · 5h 55m", focus: "Focus 4h 34m" },
-  { name: "Ankur Mishra", role: "Senior Software Engineer", tool: "Antigravity · 50m", focus: "Focus 3h 45m" },
-  { name: "Dheeraj Lakhera", role: "Software Engineer", tool: "Antigravity IDE · 1h 30m", focus: "Focus 4h 26m" },
-  { name: "Satyajit Singh", role: "Software Engineer", tool: "Code · 2h 54m", focus: "Focus 4h 09m" },
+  { name: "Peter Reynolds", role: "Software Engineer", tool: "Code · 5h 55m", focus: "Focus 4h 34m" },
+  { name: "Adam Mitchell", role: "Senior Software Engineer", tool: "Antigravity · 50m", focus: "Focus 3h 45m" },
+  { name: "Daniel Lawson", role: "Software Engineer", tool: "Antigravity IDE · 1h 30m", focus: "Focus 4h 26m" },
+  { name: "Samuel Stone", role: "Software Engineer", tool: "Code · 2h 54m", focus: "Focus 4h 09m" },
 ];
 
 function EngineeringHeroCard() {
@@ -235,9 +235,9 @@ const FocusWidget = () => (
       dark
       kicker="Focus Sessions — Today"
       rows={[
-        { label: "Mohsin", pct: 92, value: "4h 40m", color: "green" },
-        { label: "Piyush", pct: 84, value: "4h 03m", color: "green" },
-        { label: "Satyajit", pct: 85, value: "4h 05m", color: "green" },
+        { label: "Michael", pct: 92, value: "4h 40m", color: "green" },
+        { label: "Peter", pct: 84, value: "4h 03m", color: "green" },
+        { label: "Samuel", pct: 85, value: "4h 05m", color: "green" },
       ]}
     />
   </div>
@@ -264,9 +264,9 @@ const ProjectHoursWidget = () => (
       dark
       kicker="Client Portal Redesign — This Week"
       rows={[
-        { label: "Mohsin", pct: 70, value: "14h", color: "brand" },
-        { label: "Prabhjot", pct: 55, value: "11h", color: "blue" },
-        { label: "Ankur", pct: 65, value: "13h", color: "violet" },
+        { label: "Michael", pct: 70, value: "14h", color: "brand" },
+        { label: "Paula", pct: 55, value: "11h", color: "blue" },
+        { label: "Adam", pct: 65, value: "13h", color: "violet" },
       ]}
     />
   </div>
@@ -380,7 +380,7 @@ export default function ItSoftwareSolutionPage() {
               <img src={TEAM_MEETING_IMAGE} alt="" className="h-[420px] w-full object-cover" style={{ objectPosition: "40% 25%" }} loading="lazy" />
             </div>
             <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
-              <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Mohsin Khan</div>
+              <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Michael King</div>
               <div className="mt-2 text-[16px] font-bold text-gray-900">4h 40m</div>
               <div className="text-[10px] font-semibold text-green-600">Longest focus session today</div>
             </div>
@@ -415,7 +415,7 @@ export default function ItSoftwareSolutionPage() {
             <div className="absolute -left-2 top-0 w-[240px] rounded-2xl bg-white p-4 shadow-2xl">
               <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Connected Devices</div>
               <div className="mt-2 space-y-1.5">
-                {[{ n: "Mohsin's MacBook Pro", s: "Tracking now" }, { n: "Ankur's Windows Laptop", s: "Tracking now" }].map((d) => (
+                {[{ n: "Michael's MacBook Pro", s: "Tracking now" }, { n: "Adam's Windows Laptop", s: "Tracking now" }].map((d) => (
                   <div key={d.n} className="flex items-center justify-between rounded-lg bg-gray-50 px-2.5 py-2">
                     <span className="truncate text-[9.5px] font-medium text-gray-600">{d.n}</span>
                     <span className="text-[8.5px] font-bold text-green-600">{d.s}</span>

@@ -187,9 +187,9 @@ const ChromeUsersWidget = () => (
     <BarRows
       dark
       rows={[
-        { label: "Prabhjot", pct: 100, value: "7h 37m", color: "green" },
-        { label: "Nihar", pct: 87, value: "6h 34m", color: "green" },
-        { label: "Vivek", pct: 84, value: "6h 23m", color: "green" },
+        { label: "Paula", pct: 100, value: "7h 37m", color: "green" },
+        { label: "Nathan", pct: 87, value: "6h 34m", color: "green" },
+        { label: "Victor", pct: 84, value: "6h 23m", color: "green" },
       ]}
     />
   </div>
@@ -323,9 +323,9 @@ const VISUALS: FeaturePageVisuals = {
         <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">chrome — Top Users</div>
         <div className="mt-3 space-y-2">
           {[
-            { name: "Prabhjot Kaur", v: "7h 37m" },
-            { name: "Nihar Ranjan Mohanta", v: "6h 34m" },
-            { name: "Vivek Bharti", v: "6h 23m" },
+            { name: "Paula Knight", v: "7h 37m" },
+            { name: "Nathan Reed", v: "6h 34m" },
+            { name: "Victor Bennett", v: "6h 23m" },
           ].map((u) => (
             <div key={u.name} className="flex items-center justify-between">
               <span className="truncate text-[9.5px] text-gray-600">{u.name}</span>

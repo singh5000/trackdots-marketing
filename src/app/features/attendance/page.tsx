@@ -43,10 +43,10 @@ const HERO_SIDEBAR_ITEMS = [
 
 const ATTENDANCE_DAYS = ["M", "T", "W", "T", "F", "S", "S"];
 const ATTENDANCE_ROWS = [
-  { name: "Akansha Dogra", avg: "8.1h avg", cells: ["8h", "8h", "8h", "8h", "8h", "—", "—"], rollup: [22, 0, 0, 0, 0, 0] },
-  { name: "Piyush Rajput", avg: "8.0h avg", cells: ["9h", "9h", "SL", "9h", "8h", "—", "—"], rollup: [21, 0, 1, 0, 0, 0] },
-  { name: "Rajesh Kumar", avg: "7.7h avg", cells: ["9h", "8h", "9h", "½", "8h", "—", "—"], rollup: [21, 0, 0, 1, 0, 0] },
-  { name: "Vivek Bharti", avg: "8.3h avg", cells: ["8h", "8h", "8h", "8h", "8h", "—", "—"], rollup: [22, 0, 0, 0, 0, 0] },
+  { name: "Alice Dawson", avg: "8.1h avg", cells: ["8h", "8h", "8h", "8h", "8h", "—", "—"], rollup: [22, 0, 0, 0, 0, 0] },
+  { name: "Peter Reynolds", avg: "8.0h avg", cells: ["9h", "9h", "SL", "9h", "8h", "—", "—"], rollup: [21, 0, 1, 0, 0, 0] },
+  { name: "Ryan Kennedy", avg: "7.7h avg", cells: ["9h", "8h", "9h", "½", "8h", "—", "—"], rollup: [21, 0, 0, 1, 0, 0] },
+  { name: "Victor Bennett", avg: "8.3h avg", cells: ["8h", "8h", "8h", "8h", "8h", "—", "—"], rollup: [22, 0, 0, 0, 0, 0] },
 ];
 
 function attendanceCellStyle(v: string) {

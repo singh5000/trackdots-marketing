@@ -42,10 +42,10 @@ const HERO_SIDEBAR_ITEMS = [
 ];
 
 const LEAVE_ROWS = [
-  { name: "Rajesh Kumar", type: "Half Day", date: "Jul 8, 2026", cat: "Leave (Paid)", status: "Pending" },
-  { name: "Piyush Rajput", type: "Short Leave (2h)", date: "Jul 7, 2026", cat: "Leave (Paid)", status: "Approved" },
-  { name: "Kulbir Singh", type: "Full Day", date: "Jul 10, 2026", cat: "LWP (Unpaid)", status: "Approved" },
-  { name: "Sia Chandan", type: "Full Day", date: "Jul 12, 2026", cat: "Leave (Paid)", status: "Rejected" },
+  { name: "Ryan Kennedy", type: "Half Day", date: "Jul 8, 2026", cat: "Leave (Paid)", status: "Pending" },
+  { name: "Peter Reynolds", type: "Short Leave (2h)", date: "Jul 7, 2026", cat: "Leave (Paid)", status: "Approved" },
+  { name: "Kevin Sullivan", type: "Full Day", date: "Jul 10, 2026", cat: "LWP (Unpaid)", status: "Approved" },
+  { name: "Sophie Carter", type: "Full Day", date: "Jul 12, 2026", cat: "Leave (Paid)", status: "Rejected" },
 ];
 
 function leaveStatusClasses(status: string) {
@@ -252,7 +252,7 @@ const VISUALS: FeaturePageVisuals = {
       </div>
       <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
         <div className="flex items-center justify-between">
-          <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Rajesh Kumar</div>
+          <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Ryan Kennedy</div>
           <span className="rounded-full bg-amber-50 px-1.5 py-0.5 text-[8px] font-bold text-amber-600">Pending</span>
         </div>
         <div className="mt-2 text-[12px] font-bold text-gray-900">Half Day · Jul 8, 2026</div>
@@ -283,7 +283,7 @@ const VISUALS: FeaturePageVisuals = {
         <img src={TEAM_MEETING_IMAGE} alt="" className="h-[380px] w-full object-cover" style={{ objectPosition: "55% 40%" }} loading="lazy" />
       </div>
       <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
-        <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Kulbir Singh — Approved</div>
+        <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Kevin Sullivan — Approved</div>
         <div className="mt-2 text-[12px] font-bold text-gray-900">Full Day · Jul 10, 2026</div>
         <div className="text-[9.5px] text-gray-500">LWP (Unpaid)</div>
       </div>

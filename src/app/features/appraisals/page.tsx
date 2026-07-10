@@ -41,10 +41,10 @@ const HERO_SIDEBAR_ITEMS = [
 ];
 
 const APPRAISAL_ROWS = [
-  { name: "Piyush Rajput", date: "19-Jun-2026", effective: "01-Jun-2026", current: "₹3,84,000", next: "₹4,86,000", designation: "Software Engineer", status: "Published" },
-  { name: "Dheeraj Lakhera", date: "01-Jun-2026", effective: "01-Apr-2026", current: "₹3,12,000", next: "₹4,08,000", designation: "Software Engineer", status: "Published" },
-  { name: "Deepak Chauhan", date: "26-May-2026", effective: "01-Mar-2026", current: "₹5,28,000", next: "—", designation: "Software Engineer", status: "Pending" },
-  { name: "Ankur Mishra", date: "26-May-2026", effective: "01-Nov-2025", current: "₹9,00,000", next: "—", designation: "Senior Software Engineer", status: "Pending" },
+  { name: "Peter Reynolds", date: "19-Jun-2026", effective: "01-Jun-2026", current: "₹3,84,000", next: "₹4,86,000", designation: "Software Engineer", status: "Published" },
+  { name: "Daniel Lawson", date: "01-Jun-2026", effective: "01-Apr-2026", current: "₹3,12,000", next: "₹4,08,000", designation: "Software Engineer", status: "Published" },
+  { name: "David Cooper", date: "26-May-2026", effective: "01-Mar-2026", current: "₹5,28,000", next: "—", designation: "Software Engineer", status: "Pending" },
+  { name: "Adam Mitchell", date: "26-May-2026", effective: "01-Nov-2025", current: "₹9,00,000", next: "—", designation: "Senior Software Engineer", status: "Pending" },
 ];
 
 function appraisalStatusClasses(status: string) {
@@ -172,7 +172,7 @@ function AppraisalsHeroCard() {
 
 const SalaryCompareWidget = () => (
   <div className="w-full">
-    <div className="mb-2 text-[9.5px] font-bold uppercase tracking-wider text-white/40">Piyush Rajput — Appraisal</div>
+    <div className="mb-2 text-[9.5px] font-bold uppercase tracking-wider text-white/40">Peter Reynolds — Appraisal</div>
     <div className="flex items-center justify-between rounded-lg bg-white/10 px-3 py-2.5">
       <div className="text-center">
         <div className="text-[9px] text-white/50">Current</div>
@@ -191,7 +191,7 @@ const DateWidget = () => (
   <div className="w-full">
     <BarRows
       dark
-      kicker="Dheeraj Lakhera — Timeline"
+      kicker="Daniel Lawson — Timeline"
       rows={[
         { label: "Effective", pct: 60, value: "01-Apr-2026", color: "blue" },
         { label: "Recorded", pct: 90, value: "01-Jun-2026", color: "brand" },
@@ -229,7 +229,7 @@ const HistoryWidget = () => (
 
 const DesignationWidget = () => (
   <div className="w-full">
-    <div className="mb-2 text-[9.5px] font-bold uppercase tracking-wider text-white/40">Ankur Mishra — Designation History</div>
+    <div className="mb-2 text-[9.5px] font-bold uppercase tracking-wider text-white/40">Adam Mitchell — Designation History</div>
     <div className="space-y-1.5">
       {["Software Engineer", "Senior Software Engineer"].map((d, i) => (
         <div key={d} className="flex items-center justify-between rounded-md bg-white/10 px-3 py-1.5 text-[10px]">
@@ -251,7 +251,7 @@ const VISUALS: FeaturePageVisuals = {
       </div>
       <div className="absolute -left-2 top-0 w-[240px] rounded-2xl bg-white p-4 shadow-2xl">
         <div className="flex items-center justify-between">
-          <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Piyush Rajput</div>
+          <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Peter Reynolds</div>
           <span className="rounded-full bg-green-50 px-1.5 py-0.5 text-[8px] font-bold text-green-600">Published</span>
         </div>
         <div className="mt-2 flex items-center gap-2 text-[13px] font-bold text-gray-900">
@@ -282,7 +282,7 @@ const VISUALS: FeaturePageVisuals = {
         <img src={TEAM_MEETING_IMAGE} alt="" className="h-[380px] w-full object-cover" style={{ objectPosition: "55% 35%" }} loading="lazy" />
       </div>
       <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
-        <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Dheeraj Lakhera</div>
+        <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Daniel Lawson</div>
         <div className="mt-2 flex items-center gap-2 text-[13px] font-bold text-gray-900">
           <span className="text-gray-400 line-through">₹3,12,000</span>
           <span>→</span>

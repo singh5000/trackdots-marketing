@@ -313,7 +313,7 @@ function TransparencyMock() {
         <div className="flex items-center gap-2.5">
           <span className="h-8 w-8 shrink-0 rounded-full bg-gradient-to-br from-violet-400 to-brand-600" />
           <div>
-            <div className="text-[12px] font-bold text-gray-900">Akansha Dogra</div>
+            <div className="text-[12px] font-bold text-gray-900">Alice Dawson</div>
             <div className="text-[9.5px] text-gray-400">My Captures — Today</div>
           </div>
         </div>
@@ -357,7 +357,7 @@ const VISUALS: FeaturePageVisuals = {
       </div>
       <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
         <div className="flex items-center justify-between">
-          <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Akansha Dogra</div>
+          <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Alice Dawson</div>
           <span className="rounded-full bg-green-50 px-1.5 py-0.5 text-[8px] font-bold text-green-600">49 shots</span>
         </div>
         <div className="mt-3 grid grid-cols-3 gap-1.5">

@@ -49,7 +49,7 @@ const BURNOUT_STATS = [
 
 const BURNOUT_EMPLOYEES = [
   {
-    name: "Mohsin Khan",
+    name: "Michael King",
     role: "Head of Technology",
     active: "10/14 days active",
     risk: "High",
@@ -58,7 +58,7 @@ const BURNOUT_EMPLOYEES = [
     signals: ["⏰ Long hours · 6d", "🌙 Late nights · 1d", "📊 Over limit · 2w"],
   },
   {
-    name: "Nihar Ranjan Mohanta",
+    name: "Nathan Reed",
     role: "Software Engineer",
     active: "12/14 days active",
     risk: "Medium",
@@ -67,7 +67,7 @@ const BURNOUT_EMPLOYEES = [
     signals: ["☕ No breaks · 1d", "📅 Weekend · 2d", "🌙 Late nights · 3d"],
   },
   {
-    name: "Akansha Dogra",
+    name: "Alice Dawson",
     role: "SEO Executive",
     active: "10/14 days active",
     risk: "Clear",
@@ -273,7 +273,7 @@ const RecommendationWidget = () => (
 
 const ProfileLinkWidget = () => (
   <div className="w-full">
-    <div className="mb-2 text-[9.5px] font-bold uppercase tracking-wider text-white/40">Mohsin Khan — High Risk</div>
+    <div className="mb-2 text-[9.5px] font-bold uppercase tracking-wider text-white/40">Michael King — High Risk</div>
     <div className="flex items-center justify-between rounded-lg bg-white/10 px-3 py-2.5">
       <span className="text-[10.5px] text-white/80">Full 14-day activity profile</span>
       <span className="text-[10.5px] font-bold text-white">View profile →</span>
@@ -291,7 +291,7 @@ const VISUALS: FeaturePageVisuals = {
       </div>
       <div className="absolute -left-2 top-0 w-[240px] rounded-2xl bg-white p-4 shadow-2xl">
         <div className="flex items-center justify-between">
-          <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Mohsin Khan</div>
+          <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Michael King</div>
           <span className="rounded-full bg-red-50 px-1.5 py-0.5 text-[8px] font-bold text-red-600">High Risk</span>
         </div>
         <div className="mt-2 flex gap-4">
@@ -327,7 +327,7 @@ const VISUALS: FeaturePageVisuals = {
         <img src={TEAM_MEETING_IMAGE} alt="" className="h-[380px] w-full object-cover" style={{ objectPosition: "50% 40%" }} loading="lazy" />
       </div>
       <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
-        <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Nihar Ranjan Mohanta</div>
+        <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Nathan Reed</div>
         <span className="mt-1.5 inline-block rounded-full bg-amber-50 px-1.5 py-0.5 text-[8px] font-bold text-amber-600">
           Medium Risk
         </span>

@@ -41,9 +41,9 @@ const HERO_SIDEBAR_ITEMS = [
 ];
 
 const TRENDS_EMPLOYEES = [
-  { name: "Piyush Rajput", role: "Software Engineer", days: "21 active days", trend: "→ steady", avg: "98%", best: "100%", rating: "Excellent" },
-  { name: "Vivek Bharti", role: "SEO Executive", days: "19 active days", trend: "↓ -2%", avg: "98%", best: "100%", rating: "Excellent" },
-  { name: "Sia Chandan", role: "HR Manager", days: "20 active days", trend: "↑ +3%", avg: "94%", best: "99%", rating: "Excellent" },
+  { name: "Peter Reynolds", role: "Software Engineer", days: "21 active days", trend: "→ steady", avg: "98%", best: "100%", rating: "Excellent" },
+  { name: "Victor Bennett", role: "SEO Executive", days: "19 active days", trend: "↓ -2%", avg: "98%", best: "100%", rating: "Excellent" },
+  { name: "Sophie Carter", role: "HR Manager", days: "20 active days", trend: "↑ +3%", avg: "94%", best: "99%", rating: "Excellent" },
 ];
 
 function ratingClasses(rating: string) {
@@ -142,7 +142,7 @@ function ProductivityHeroCard() {
               </div>
               <div className="rounded-xl bg-white p-2.5 ring-1 ring-gray-100">
                 <div className="text-[7px] font-semibold tracking-wider text-gray-400">TOP PERFORMER</div>
-                <div className="mt-1 truncate text-[12px] font-bold text-gray-900">Piyush Rajput</div>
+                <div className="mt-1 truncate text-[12px] font-bold text-gray-900">Peter Reynolds</div>
                 <div className="text-[7.5px] text-gray-400">98% avg</div>
               </div>
               <div className="rounded-xl bg-white p-2.5 ring-1 ring-gray-100">
@@ -213,7 +213,7 @@ const TrendWidget = () => (
   <div className="w-full">
     <BarRows
       dark
-      kicker="Piyush Rajput — Daily Score"
+      kicker="Peter Reynolds — Daily Score"
       rows={[
         { label: "Week 1", pct: 96, value: "96%", color: "green" },
         { label: "Week 2", pct: 97, value: "97%", color: "green" },
@@ -254,8 +254,8 @@ const CompareWidget = () => (
     <div className="mb-2 text-[9.5px] font-bold uppercase tracking-wider text-white/40">Compare — Last 7 Days</div>
     <div className="grid grid-cols-2 gap-2">
       {[
-        { n: "Piyush Rajput", s: "8h 06m focus" },
-        { n: "Vivek Bharti", s: "8h 32m focus" },
+        { n: "Peter Reynolds", s: "8h 06m focus" },
+        { n: "Victor Bennett", s: "8h 32m focus" },
       ].map((p) => (
         <div key={p.n} className="rounded-lg bg-white/10 p-2.5 text-center">
           <div className="truncate text-[10px] font-semibold text-white/90">{p.n}</div>
@@ -275,7 +275,7 @@ const VISUALS: FeaturePageVisuals = {
         <img src={TEAM_MEETING_IMAGE} alt="" className="h-[420px] w-full object-cover" style={{ objectPosition: "45% 30%" }} loading="lazy" />
       </div>
       <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
-        <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Piyush Rajput</div>
+        <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Peter Reynolds</div>
         <div className="mt-2 flex gap-4">
           <div>
             <div className="text-[16px] font-bold text-gray-900">98%</div>
@@ -335,12 +335,12 @@ const VISUALS: FeaturePageVisuals = {
         <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Compare — Last 7 Days</div>
         <div className="mt-3 grid grid-cols-2 gap-2">
           <div className="rounded-lg bg-gray-50 px-2.5 py-2 text-center ring-1 ring-gray-100">
-            <div className="truncate text-[9.5px] font-semibold text-gray-900">Piyush Rajput</div>
+            <div className="truncate text-[9.5px] font-semibold text-gray-900">Peter Reynolds</div>
             <div className="text-[13px] font-bold text-green-600">98%</div>
             <div className="text-[8px] text-gray-400">8h 06m focus</div>
           </div>
           <div className="rounded-lg bg-gray-50 px-2.5 py-2 text-center ring-1 ring-gray-100">
-            <div className="truncate text-[9.5px] font-semibold text-gray-900">Vivek Bharti</div>
+            <div className="truncate text-[9.5px] font-semibold text-gray-900">Victor Bennett</div>
             <div className="text-[13px] font-bold text-green-600">98%</div>
             <div className="text-[8px] text-gray-400">8h 32m focus</div>
           </div>

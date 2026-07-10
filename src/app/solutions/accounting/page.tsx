@@ -110,10 +110,10 @@ const ENGAGEMENT_STATS = [
 ];
 
 const STAFF_ROWS = [
-  { name: "Deepak Chauhan", role: "Software Engineer", tool: "ms-teams · 50m", focus: "Focus 4h 01m" },
-  { name: "Dheeraj Lakhera", role: "Software Engineer", tool: "chrome · 3h 52m", focus: "Focus 4h 09m" },
-  { name: "Anchal Sahi", role: "SEO Executive", tool: "chrome · 4h 12m", focus: "Focus 4h 12m" },
-  { name: "Satyajit Singh", role: "Software Engineer", tool: "Code · 2h 54m", focus: "Focus 4h 09m" },
+  { name: "David Cooper", role: "Software Engineer", tool: "ms-teams · 50m", focus: "Focus 4h 01m" },
+  { name: "Daniel Lawson", role: "Software Engineer", tool: "chrome · 3h 52m", focus: "Focus 4h 09m" },
+  { name: "Anna Shaw", role: "SEO Executive", tool: "chrome · 4h 12m", focus: "Focus 4h 12m" },
+  { name: "Samuel Stone", role: "Software Engineer", tool: "Code · 2h 54m", focus: "Focus 4h 09m" },
 ];
 
 function FinanceHeroCard() {
@@ -235,9 +235,9 @@ const FocusWidget = () => (
       dark
       kicker="Focus Sessions — Today"
       rows={[
-        { label: "Dheeraj", pct: 92, value: "4h 09m", color: "green" },
-        { label: "Satyajit", pct: 91, value: "4h 09m", color: "green" },
-        { label: "Anchal", pct: 90, value: "4h 12m", color: "green" },
+        { label: "Daniel", pct: 92, value: "4h 09m", color: "green" },
+        { label: "Samuel", pct: 91, value: "4h 09m", color: "green" },
+        { label: "Anna", pct: 90, value: "4h 12m", color: "green" },
       ]}
     />
   </div>
@@ -262,9 +262,9 @@ const ProjectHoursWidget = () => (
       dark
       kicker="Q3 Statutory Audit — This Week"
       rows={[
-        { label: "Prabhjot", pct: 70, value: "14h", color: "brand" },
-        { label: "Dheeraj", pct: 60, value: "12h", color: "blue" },
-        { label: "Satyajit", pct: 55, value: "11h", color: "violet" },
+        { label: "Paula", pct: 70, value: "14h", color: "brand" },
+        { label: "Daniel", pct: 60, value: "12h", color: "blue" },
+        { label: "Samuel", pct: 55, value: "11h", color: "violet" },
       ]}
     />
   </div>
@@ -379,7 +379,7 @@ export default function AccountingFinanceSolutionPage() {
               <img src={TEAM_MEETING_IMAGE} alt="" className="h-[420px] w-full object-cover" style={{ objectPosition: "45% 25%" }} loading="lazy" />
             </div>
             <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
-              <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Dheeraj Lakhera</div>
+              <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Daniel Lawson</div>
               <div className="mt-2 text-[16px] font-bold text-gray-900">4h 09m</div>
               <div className="text-[10px] font-semibold text-green-600">Longest focus session today</div>
             </div>

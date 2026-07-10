@@ -110,10 +110,10 @@ const AGENCY_STATS = [
 ];
 
 const AGENCY_ROWS = [
-  { name: "Akansha Dogra", role: "SEO Executive", tool: "google docs · 1h 10m", focus: "Focus 4h 29m" },
-  { name: "Anchal Sahi", role: "SEO Executive", tool: "chrome · 4h 12m", focus: "Focus 4h 12m" },
-  { name: "Vivek Bharti", role: "SEO Executive", tool: "chrome · 4h 43m", focus: "Focus 4h 43m" },
-  { name: "Sia Chandan", role: "HR Manager", tool: "google sheets · 30m", focus: "Focus 4h 31m" },
+  { name: "Alice Dawson", role: "SEO Executive", tool: "google docs · 1h 10m", focus: "Focus 4h 29m" },
+  { name: "Anna Shaw", role: "SEO Executive", tool: "chrome · 4h 12m", focus: "Focus 4h 12m" },
+  { name: "Victor Bennett", role: "SEO Executive", tool: "chrome · 4h 43m", focus: "Focus 4h 43m" },
+  { name: "Sophie Carter", role: "HR Manager", tool: "google sheets · 30m", focus: "Focus 4h 31m" },
 ];
 
 function AgencyHeroCard() {
@@ -235,9 +235,9 @@ const FocusWidget = () => (
       dark
       kicker="Focus Sessions — Today"
       rows={[
-        { label: "Vivek", pct: 95, value: "4h 43m", color: "green" },
-        { label: "Akansha", pct: 88, value: "4h 29m", color: "green" },
-        { label: "Anchal", pct: 82, value: "4h 12m", color: "green" },
+        { label: "Victor", pct: 95, value: "4h 43m", color: "green" },
+        { label: "Alice", pct: 88, value: "4h 29m", color: "green" },
+        { label: "Anna", pct: 82, value: "4h 12m", color: "green" },
       ]}
     />
   </div>
@@ -264,9 +264,9 @@ const ProjectHoursWidget = () => (
       dark
       kicker="Q3 Marketing Push — This Week"
       rows={[
-        { label: "Vivek", pct: 75, value: "15h", color: "brand" },
-        { label: "Akansha", pct: 70, value: "14h", color: "blue" },
-        { label: "Anchal", pct: 65, value: "13h", color: "violet" },
+        { label: "Victor", pct: 75, value: "15h", color: "brand" },
+        { label: "Alice", pct: 70, value: "14h", color: "blue" },
+        { label: "Anna", pct: 65, value: "13h", color: "violet" },
       ]}
     />
   </div>
@@ -281,7 +281,7 @@ const TrendsWidget = () => (
     </div>
     <div className="mt-1.5 flex items-center justify-between rounded-lg bg-white/10 px-3 py-2.5">
       <span className="text-[10.5px] text-white/80">Top performer</span>
-      <span className="text-[10.5px] font-bold text-white">Piyush Rajput</span>
+      <span className="text-[10.5px] font-bold text-white">Peter Reynolds</span>
     </div>
   </div>
 );
@@ -380,7 +380,7 @@ export default function DigitalAgenciesSolutionPage() {
               <img src={TEAM_MEETING_IMAGE} alt="" className="h-[420px] w-full object-cover" style={{ objectPosition: "40% 25%" }} loading="lazy" />
             </div>
             <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
-              <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Vivek Bharti</div>
+              <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Victor Bennett</div>
               <div className="mt-2 text-[16px] font-bold text-gray-900">4h 43m</div>
               <div className="text-[10px] font-semibold text-green-600">Longest focus session today</div>
             </div>
@@ -415,7 +415,7 @@ export default function DigitalAgenciesSolutionPage() {
             <div className="absolute -left-2 top-0 w-[240px] rounded-2xl bg-white p-4 shadow-2xl">
               <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Connected Devices</div>
               <div className="mt-2 space-y-1.5">
-                {[{ n: "Vivek's MacBook Air", s: "Tracking now" }, { n: "Akansha's Windows Laptop", s: "Tracking now" }].map((d) => (
+                {[{ n: "Victor's MacBook Air", s: "Tracking now" }, { n: "Alice's Windows Laptop", s: "Tracking now" }].map((d) => (
                   <div key={d.n} className="flex items-center justify-between rounded-lg bg-gray-50 px-2.5 py-2">
                     <span className="truncate text-[9.5px] font-medium text-gray-600">{d.n}</span>
                     <span className="text-[8.5px] font-bold text-green-600">{d.s}</span>

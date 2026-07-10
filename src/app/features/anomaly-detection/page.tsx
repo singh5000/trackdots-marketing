@@ -48,10 +48,10 @@ const ANOMALY_STATS = [
 ];
 
 const ANOMALY_EMPLOYEES = [
-  { name: "Amit Chawla", role: "CEO", emoji: "💤", flag: "No-activity streak", detail: "10 consecutive weekdays with zero tracked activity", date: "Jul 6, 2026", tone: "warning" },
-  { name: "Prabhjot Kaur", role: "Quality Analyst", emoji: "📉", flag: "Sudden hour drop", detail: "3h 53m logged — 47% below personal average (7h 17m)", date: "Jun 30, 2026", tone: "warning" },
-  { name: "Nihar Ranjan Mohanta", role: "Software Engineer", emoji: "🔀", flag: "Erratic start times", detail: "Start times vary by 9h 20m across last 14 active days", date: "Jul 6, 2026", tone: "warning" },
-  { name: "Akansha Dogra", role: "SEO Executive", emoji: "✓", flag: "All clear", detail: "No anomalies in the last 30 days", date: "", tone: "clear" },
+  { name: "Aaron Clarke", role: "CEO", emoji: "💤", flag: "No-activity streak", detail: "10 consecutive weekdays with zero tracked activity", date: "Jul 6, 2026", tone: "warning" },
+  { name: "Paula Knight", role: "Quality Analyst", emoji: "📉", flag: "Sudden hour drop", detail: "3h 53m logged — 47% below personal average (7h 17m)", date: "Jun 30, 2026", tone: "warning" },
+  { name: "Nathan Reed", role: "Software Engineer", emoji: "🔀", flag: "Erratic start times", detail: "Start times vary by 9h 20m across last 14 active days", date: "Jul 6, 2026", tone: "warning" },
+  { name: "Alice Dawson", role: "SEO Executive", emoji: "✓", flag: "All clear", detail: "No anomalies in the last 30 days", date: "", tone: "clear" },
 ];
 
 function AnomalyHeroCard() {
@@ -187,7 +187,7 @@ const StreakWidget = () => (
   <div className="w-full">
     <div className="mb-2 text-[9.5px] font-bold uppercase tracking-wider text-white/40">💤 No-Activity Streak</div>
     <div className="rounded-lg bg-white/10 p-3">
-      <div className="text-[10.5px] font-semibold text-white/90">Amit Chawla</div>
+      <div className="text-[10.5px] font-semibold text-white/90">Aaron Clarke</div>
       <div className="mt-1 text-[10px] text-white/60">10 consecutive weekdays, zero tracked activity</div>
     </div>
   </div>
@@ -197,7 +197,7 @@ const HourDropWidget = () => (
   <div className="w-full">
     <BarRows
       dark
-      kicker="📉 Sudden Hour Drop — Prabhjot Kaur"
+      kicker="📉 Sudden Hour Drop — Paula Knight"
       rows={[
         { label: "Average", pct: 100, value: "7h 17m", color: "blue" },
         { label: "Jun 30", pct: 53, value: "3h 53m", color: "amber" },
@@ -211,9 +211,9 @@ const ErraticWidget = () => (
     <ChecklistRows
       dark
       items={[
-        { label: "🔀 Erratic start times — Nihar R. Mohanta", done: false },
+        { label: "🔀 Erratic start times — Nathan Reed", done: false },
         { label: "🌙 Unusual working hours — same employee", done: false },
-        { label: "✓ All clear — Akansha Dogra", done: true },
+        { label: "✓ All clear — Alice Dawson", done: true },
       ]}
     />
   </div>
@@ -244,7 +244,7 @@ const VISUALS: FeaturePageVisuals = {
             </div>
             <div className="absolute -left-2 top-0 w-[240px] rounded-2xl bg-white p-4 shadow-2xl">
               <div className="flex items-center justify-between">
-                <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Amit Chawla</div>
+                <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Aaron Clarke</div>
                 <span className="rounded-full bg-amber-50 px-1.5 py-0.5 text-[8px] font-bold text-amber-600">Warning</span>
               </div>
               <div className="mt-2 flex items-center gap-1.5 text-[12px] font-bold text-gray-900">
@@ -273,7 +273,7 @@ const VISUALS: FeaturePageVisuals = {
               <img src={TEAM_MEETING_IMAGE} alt="" className="h-[380px] w-full object-cover" style={{ objectPosition: "55% 35%" }} loading="lazy" />
             </div>
             <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
-              <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Prabhjot Kaur</div>
+              <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Paula Knight</div>
               <div className="mt-2 flex items-center gap-1.5 text-[12px] font-bold text-gray-900">
                 <span>📉</span> Sudden hour drop
               </div>
@@ -300,7 +300,7 @@ const VISUALS: FeaturePageVisuals = {
               <img src={TEAM_MEETING_IMAGE} alt="" className="h-[420px] w-full object-cover sm:h-[460px]" style={{ objectPosition: "60% 50%" }} loading="lazy" />
             </div>
             <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
-              <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Nihar Ranjan Mohanta</div>
+              <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Nathan Reed</div>
               <div className="mt-2 space-y-1.5">
                 <div className="flex items-center gap-1.5 text-[10px] text-gray-700">
                   <span>🔀</span> Erratic start times

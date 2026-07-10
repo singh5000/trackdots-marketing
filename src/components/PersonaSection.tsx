@@ -381,8 +381,8 @@ function SignalTagsMock({ risk, riskColor, signals }: { risk: string; riskColor:
 /* Meeting-approval row — name, time range, duration, Approve/Reject pills (matches real Meeting Approvals table). */
 function MeetingApprovalMock() {
   const rows = [
-    { name: "Akansha Dogra", time: "12:44 – 12:51", dur: "7m" },
-    { name: "Satyajit Singh", time: "12:42 – 12:52", dur: "9m" },
+    { name: "Alice Dawson", time: "12:44 – 12:51", dur: "7m" },
+    { name: "Samuel Stone", time: "12:42 – 12:52", dur: "9m" },
   ];
   return (
     <div className="w-full">
@@ -457,7 +457,7 @@ const TAB_CARDS: Record<Tab, CardData[]> = {
       tag: "FOR HR & FINANCE",
       title: "HR & Payroll Suite",
       bullets: ["Documents, bank & salary records", "Auto-generated payslips", "Appraisals & compliance history"],
-      visual: <PersonRowMock name="Akansha Dogra" role="SEO Executive" roleColor="pink" status="Active" />,
+      visual: <PersonRowMock name="Alice Dawson" role="SEO Executive" roleColor="pink" status="Active" />,
     },
     {
       tag: "FOR PROJECT MANAGERS",
@@ -553,8 +553,8 @@ const TAB_CARDS: Record<Tab, CardData[]> = {
         <BarRowsMock
           kicker="Today's Tracked Hours"
           rows={[
-            { label: "Vivek Bharti", pct: 90, value: "4.4h", color: "blue" },
-            { label: "Mohsin Khan", pct: 75, value: "3.2h", color: "blue" },
+            { label: "Victor Bennett", pct: 90, value: "4.4h", color: "blue" },
+            { label: "Michael King", pct: 75, value: "3.2h", color: "blue" },
           ]}
         />
       ),
@@ -716,7 +716,7 @@ const TAB_CARDS: Record<Tab, CardData[]> = {
       tag: "MY PROFILE",
       title: "My Profile & Edit Requests",
       bullets: ["View your full HR profile anytime", "Two-step, HR-approved edit workflow", "Upload documents securely"],
-      visual: <ProfileCardMock name="Mohsin Khan" role="Head of Technology" streak="21 active days" />,
+      visual: <ProfileCardMock name="Michael King" role="Head of Technology" streak="21 active days" />,
     },
     {
       tag: "TIME OFF",

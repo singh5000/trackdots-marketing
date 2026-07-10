@@ -111,10 +111,10 @@ const ENGAGEMENT_STATS = [
 ];
 
 const CONSULTANT_ROWS = [
-  { name: "Ankur Mishra", role: "Senior Software Engineer", tool: "Google Chrome · 5h 55m", util: "97% utilized" },
-  { name: "Prabhjot Kaur", role: "Quality Analyst", tool: "chrome · 7h 37m", util: "100% utilized" },
-  { name: "Rajesh Kumar", role: "Senior Software Engineer", tool: "chrome · 2h 41m", util: "100% utilized" },
-  { name: "Mohsin Khan", role: "Head of Technology", tool: "Firefox · 1h 00m", util: "100% utilized" },
+  { name: "Adam Mitchell", role: "Senior Software Engineer", tool: "Google Chrome · 5h 55m", util: "97% utilized" },
+  { name: "Paula Knight", role: "Quality Analyst", tool: "chrome · 7h 37m", util: "100% utilized" },
+  { name: "Ryan Kennedy", role: "Senior Software Engineer", tool: "chrome · 2h 41m", util: "100% utilized" },
+  { name: "Michael King", role: "Head of Technology", tool: "Firefox · 1h 00m", util: "100% utilized" },
 ];
 
 function ConsultingHeroCard() {
@@ -236,9 +236,9 @@ const FocusWidget = () => (
       dark
       kicker="Focus Sessions — Today"
       rows={[
-        { label: "Rajesh", pct: 100, value: "4h 32m", color: "green" },
-        { label: "Mohsin", pct: 92, value: "4h 41m", color: "green" },
-        { label: "Prabhjot", pct: 84, value: "4h 05m", color: "green" },
+        { label: "Ryan", pct: 100, value: "4h 32m", color: "green" },
+        { label: "Michael", pct: 92, value: "4h 41m", color: "green" },
+        { label: "Paula", pct: 84, value: "4h 05m", color: "green" },
       ]}
     />
   </div>
@@ -251,9 +251,9 @@ const UtilizationWidget = () => (
       cols={3}
       kicker="Utilization — This Week"
       stats={[
-        { label: "Ankur", value: "97%" },
-        { label: "Prabhjot", value: "100%" },
-        { label: "Rajesh", value: "100%" },
+        { label: "Adam", value: "97%" },
+        { label: "Paula", value: "100%" },
+        { label: "Ryan", value: "100%" },
       ]}
     />
   </div>
@@ -265,9 +265,9 @@ const ProjectHoursWidget = () => (
       dark
       kicker="ERP Rollout Advisory — This Week"
       rows={[
-        { label: "Ankur", pct: 75, value: "15h", color: "brand" },
-        { label: "Rajesh", pct: 65, value: "13h", color: "blue" },
-        { label: "Mohsin", pct: 55, value: "11h", color: "violet" },
+        { label: "Adam", pct: 75, value: "15h", color: "brand" },
+        { label: "Ryan", pct: 65, value: "13h", color: "blue" },
+        { label: "Michael", pct: 55, value: "11h", color: "violet" },
       ]}
     />
   </div>
@@ -282,7 +282,7 @@ const TrendsWidget = () => (
     </div>
     <div className="mt-1.5 flex items-center justify-between rounded-lg bg-white/10 px-3 py-2.5">
       <span className="text-[10.5px] text-white/80">Top utilization</span>
-      <span className="text-[10.5px] font-bold text-white">Prabhjot Kaur</span>
+      <span className="text-[10.5px] font-bold text-white">Paula Knight</span>
     </div>
   </div>
 );
@@ -381,7 +381,7 @@ export default function ConsultingFirmsSolutionPage() {
               <img src={TEAM_MEETING_IMAGE} alt="" className="h-[420px] w-full object-cover" style={{ objectPosition: "45% 25%" }} loading="lazy" />
             </div>
             <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
-              <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Rajesh Kumar</div>
+              <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Ryan Kennedy</div>
               <div className="mt-2 text-[16px] font-bold text-gray-900">4h 32m</div>
               <div className="text-[10px] font-semibold text-green-600">Single-session deep work, today</div>
             </div>
@@ -416,7 +416,7 @@ export default function ConsultingFirmsSolutionPage() {
             <div className="absolute -left-2 top-0 w-[240px] rounded-2xl bg-white p-4 shadow-2xl">
               <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Connected Devices</div>
               <div className="mt-2 space-y-1.5">
-                {[{ n: "Ankur's Windows Laptop", s: "Tracking now" }, { n: "Mohsin's MacBook Pro", s: "Tracking now" }].map((d) => (
+                {[{ n: "Adam's Windows Laptop", s: "Tracking now" }, { n: "Michael's MacBook Pro", s: "Tracking now" }].map((d) => (
                   <div key={d.n} className="flex items-center justify-between rounded-lg bg-gray-50 px-2.5 py-2">
                     <span className="truncate text-[9.5px] font-medium text-gray-600">{d.n}</span>
                     <span className="text-[8.5px] font-bold text-green-600">{d.s}</span>

@@ -41,10 +41,10 @@ const HERO_SIDEBAR_ITEMS = [
 ];
 
 const PAYROLL_ROWS = [
-  { name: "Akansha Dogra", role: "SEO Executive", paid: "19", ded: "−₹200", payable: "₹22,266" },
-  { name: "Ankur Mishra", role: "Senior Software Engineer", paid: "19", ded: "−₹2,000", payable: "₹69,397" },
-  { name: "Davinder Singh", role: "Senior Software Engineer", paid: "19", ded: "−₹200", payable: "₹63,238" },
-  { name: "Anchal Sahi", role: "SEO Executive", paid: "19", ded: "−₹200", payable: "₹22,266" },
+  { name: "Alice Dawson", role: "SEO Executive", paid: "19", ded: "−₹200", payable: "₹22,266" },
+  { name: "Adam Mitchell", role: "Senior Software Engineer", paid: "19", ded: "−₹2,000", payable: "₹69,397" },
+  { name: "Dylan Scott", role: "Senior Software Engineer", paid: "19", ded: "−₹200", payable: "₹63,238" },
+  { name: "Anna Shaw", role: "SEO Executive", paid: "19", ded: "−₹200", payable: "₹22,266" },
 ];
 
 function PayrollHeroCard() {
@@ -207,7 +207,7 @@ const DeductionsWidget = () => (
     <StatGrid
       dark
       cols={3}
-      kicker="Ankur Mishra — Deductions"
+      kicker="Adam Mitchell — Deductions"
       stats={[
         { label: "PF", value: "₹1,800" },
         { label: "Prof. Tax", value: "₹200" },
@@ -274,7 +274,7 @@ const VISUALS: FeaturePageVisuals = {
         <img src={TEAM_MEETING_IMAGE} alt="" className="h-[380px] w-full object-cover" style={{ objectPosition: "55% 35%" }} loading="lazy" />
       </div>
       <div className="absolute -left-2 top-0 w-[230px] rounded-2xl bg-white p-4 shadow-2xl">
-        <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Ankur Mishra — July</div>
+        <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Adam Mitchell — July</div>
         <div className="mt-3 space-y-2">
           {[{ l: "PF", v: "−₹1,800" }, { l: "Professional Tax", v: "−₹200" }].map((d) => (
             <div key={d.l} className="flex items-center justify-between rounded-lg bg-gray-50 px-2.5 py-2">

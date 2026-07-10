@@ -42,10 +42,10 @@ const HERO_SIDEBAR_ITEMS = [
 ];
 
 const MEETING_ROWS = [
-  { name: "Vivek Bharti", date: "Jul 06, 2026", time: "5:44 PM – 6:04 PM", dur: "19m", note: "Discussion With HR Ma'am", status: "Pending" },
-  { name: "Sia Chandan", date: "Jul 06, 2026", time: "12:44 PM – 12:51 PM", dur: "7m", note: "Standup sync", status: "Approved" },
-  { name: "Prabhjot Kaur", date: "Jul 06, 2026", time: "3:05 PM – 3:18 PM", dur: "13m", note: "Client call", status: "Approved" },
-  { name: "Rajesh Kumar", date: "Jul 05, 2026", time: "11:20 AM – 11:22 AM", dur: "2m", note: "Quick check-in", status: "Rejected" },
+  { name: "Victor Bennett", date: "Jul 06, 2026", time: "5:44 PM – 6:04 PM", dur: "19m", note: "Discussion With HR Ma'am", status: "Pending" },
+  { name: "Sophie Carter", date: "Jul 06, 2026", time: "12:44 PM – 12:51 PM", dur: "7m", note: "Standup sync", status: "Approved" },
+  { name: "Paula Knight", date: "Jul 06, 2026", time: "3:05 PM – 3:18 PM", dur: "13m", note: "Client call", status: "Approved" },
+  { name: "Ryan Kennedy", date: "Jul 05, 2026", time: "11:20 AM – 11:22 AM", dur: "2m", note: "Quick check-in", status: "Rejected" },
 ];
 
 function meetingStatusClasses(status: string) {
@@ -175,7 +175,7 @@ const ApprovalQueueWidget = () => (
   <div className="w-full">
     <div className="mb-2 text-[9.5px] font-bold uppercase tracking-wider text-white/40">Pending Approvals — Today</div>
     <div className="space-y-1.5">
-      {[{ n: "Vivek Bharti", t: "5:44 PM – 6:04 PM · 19m" }].map((r) => (
+      {[{ n: "Victor Bennett", t: "5:44 PM – 6:04 PM · 19m" }].map((r) => (
         <div key={r.n} className="flex items-center justify-between rounded-md bg-white/10 px-3 py-1.5">
           <div>
             <div className="text-[10.5px] font-semibold text-white/90">{r.n}</div>
@@ -195,7 +195,7 @@ const NoteWidget = () => (
   <div className="w-full">
     <div className="mb-2 text-[9.5px] font-bold uppercase tracking-wider text-white/40">Declared Session</div>
     <div className="rounded-lg bg-white/10 p-3">
-      <div className="text-[10.5px] font-semibold text-white/90">Vivek Bharti · 19m</div>
+      <div className="text-[10.5px] font-semibold text-white/90">Victor Bennett · 19m</div>
       <div className="mt-1 text-[10px] italic text-white/60">&ldquo;Discussion With HR Ma&apos;am&rdquo;</div>
     </div>
   </div>
@@ -253,7 +253,7 @@ const VISUALS: FeaturePageVisuals = {
             </div>
             <div className="absolute -left-2 top-0 w-[240px] rounded-2xl bg-white p-4 shadow-2xl">
               <div className="flex items-center justify-between">
-                <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Vivek Bharti</div>
+                <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Victor Bennett</div>
                 <span className="rounded-full bg-amber-50 px-1.5 py-0.5 text-[8px] font-bold text-amber-600">Pending</span>
               </div>
               <div className="mt-2 text-[13px] font-bold text-gray-900">5:44 PM – 6:04 PM</div>

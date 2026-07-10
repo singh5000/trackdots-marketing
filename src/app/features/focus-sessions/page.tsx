@@ -50,7 +50,7 @@ const FOCUS_STATS = [
 
 const FOCUS_EMPLOYEES = [
   {
-    name: "Mohsin Khan",
+    name: "Michael King",
     role: "Head of Technology",
     badge: "Some focus",
     summary: "2 sessions · 9h 20m focus time · avg 4h 40m",
@@ -60,14 +60,14 @@ const FOCUS_EMPLOYEES = [
     ],
   },
   {
-    name: "Vivek Bharti",
+    name: "Victor Bennett",
     role: "SEO Executive",
     badge: "Some focus",
     summary: "2 sessions · 8h 32m focus time · avg 4h 16m",
     sessions: [{ dur: "4h 43m", app: "chrome", time: "8:52 AM – 1:45 PM" }],
   },
   {
-    name: "Akansha Dogra",
+    name: "Alice Dawson",
     role: "SEO Executive",
     badge: "Some focus",
     summary: "2 sessions · 8h 11m focus time · avg 4h 05m",
@@ -319,7 +319,7 @@ const VISUALS: FeaturePageVisuals = {
       <div className="absolute -bottom-2 -right-4 w-[210px] rounded-xl bg-white p-4 shadow-2xl">
         <div className="text-[9px] font-bold uppercase tracking-wide text-gray-400">Longest Session</div>
         <div className="mt-1 text-[18px] font-bold text-gray-900">4h 43m</div>
-        <div className="mt-1.5 text-[9.5px] text-gray-400">Vivek Bharti · Monday</div>
+        <div className="mt-1.5 text-[9.5px] text-gray-400">Victor Bennett · Monday</div>
       </div>
     </div>
   ),
