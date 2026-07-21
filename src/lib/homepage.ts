@@ -1,4 +1,4 @@
-const WP_API_URL = process.env.WP_API_URL ?? "https://wp-be.trackdots.net/wp-json/wp/v2";
+const WP_API_URL = process.env.WP_API_URL ?? "https://cms.trackdots.net/wp-json/wp/v2";
 
 /** Raw ACF field values are always present as strings (possibly empty) once the field group is attached — loosely typed since it's ~580 flat fields. */
 export type HomepageACF = Record<string, any>;

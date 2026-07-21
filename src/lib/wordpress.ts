@@ -1,7 +1,7 @@
 import { FileText, Monitor, Sparkles, TrendUp, Users } from "@/components/icons";
 import type { ComponentType, SVGProps } from "react";
 
-const WP_API_URL = process.env.WP_API_URL ?? "https://wp-be.trackdots.net/wp-json/wp/v2";
+const WP_API_URL = process.env.WP_API_URL ?? "https://cms.trackdots.net/wp-json/wp/v2";
 
 export type Post = {
   slug: string;
