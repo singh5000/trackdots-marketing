@@ -1,4 +1,4 @@
-const WP_API_URL = process.env.WP_API_URL ?? "https://wp-be.trackdots.net/wp-json/wp/v2";
+const WP_API_URL = process.env.WP_API_URL ?? "https://cms.trackdots.net/wp-json/wp/v2";
 
 /** Normalized content shape shared by every feature page. Icons are icon-map
  *  string names (see pagebuilder/iconMap) so WP can override them. */
