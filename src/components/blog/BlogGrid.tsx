@@ -9,6 +9,19 @@ export default function BlogGrid({ posts }: { posts: Post[] }) {
   const [filter, setFilter] = useState<string>("All");
   const visible = filter === "All" ? posts : posts.filter((p) => p.category === filter);
 
+  if (posts.length === 0) {
+    return (
+      <div className="mx-auto max-w-md rounded-3xl border border-gray-100 bg-gray-50/60 px-8 py-16 text-center">
+        <span className="text-4xl">✍️</span>
+        <h3 className="mt-4 text-[20px] font-bold text-gray-900">Fresh posts are on the way</h3>
+        <p className="mt-2 text-[14.5px] leading-relaxed text-gray-500">
+          We&apos;re writing our first articles right now — check back soon for honest thinking on
+          monitoring, productivity, and payroll.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div>
       <div className="flex flex-wrap justify-center gap-2">
